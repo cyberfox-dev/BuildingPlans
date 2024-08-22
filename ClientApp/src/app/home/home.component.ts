@@ -94,6 +94,7 @@ export interface StagesList {
 }
 
 export interface ApplicationsList {
+  DateCreatedFull: any;
   ApplicationID: number;
   FullName: string;
   /*  ReferenceNumber: string;*/
@@ -5652,7 +5653,7 @@ this.subscriptions.push(subscription);
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
-
+            tempApplicationList.DateCreatedFull = current.dateCreated;
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
@@ -5762,7 +5763,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
         /*this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -5903,7 +5904,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
         /*this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -6053,7 +6054,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
         /*this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -6204,7 +6205,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
        /* this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -6354,7 +6355,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
         /*this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -6504,7 +6505,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
        /* this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -6654,7 +6655,7 @@ this.subscriptions.push(subscription);
           })
         }
         this.changeDetectorRef.detectChanges();
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.dataSource = this.Applications.filter(df => df.DateCreatedFull);
         /*this.applicationsTable?.renderRows();*/
         //for card filters
 
@@ -7134,10 +7135,10 @@ this.subscriptions.push(subscription);
          
 
         }
-        this.dataSourceBP = this.ApplicationsBP;
-        
+        this.dataSourceBP = this.ApplicationsBP.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());;
+
         this.applicationTypeName = "Build Plan";
-        this.dataSourceSA = this.ApplicationsBP;
+        this.dataSourceSA = this.ApplicationsBP.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         this.originalDataSourceSA = [...this.ApplicationsBP];
       }
       else {
@@ -7201,10 +7202,10 @@ this.subscriptions.push(subscription);
 
 
         
-        this.dataSourceBP = this.AllBPApplications;
+        this.dataSourceBP = this.AllBPApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
 
         this.applicationTypeName = "Build Plan";
-        this.dataSourceSA = this.AllBPApplications;
+        this.dataSourceSA = this.AllBPApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         this.originalDataSourceSA = [...this.AllBPApplications];
       }
       else {
@@ -7268,10 +7269,10 @@ this.subscriptions.push(subscription);
 
 
 
-        this.dataSourceBP = this.AllTownPlanningApplications;
+        this.dataSourceBP = this.AllTownPlanningApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
 
         this.applicationTypeName = "Town Planning";
-        this.dataSourceSA = this.AllTownPlanningApplications;
+        this.dataSourceSA = this.AllTownPlanningApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         this.originalDataSourceSA = [...this.AllTownPlanningApplications];
         
       }
@@ -7320,8 +7321,8 @@ this.subscriptions.push(subscription);
             tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
             tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
             const currentDate = new Date();
-            const dateCreated = new Date(tempApplication.dateCreated);
-            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const dateCreated2 = new Date(tempApplication.dateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated2.getTime();
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplication.planAge = daysDiff;
 
@@ -7339,11 +7340,11 @@ this.subscriptions.push(subscription);
 
 
         debugger;
-        this.dataSourceBP = this.AllApplications;
+        this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         debugger;
         this.applicationTypeName = "Build Plan";
         this.selectedTabIndex = 8;
-        this.dataSourceSA = this.AllApplications;
+        this.dataSourceSA = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         this.originalDataSourceSA = [...this.AllApplications];
       }
       else {
@@ -7930,8 +7931,7 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         
-        this.dataSourceSA = this.AllApplications;
-        this.originalDataSourceSA = [...this.AllApplications];
+        this.GetAllApplications();
 
         break;
     }

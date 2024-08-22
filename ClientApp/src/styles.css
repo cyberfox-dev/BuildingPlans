@@ -265,6 +265,10 @@ body {
   justify-content: space-between;
 }
 
+.mat-toolbar {
+  background: white !important;
+}
+
 ::-webkit-scrollbar{
     width:12px;
 }
@@ -358,6 +362,9 @@ quill-editor {
   min-height: 500px;
   overflow-y: auto;
 }
+.cdk-overlay-container {
+  z-index: 10000 !important;
+}
 
 /*.offcanvas-menu {
   background-color: #323e53 !important;
@@ -441,3 +448,6 @@ tr:hover {
 
   background: #425166;
 }*/
+.mat-form-field-underline {
+  /*display: none !important;*/
+}

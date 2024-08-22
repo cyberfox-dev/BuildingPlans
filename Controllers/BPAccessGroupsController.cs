@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using System.Data;
 using BuildingPlans.Data.Migrations;
+using iText.Commons.Actions.Contexts;
 
 namespace BuildingPlans.Controllers
 {
@@ -44,7 +45,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = new object();
 
-                if(model == null || model.AccessGroupName == null)
+                if (model == null || model.AccessGroupName == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -52,7 +53,7 @@ namespace BuildingPlans.Controllers
                 {
                     var tempAccessgroup = _context.BPAccessGroups.FirstOrDefault(x => x.AccessGroupID == model.AccessGroupID);
 
-                    if(tempAccessgroup == null)
+                    if (tempAccessgroup == null)
                     {
                         tempAccessgroup = new BPAccessGroups()
                         {
@@ -70,12 +71,12 @@ namespace BuildingPlans.Controllers
                     }
                     else
                     {
-                        if(model.AccessGroupName != null)
+                        if (model.AccessGroupName != null)
                         {
                             tempAccessgroup.AccessGroupName = model.AccessGroupName;
                         }
-                        
-                        if(model.AccessGroupDescription != null)
+
+                        if (model.AccessGroupDescription != null)
                         {
                             tempAccessgroup.AccessGroupDescription = model.AccessGroupDescription;
                         }
@@ -152,7 +153,7 @@ namespace BuildingPlans.Controllers
         {
             var tempAccessGroup = _context.BPAccessGroups.FirstOrDefault(x => x.AccessGroupID == model.AccessGroupID);
 
-            if(tempAccessGroup == null)
+            if (tempAccessGroup == null)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
             }
@@ -210,6 +211,8 @@ namespace BuildingPlans.Controllers
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
-            }
         }
+
+       
+    }
 }

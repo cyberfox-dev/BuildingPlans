@@ -57,5 +57,6 @@ namespace BuildingPlans.Data.Entities
         public string? DescriptionOfProject { get; set; }
         public string? SupportingDocuments { get; set; }
 
+
     }
 }

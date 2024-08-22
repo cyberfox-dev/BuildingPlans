@@ -73,4 +73,13 @@ export class BPAccessGroupUserLinkService {
     return this.httpClient.post(this.baseURL + "GetAllRolesForUserForAG", body);
 
   }
+
+  public getPeopleByAccessGroupAndSubDept(agID: number | null, subDepartmentId: number | null) {
+
+    const requestBody = {
+      AccessGroupID: agID,
+      SubDepartmentID: subDepartmentId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupAndSubDept", requestBody);
+  }
 }

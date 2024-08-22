@@ -50,4 +50,6 @@ export class BPAccessGroupsService {
 
     return this.httpClient.post(this.baseURL + "GetAllAccessGroupsAndUserLink", body);
   }
+
+
 }
