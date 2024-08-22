@@ -59,7 +59,6 @@ import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
 import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
 import {BPAccessGroupUserLinkService } from '../service/BPAccessGroupsUserLink/bpaccess-group-user-link.service';
-import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
 import { GoogleMap, MapInfoWindow, MapMarker, GoogleMapsModule } from '@angular/google-maps';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
@@ -629,6 +628,10 @@ export class BpActionCenterComponent implements OnInit {
     this.setProjectNumber();
     this.getAllDocumentsForServiceInformation();
 
+
+
+    debugger;
+  
 /*    this.GetSubDepartment();*/
 /*    this.getAllDepartmentsForCommentForBPApplication();*/
 
@@ -9716,6 +9719,134 @@ export class BpActionCenterComponent implements OnInit {
       })
   }
 
+  getAllDepartmentsForLandSurvey() {
+
+    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Land Survey").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDep = {} as DepartmentList;
+          
+          tempDep.departmentID = current.departmentID;
+          tempDep.departmentName = current.departmentName;
+          tempDep.functionalArea = current.funcationalArea;
+
+
+          this.DepartmentList.push(tempDep);
+
+        }
+        this.selectedDepartments = this.DepartmentList.map(dep => dep.departmentID);
+      }
+
+      console.log("gotalldepartmentsforlandsurevy", data);
+    },
+      error => {
+        console.log("Error: ", error);
+      }
+    );
+  }
+  selectedDepartments: number[] = [];
+  distributeToLandSurveyDeps() {
+    // Loop through each selected department
+    
+    this.selectedDepartments.forEach(id => {
+      const selectedDepartment = this.DepartmentList.find(dep => dep.departmentID === id);
+      if (selectedDepartment) {
+        
+        this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0,this.ApplicationID,selectedDepartment.departmentID,selectedDepartment.departmentName,null,null,this.CurrentUser.appUserId).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            
+              console.log("Success: Department added/updated", data);
+            }
+          },
+          error => {
+            console.log("Error: ", error);
+          }
+        );
+      }
+    });
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Distribution", "LS Review",  1, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Distributed");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+  oncheckRoleForUser() {
+    for (var i = 0; i < this.CurrentUserRoles.length; i++) {
+      const roleName = this.CurrentUserRoles[i].roleName;
+      if (roleName == 'LS Reviewer') {
+        this.LSReviewerRole = true;
+      }
+      if (roleName == 'TP Reviewer') {
+        this.TPReviewerRole = true;
+      }
+      if (roleName == 'BCO') {
+        this.BCORole = true;
+      }
+      if (roleName == 'PAC') {
+        this.PACRole = true;
+      }
+      if (roleName == 'Admin') {
+        this.AdminRole = true;
+      }
+
+    }
+  }
+
+
+  getAllUsersForLandSurveyReview() {
+    debugger;
+    this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(11, this.loggedInUsersDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                debugger;
+                this.userPofileService.getUserProfileById(data.dateSet[i].userID)
+                const tempZoneList = {} as LSReviewerUserList;
+                const current = data.dateSet[i];
+                tempZoneList.id = current.userID;
+                tempZoneList.fullName = current.fullName;
+                tempZoneList.Email = current.email;
+                tempZoneList.alternativeEmail = current.alternativeEmail; 
+
+                this.LSReviewerList.push(tempZoneList);
+                console.log("Got All LS Review Users", this.LSReviewerList);
+              }
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("Got All Users from land survey for land survey admin", error)
+          })
+        }
+
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log("Got All Users from land survey for land survey admin", error)
+    })
+  }
+
 
   enteredAddress: any;
   latitude: any ;
@@ -9902,72 +10033,6 @@ export class BpActionCenterComponent implements OnInit {
     })
   }
 
-  getAllDepartmentsForLandSurvey() {
-
-    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Land Survey").subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        
-
-        for (var i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          const tempDep = {} as DepartmentList;
-          
-          tempDep.departmentID = current.departmentID;
-          tempDep.departmentName = current.departmentName;
-          tempDep.functionalArea = current.funcationalArea;
-
-
-          this.DepartmentList.push(tempDep);
-
-        }
-        this.selectedDepartments = this.DepartmentList.map(dep => dep.departmentID);
-      }
-
-      console.log("gotalldepartmentsforlandsurevy", data);
-    },
-      error => {
-        console.log("Error: ", error);
-      }
-    );
-  }
-  selectedDepartments: number[] = [];
-  distributeToLandSurveyDeps() {
-    // Loop through each selected department
-    
-    this.selectedDepartments.forEach(id => {
-      const selectedDepartment = this.DepartmentList.find(dep => dep.departmentID === id);
-      if (selectedDepartment) {
-        
-        this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0,this.ApplicationID,selectedDepartment.departmentID,selectedDepartment.departmentName,null,null,this.CurrentUser.appUserId).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            
-              console.log("Success: Department added/updated", data);
-            }
-          },
-          error => {
-            console.log("Error: ", error);
-          }
-        );
-      }
-    });
-    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-      null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Distribution", "LS Review",  1, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-          this.modalService.dismissAll();
-          this.openSnackBar("Application Distributed");
-          this.router.navigate(["/home"]);
-        }
-        else {
-          alert(data.responseMessage)
-        }
-      }, error => {
-        console.log("BuildingApplicationError: ", error)
-      })
-  }
-
   locationName: string;
   applicationAddress: any;
   async updateCenter(newLat: number, newLng: number) {
@@ -10132,68 +10197,6 @@ export class BpActionCenterComponent implements OnInit {
     
   }
   
-}
 
-  oncheckRoleForUser() {
-    for (var i = 0; i < this.CurrentUserRoles.length; i++) {
-      const roleName = this.CurrentUserRoles[i].roleName;
-      if (roleName == 'LS Reviewer') {
-        this.LSReviewerRole = true;
-      }
-      if (roleName == 'TP Reviewer') {
-        this.TPReviewerRole = true;
-      }
-      if (roleName == 'BCO') {
-        this.BCORole = true;
-      }
-      if (roleName == 'PAC') {
-        this.PACRole = true;
-      }
-      if (roleName == 'Admin') {
-        this.AdminRole = true;
-      }
-
-    }
-  }
-
-
-  getAllUsersForLandSurveyReview() {
-    debugger;
-    this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(11, this.loggedInUsersDepartmentID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
-          this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              for (let i = 0; i < data.dateSet.length; i++) {
-                debugger;
-                this.userPofileService.getUserProfileById(data.dateSet[i].userID)
-                const tempZoneList = {} as LSReviewerUserList;
-                const current = data.dateSet[i];
-                tempZoneList.id = current.userID;
-                tempZoneList.fullName = current.fullName;
-                tempZoneList.Email = current.email;
-                tempZoneList.alternativeEmail = current.alternativeEmail; 
-
-                this.LSReviewerList.push(tempZoneList);
-                console.log("Got All LS Review Users", this.LSReviewerList);
-              }
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("Got All Users from land survey for land survey admin", error)
-          })
-        }
-
-      }
-      else {
-        alert(data.responseMessage)
-      }
-    }, error => {
-      console.log("Got All Users from land survey for land survey admin", error)
-    })
-  }
 }
 
