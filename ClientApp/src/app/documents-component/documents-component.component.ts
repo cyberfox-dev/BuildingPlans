@@ -7,6 +7,7 @@ import { BPDocumentsUploadsService } from '../service/BPDocumentsUploads/bpdocum
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
+import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
 
 export interface DocumentsList {
   DocumentID: number;
@@ -17,28 +18,34 @@ export interface DocumentsList {
   DocumentGroupName: string;
 }
 
+export interface NeighboursConsent {
+  ConsentID: number;
+  Address: string;
+  
+}
 @Component({
   selector: 'app-documents-component',
   templateUrl: './documents-component.component.html',
   styleUrls: ['./documents-component.component.css']
 })
-export class DocumentsComponentComponent implements OnInit{
+export class DocumentsComponentComponent implements OnInit {
 
   @Input() ApplicationID: number;
-  @Input() ServiceConditionActive: boolean | null; 
+  @Input() ServiceConditionActive: boolean | null;
   DocumentsList: DocumentsList[] = [];
+  neighbourConsentList: NeighboursConsent[] = [];
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   fileAttrs = "Upload File:";
   fileAttrsName = "Doc";
- 
+
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
 
   fileAttr = 'Choose File';
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
   dataSourceDoc = this.DocumentsList;
-    currentApplication: any;
-    applicationDataForView: any;
+  currentApplication: any;
+  applicationDataForView: any;
   hasFile: boolean;
   fileCount = 0;
 
@@ -47,13 +54,13 @@ export class DocumentsComponentComponent implements OnInit{
 
   @Input() isCalledInsidePermit: boolean = false; //default?
   @Input() permitSubForCommentID: any;
-  @Input() permitDocumentName: any |null;
+  @Input() permitDocumentName: any | null;
   @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
-  
+  @Input() currentStage: string | null;
 
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService) { }
 
   ngOnInit(): void {
     //this.currentApplication = this.shared.getViewApplicationIndex();
@@ -65,10 +72,10 @@ export class DocumentsComponentComponent implements OnInit{
     this.getAllDocsForApplication();
     //this.hasPermitSubForCommentDocument();
     //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
-   
+
 
   }
- 
+
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -115,7 +122,7 @@ export class DocumentsComponentComponent implements OnInit{
         this.modalService.dismissAll();
       }
       else {
-                    
+
       }
 
     } else {
@@ -127,23 +134,23 @@ export class DocumentsComponentComponent implements OnInit{
   }
 
   changeHasFile() {
-      if (this.hasFile) {
-        this.hasFile = false;
-      } else {
-        this.hasFile = true;
-       
-      }
+    if (this.hasFile) {
+      this.hasFile = false;
+    } else {
+      this.hasFile = true;
+
+    }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    
+
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-   /* this.hasFile = true;*/
+    /* this.hasFile = true;*/
     this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
-   
+
     this.fileAttrsName = "Doc";
     this.hasFile = false;
     //this.getAllDocsForApplication();
@@ -152,13 +159,13 @@ export class DocumentsComponentComponent implements OnInit{
 
   onFileUpload(event: any) {
     if (this.isCalledInsidePermit) {
-        /*this.permitComponentComponent.getAllPermitForComment();*/
+      /*this.permitComponentComponent.getAllPermitForComment();*/
     }
-   
+
   }
 
   viewDocument(index: any) {
-    
+
     if (this.permitDocumentName != null && index == -1) {
       // Make an HTTP GET request to fetch the document
       fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.permitDocumentName}`)
@@ -221,27 +228,27 @@ export class DocumentsComponentComponent implements OnInit{
         });
     }
 
-  
+
 
   }
 
 
   getAllDocsForApplication() {
     this.DocumentsList.splice(0, this.DocumentsList.length);
-    
+
     this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
-          
+
           const current = data.dateSet[i];
           const nameCheck = current.documentName.substring(0, 13);
 
           if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
             tempDocList.DocumentID = current.documentID;
-            
+
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
             tempDocList.ApplicationID = current.applicationID;
@@ -249,7 +256,7 @@ export class DocumentsComponentComponent implements OnInit{
 
             this.DocumentsList.push(tempDocList);
           }
-         
+
         }
 
         this.DocumentsListTable?.renderRows();
@@ -276,12 +283,12 @@ export class DocumentsComponentComponent implements OnInit{
     console.log("This is the acquired permitforSubCommentID", this.permitSubForCommentID);
     if (this.isCalledInsidePermit) {
       this.permitService.hasPermitSubForCommentDocuments(this.permitSubForCommentID).subscribe((data) => {
-    
+
         console.log("API Response:", data);
         console.log("This is the response for the Has Document question", data.HasDocuments);
         this.hasDocument = data && data.dateSet.hasDocuments;
-       
-      
+
+
       });
       console.log("PermitCommentStatusDocuments", this.permitCommentStatus, this.hasDocument, this.isCalledInsidePermit);
     }
@@ -290,11 +297,11 @@ export class DocumentsComponentComponent implements OnInit{
   //Permit Kyle 13-02-24
   deletePermitDocument() {
 
-    
+
     if (confirm("Are you sure you want to delete this document?")) {
 
       this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.hasPermitSubForCommentDocument()
@@ -308,8 +315,40 @@ export class DocumentsComponentComponent implements OnInit{
         console.log("ErrorGetAllDocsForApplication: ", error);
       })
     }
-    
+
   }
   //Permit Kyle 13-02-24
-  
+  selectedAddress: any;
+  getAllNeighboutConsents(neighbourConsent: any) {
+    this.neighbourConsentList.splice(0, this.neighbourConsentList.length);
+    this.neighboutConsentService.getAllNeighbourConsentForApplication(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempConsent = {} as NeighboursConsent;
+          if (current.documentName == null && current.documentLocalPath == null) {
+
+            tempConsent.ConsentID = current.consentID;
+            tempConsent.Address = current.address;
+
+            this.neighbourConsentList.push(tempConsent);
+
+          }
+        }
+
+        this.modalService.open(neighbourConsent, { centered: true, size: "xl" });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  onSelectAddressForUpload() {
+
+  }
 }
+
+  

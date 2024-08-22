@@ -22,6 +22,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.9" />
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
     <PackageReference Include="PdfSharp" Version="1.50.5147" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
   </ItemGroup>
@@ -608,6 +610,8 @@
     <Folder Include="ClientApp\src\app\service\BPRoles\" />
     <Folder Include="ClientApp\src\app\service\BPServiceItems\" />
     <Folder Include="ClientApp\src\app\service\BPComments\" />
+    <Folder Include="ClientApp\src\app\service\NeighbourConsent\" />
+    <Folder Include="ClientApp\src\app\service\DrawingCoOrdinates\" />
     <Folder Include="ClientApp\src\app\service\ZoneLink\" />
     <Folder Include="ClientApp\src\app\service\Zones\" />
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />

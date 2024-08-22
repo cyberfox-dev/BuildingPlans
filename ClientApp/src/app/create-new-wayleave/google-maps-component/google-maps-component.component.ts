@@ -96,7 +96,8 @@ export class GoogleMapsComponentComponent implements OnInit {
 
 
 async handleAddressChange(address: Address) {
-    // Update the address input
+  // Update the address input
+  debugger;
   this.enteredAddress = address.formatted_address;
   this.sharedService.mapAddress = this.enteredAddress;
     // Update the coordinates textboxes

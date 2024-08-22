@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using NetTopologySuite.Geometries;
+
+
 
 namespace BuildingPlans.Data.Entities
 {
