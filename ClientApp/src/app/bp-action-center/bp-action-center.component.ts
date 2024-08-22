@@ -1234,9 +1234,6 @@ export class BpActionCenterComponent implements OnInit {
       let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
-
-
-
       this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
         .subscribe({
           next: (event) => {
