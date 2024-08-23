@@ -50,11 +50,16 @@
   <!-- Service Information Kyle 31/01/24-->
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Pre-Submission Application</button>
+    <!--THIS IS ACTUALLY LAND SURVEY-->
+    <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Building Plan Application</button>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,null,true)">Wayleave Application</button>
+
+    <!--JUST INCASE THEY CHANGE THEIR MINDS AGAIN, UNCOMMENT THE BELOW OUT FOR SEPERATE BUILDING PLANS APPLICATION-->
+    <!--    <mat-divider></mat-divider>
+      <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>-->
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
     <mat-divider></mat-divider>
@@ -64,9 +69,11 @@
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="openArchiveOption()">Archive</button>
+    <button mat-menu-item (click)="openArchiveOption()" *ngIf="this.CurrentUserProfile[0].isInternal == true">Archive</button>
   </mat-menu>
-  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>
+
+<!--OLD CREATE NEW WAYLEAVE, MOVED INSIDE THWE MAIN BUTTON-->
+ <!-- <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>-->
   
   <!-- Service Information Kyle 31/01/24-->
 </div>
@@ -94,30 +101,7 @@
           <button mat-button type="button" (click)="drawer.toggle()" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
           </button>
-          <!--<button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
-            <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
-          </button>-->
-          <mat-menu #menu="matMenu" yPosition="below">
-            <button mat-menu-item (click)=" onFilterBPApplications('Building Plan')"><span>Building Plan Application</span></button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)=" onFilterBPApplications('Demolition')">Demolition Application</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)=" onFilterBPApplications('Signage')">Signage Application</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)=" onFilterBPApplications('Banner')">Banner/Poster Application</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)=" onFilterBPApplications('Flag')">Flag/Pole/Headline Application</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)=" onFilterBPApplications('Wayleave')">Wayleave</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item>Archive</button>
-            <!--<button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
-    <span>My Applications</span>
-  </button>-->
-            <!--<button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
-    <span>All Projects</span>
-  </button>-->
-          </mat-menu>
+
           <mat-form-field appearance="outline">
             <mat-label>Search</mat-label>
             <div class="cont6">
@@ -222,7 +206,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                   <!-- <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -293,7 +277,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                  <!--  <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -364,7 +348,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                  <!--  <button mat-raised-button color="warn" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -435,7 +419,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                  <!--  <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -504,7 +488,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                  <!--  <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -575,7 +559,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                   <!-- <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -647,7 +631,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                   <!-- <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -718,7 +702,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                   <!-- <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
@@ -752,7 +736,7 @@
 
                 <ng-container matColumnDef="stageAge">
                   <th mat-header-cell *matHeaderCellDef>Stage Age </th>
-                  <td mat-cell *matCellDef="let element">{{element.stageAge}}</td>
+                  <td mat-cell *matCellDef="let element">{{element.stageAge}} Days</td>
                 </ng-container>
 
                 <ng-container matColumnDef="planAge">
@@ -789,7 +773,7 @@
                   <th mat-header-cell *matHeaderCellDef>Actions</th>
                   <td mat-cell *matCellDef="let i = index">
                     <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                    <!--<button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Activate Plan" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/building.svg" class="icon4"></button>-->
 
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>

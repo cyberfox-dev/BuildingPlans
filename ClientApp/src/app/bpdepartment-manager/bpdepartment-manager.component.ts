@@ -313,7 +313,8 @@ export class BPDepartmentManagerComponent implements OnInit {
         if (phoneNumber != null && phoneNumber != "" && numberRegex.test(phoneNumber) && phoneNumber.length == 10) {
           const SANumber = this.isSouthAfricanPhoneNumber(phoneNumber);
 
-          if (SANumber) {
+          if (SANumber)
+          {
             if (email != null && email != "" && emailRegex.test(email)) {
               const emailExist = await this.userService.emailExists(email).toPromise();
 

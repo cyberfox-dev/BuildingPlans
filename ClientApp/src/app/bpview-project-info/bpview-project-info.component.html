@@ -173,104 +173,108 @@
     </mat-tab>
 
     <mat-tab label="Property Owner Details">
+      <div class="cont2">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="firstName" name="firstName" placeholder="Owner Name" disabled>
+              <label for="firstName">First Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="surname" name="surname" placeholder="Owner Surname" disabled>
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="idNumber" name="idNo" placeholder="ID Number" disabled>
+            <label for="idNo">ID Number</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="email" name="email" placeholder="Email Address" disabled>
+              <label for="email">Email Address</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="altEmail" name="altEmail" placeholder="Email" disabled>
+              <label for="altEmail">Alternate Email Address</label>
+            </div>
+          </div>
+        </div>
 
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="firstName" name="firstName" placeholder="Owner Name" disabled>
-            <label for="firstName">First Name</label>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="cellNo" name="cell" placeholder="Cell No" disabled>
+              <label for="cell">Cellphone Number</label>
+            </div>
           </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="surname" name="surname" placeholder="Owner Surname" disabled>
-            <label for="surname">Surname</label>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="idNumber" name="idNo" placeholder="ID Number" disabled>
-          <label for="idNo">ID Number</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="email" name="email" placeholder="Email Address" disabled>
-            <label for="email">Email Address</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="altEmail" name="altEmail" placeholder="Email" disabled>
-            <label for="altEmail">Alternate Email Address</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="cellNo" name="cell" placeholder="Cell No" disabled>
-            <label for="cell">Cellphone Number</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="altCellNo" name="altCell" placeholder="Alt Cell" disabled>
-            <label for="altCell">Alternate CellPhone Number</label>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="altCellNo" name="altCell" placeholder="Alt Cell" disabled>
+              <label for="altCell">Alternate CellPhone Number</label>
+            </div>
           </div>
         </div>
       </div>
     </mat-tab>
     <mat-tab label="Architect Details">
+      <div class="cont2">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectName" name="architectName" placeholder="Architect Full Name" disabled>
+              <label for="architectName">Architect Full Name</label>
+            </div>
+          </div>
 
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectName" name="architectName" placeholder="Architect Full Name" disabled>
-            <label for="architectName">Architect Full Name</label>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectSurname" name="architectSurname" placeholder="Architect Surname" disabled>
+              <label for="architectSurname">Architect Surname</label>
+            </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectId" name="architectId" placeholder="Architect ID No" disabled>
+              <label for="architectId">ID Number</label>
+            </div>
+          </div>
 
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectSurname" name="architectSurname" placeholder="Architect Surname" disabled>
-            <label for="architectSurname">Architect Surname</label>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectReg" name="architectReg" placeholder="Architect Reg No" disabled>
+              <label for="architectReg">Architect Registration Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email" disabled>
+              <label for="architectEmail">Architect Email Address</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="architectCell" name="architectCell" placeholder="Architect Cell No" disabled>
+              <label for="architectCell">Architect Cellphone Number</label>
+            </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectId" name="architectId" placeholder="Architect ID No" disabled>
-            <label for="architectId">ID Number</label>
-          </div>
-        </div>
 
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectReg" name="architectReg" placeholder="Architect Reg No" disabled>
-            <label for="architectReg">Architect Registration Number</label>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email" disabled>
-            <label for="architectEmail">Architect Email Address</label>
-          </div>
-        </div>
 
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectCell" name="architectCell" placeholder="Architect Cell No" disabled>
-            <label for="architectCell">Architect Cellphone Number</label>
-          </div>
-        </div>
-      </div>
     </mat-tab>
 
     <!--------------------------------------- Comments ------------------------------------------->
@@ -392,51 +396,55 @@
     <!----- BP Financials Kyle ------>
     <!------------------------------------------------- Document Uploads ----------------------------------------->
     <mat-tab label="Documents Upload">
+      <div class="cont2">
+        <div *ngIf="currentStage == 'LS Relaxation - Unpaid'">
+          <div class="RelaxationDocumentsUploads">
+            <mat-list *ngFor="let LSmanDoc of LSMandatoryDocuments | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
+              <mat-divider></mat-divider>
+              <mat-list-item> {{LSmanDoc.mandatoryDocumentName}}</mat-list-item>
+              <mat-form-field>
+                <div>
+                  <mat-toolbar>
+                    <!-- Display files names -->
+                    <input matInput readonly name="name" class="textFuckingBox" />
+                    <!-- app-file-upload Component -->
 
-      <div *ngIf="currentStage == 'LS Relaxation - Unpaid' || currentStage == 'TP Relaxation - Unpaid'">
-        <mat-list *ngFor="let LSmanDoc of LSMandatoryDocuments | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
-          <mat-list-item> {{LSmanDoc.mandatoryDocumentName}}</mat-list-item>
-          <mat-form-field>
-            <div>
-              <mat-toolbar>
-                <!-- Display files names -->
-                <input matInput readonly name="name" class="textFuckingBox" />
-                <!-- app-file-upload Component -->
-
-                <div class="container-fluid">
-                  <app-bpfile-upload [ApplicationID]="applicationId"
-                                     [UploadFor]="LSmanDoc.mandatoryDocumentName"
-                                     (passFileName)="onPassFileName($event,i)"
-                                     (onUploadFinished)="onFileDelete($event, i)"
-                                     (onUploadSuccess)="onFileUpload($event)">
-                  </app-bpfile-upload>
-                </div>
+                    <div class="container-fluid">
+                      <app-bpfile-upload [ApplicationID]="applicationId"
+                                         [UploadFor]="LSmanDoc.mandatoryDocumentName"
+                                         (passFileName)="onPassFileName($event,i)"
+                                         (onUploadFinished)="onFileDelete($event, i)"
+                                         (onUploadSuccess)="onFileUpload($event)">
+                      </app-bpfile-upload>
+                    </div>
 
 
-                <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
-                <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
+                    <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
-                <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
-              </mat-toolbar>
-            </div>
-          </mat-form-field>
-        </mat-list>
-      </div>
-
-      <div class="container04">
-        <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
-
-        <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
-        <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+                    <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
+                  </mat-toolbar>
+                </div>
+              </mat-form-field>
+            </mat-list>
+          </div>
+        </div>
 
 
-      </div>
+        <div class="container04">
+          <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
+
+          <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+          <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+
+
+        </div>
 
 
       <app-documents-component [currentStage]="currentStage"></app-documents-component>
 
 
-
+      </div>
     </mat-tab>
     <mat-tab label="Stage Checklist">
       <!--<app-bpview-stage-checklist [functionalArea]="functionalArea"
@@ -498,7 +506,7 @@
     </mat-tab>
 
     <mat-tab label="Town Planning Pre-Scrutiny Checklist">
-      <mat-selection-list >
+      <mat-selection-list>
 
         <mat-list-option value="1">Project Overview: Summary of the proposed development, including purpose, scale, and intended use.</mat-list-option>
         <mat-list-option value="2">Site Location: Check if the location is zoned appropriately for the proposed development.</mat-list-option>
@@ -506,7 +514,7 @@
         <mat-list-option value="4">Historical Significance: Assessment of any historical, cultural, or architectural significance of the site</mat-list-option>
 
       </mat-selection-list>
-      
+
     </mat-tab>
 
 

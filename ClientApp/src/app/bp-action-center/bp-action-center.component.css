@@ -28,7 +28,10 @@ mat-form-field {
   color: #fff;
   margin: 10px;
 }
-
+.mat-selection-list.mat-selection-list.mat-list-base{
+    width:100%;
+    padding:10px;
+}
 
 
 .mat-form-field {
@@ -363,7 +366,7 @@ cont28 {
   }
 
   .actioncenter:hover a::before {
-    transform: skewX(40deg) translateX(200%);
+    transform: skewX(40deg) translateX(105%);
   }
 
   .actioncenter::before,

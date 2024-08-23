@@ -59,6 +59,7 @@ namespace BuildingPlans.Data.Entities
         public string? AgentPostalAddress { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? SupportingDocuments { get; set; }
-       
+
+
     }
 }

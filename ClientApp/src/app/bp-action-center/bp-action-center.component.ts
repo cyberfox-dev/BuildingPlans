@@ -58,6 +58,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
 import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
+import {BPAccessGroupUserLinkService } from '../service/BPAccessGroupsUserLink/bpaccess-group-user-link.service';
 import { GoogleMap, MapInfoWindow, MapMarker, GoogleMapsModule } from '@angular/google-maps';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
@@ -200,6 +201,14 @@ export interface CommentList {
   isApplicantReplay?: string;
   UserName: string;
 }
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+  dateUpdated: any;
+  dateCreated: any;
+  hasSubDepartment: boolean;
+  functionalArea: string;
+}
 
 export interface CommentDropDown {
   commentID: number;
@@ -221,6 +230,12 @@ export interface UserZoneList {
   id: string;
   fullName: string;
   zoneLinkID?: any
+  Email: string;
+  alternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
+}
+export interface LSReviewerUserList {
+  id: string;
+  fullName: string;
   Email: string;
   alternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
 }
@@ -256,6 +271,7 @@ export interface CurrentApplicationBeingViewed {
   portionNumber: string;
   premisesName: string;
   currentStage: string;
+  currentStatus: string;
   fullName: string;
   userID: string;
 }
@@ -324,7 +340,19 @@ export class BpActionCenterComponent implements OnInit {
   previousReviewer: any;
     bpApplicationId: any;
     configNumberOfProject: any;
-    configMonthYear: any;
+  configMonthYear: any;
+
+
+/*THIS IS FOR THE ROLES FROM THE USER*/
+  LSReviewerRole: boolean = false;
+  TPReviewerRole: boolean = false;
+  BCORole: boolean = false;
+  PACRole: boolean = false;
+  ReviewerRole: boolean = false;
+  AdminRole: boolean = false;
+  PlansExaminerRole: boolean = false;
+  SystemConfigurations: boolean = false;
+
   //  loggedInUserName: any;
   /*textfields*/
 
@@ -373,7 +401,7 @@ export class BpActionCenterComponent implements OnInit {
   DepositCheck: boolean = false;
   permit: boolean = true;
 
-
+  DepartmentList: DepartmentList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   SubDepartmentLinkedList: SubDepartmentList[] = [];
   SingleSubDepartmentLinked: SubDepartmentList[] = [];
@@ -398,6 +426,7 @@ export class BpActionCenterComponent implements OnInit {
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
+  LSReviewerList: LSReviewerUserList[] = [];
   LinkedUserToSub: UserZoneList[] = [];
   ReviewerUserList: UserZoneList[] = [];
   PermitIssuerList: UserZoneList[] = [];
@@ -411,6 +440,7 @@ export class BpActionCenterComponent implements OnInit {
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
   UserSelectionForManualLink = new SelectionModel<UserZoneList>(true, []);
+
   PermitIssuerForManualLink = new SelectionModel<UserZoneList>(true, []);
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -426,6 +456,10 @@ export class BpActionCenterComponent implements OnInit {
 
   displayedColumnsViewUsersForLink: string[] = ['fullName', 'actions'];
   dataSourceViewUsersForLink = this.ReviewerUserList;
+
+  displayedColumnsViewLSUsersForLink: string[] = ['fullName', 'actions'];
+  dataSourceViewLSUsersForLink = this.LSReviewerList;
+
 
   displayedColumnsViewUsersForLinkForGISReview: string[] = ['fullName', 'actions'];
   dataSourceViewUsersForLinkForGISReview = this.GISReviewerUserList;
@@ -443,12 +477,14 @@ export class BpActionCenterComponent implements OnInit {
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
   @ViewChild(MatTable) PermitIssuerTable: MatTable<UserZoneList> | undefined;
+  @ViewChild(MatTable) SubDepartmentListTableTable: MatTable<LSReviewerUserList> | undefined;
 
   //#region escalation Sindiswa 30 January 2024
 
   displayedColumnsViewDepartmentsForEMBComment: string[] = ['subDepartmentName', 'zoneName', 'progress']; //notifications Sindiswa 01 February 2024 - changed column name when text text was being formatted funny
   dataSourceViewDepartmentsForEMBComment = this.LinkedSubDepartmentsList;
   @ViewChild(MatTable) SubDepartmentsListTable: MatTable<SubDepartmentListForComment> | undefined;
+  @ViewChild(MatTable) LSReviewerListTable: MatTable<LSReviewerUserList> | undefined;
   //#endregion
 
   closeResult!: string;
@@ -518,6 +554,8 @@ export class BpActionCenterComponent implements OnInit {
     private configService: ConfigService,
     private dialog: MatDialog,
     private bpCommentsService: BPCommentsService,
+    private bpAccessGroupUserLinkService: BPAccessGroupUserLinkService,
+
     //Audit Trail Kyle
     private BpDepartmentForCommentService: BpDepartmentForCommentService,
     private cdRef: ChangeDetectorRef,
@@ -546,25 +584,12 @@ export class BpActionCenterComponent implements OnInit {
       console.log("This is the Current User's Details", this.CurrentUser);
     }
 
-    /*  this.getAllServiceItmes();*/
-    /*  this.getAllServiceItmesForDropdown();*/
-
-    /*  this.getAllServiceItmes();*/
-
-    //// this giving some shit 
-    // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
-    // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
-
-    //end of shit
-    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-    this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
-    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    this.oncheckRoleForUser();
     console.log("This is the Current User's Details", this.CurrentUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
-
+    this.getAllDepartmentsForLandSurvey();
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].DepartmentID;
@@ -573,6 +598,8 @@ export class BpActionCenterComponent implements OnInit {
 
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].sDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.getAllUsersForLandSurveyReview();
+    this.getLSReviewerForLink();
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.functionalArea = this.CurrentUserProfile[0].departmentName;
@@ -592,15 +619,19 @@ export class BpActionCenterComponent implements OnInit {
     this.getServicesByDepID();
 /*    this.getUsersByRoleName("Senior Reviewer");
     this.getUsersByRoleName("Final Approver");
-    this.getUsersByRoleName("GIS Reviewer");
-    this.getZoneForCurrentUser();*/
+    this.getUsersByRoleName("LS Reviewer");
+    this.getAllUsersLinkedToZoneByZoneID();*/
+/*    this.getZoneForCurrentUser();*/
 
 
     this.CheckApplicant();
     this.setProjectNumber();
     this.getAllDocumentsForServiceInformation();
+
+
+
     debugger;
-   
+  
 /*    this.GetSubDepartment();*/
 /*    this.getAllDepartmentsForCommentForBPApplication();*/
 
@@ -1214,9 +1245,6 @@ export class BpActionCenterComponent implements OnInit {
       let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
-
-
-
       this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
         .subscribe({
           next: (event) => {
@@ -1722,16 +1750,6 @@ export class BpActionCenterComponent implements OnInit {
 
       var reviewer = this.reviewerUsers[i];
 
-      //for (var j = 0; j < this.UserZoneList.length; j++) {
-      //  var userZone = this.UserZoneList[j];
-
-      //  if (reviewer.userID === userZone.id) {
-
-      //    this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
-      //    console.log("THIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINK", userZone)
-      //  }
-      //}
-
       const tempreviewer = {} as UserZoneList;
 
 
@@ -1743,6 +1761,28 @@ export class BpActionCenterComponent implements OnInit {
 
       this.ReviewerUserList.push(tempreviewer);
     }
+
+  }
+  getLSReviewerForLink() {
+
+    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+    // this.ReviewerUserList = []; // Initialize the new list
+
+    for (var i = 0; i < this.LSReviewerList.length; i++) {
+
+      var reviewer = this.LSReviewerList[i];
+
+      const tempreviewer = {} as UserZoneList;
+
+
+      tempreviewer.Email = reviewer.Email;
+      tempreviewer.fullName = reviewer.fullName;
+
+
+
+      this.LSReviewerList.push(tempreviewer);
+    }
+
   }
   /*JJS 07-03-24 GIS Reviewer*/
   getGISReviewerForLink() {
@@ -2752,8 +2792,9 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   getUsersByRoleName(roleName?: string | null) {
-
+    debugger;
     if (roleName == "Department Admin") {
+
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -3305,7 +3346,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
        
         case "Approve": {
@@ -3315,9 +3356,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -3572,7 +3613,7 @@ export class BpActionCenterComponent implements OnInit {
     this.bpDepartmentForCommentService.getDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode === 1) {
         this.countApproveBP = 0; // Initialize countApproveBP
-        debugger;
+        
         for (let i = 0; i < this.BPDepartmentsForCommentList.length; i++) {
           if (data.dateSet[i] && data.dateSet[i].isFinalApproved === true) {
             this.countApproveBP++;
@@ -3606,7 +3647,89 @@ export class BpActionCenterComponent implements OnInit {
   }
 
 
+  onLSDistributionReviewerComment(interact: any) {
+    if (this.leaveAComment == "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
 
+      switch (interact) {
+
+        case "Approve": {
+
+          this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+              /*Updating the department for comments table after getting the ID for the row*/
+
+              this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "Approved", false, null, true).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  this.AddComment("Approved", this.currentBPDepartmentforCommentID);
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+
+
+
+
+
+
+
+          break;
+        }
+
+        case "Reject": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                this.AddComment("Rejected", this.currentBPDepartmentforCommentID);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+
+        default: {
+
+          break;
+        }
+      }
+    
+  }
+  }
   onBPComment(interact: any) {
 
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
@@ -3618,28 +3741,28 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
 
           this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
-            debugger;
+            
             if (data.responseCode == 1) {
-              debugger;
+              
               const current = data.dateSet[0];
               this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
 /*check approve count*/        console.log("BPDepartmentsForCommentList2", this.BPDepartmentsForCommentList);
              
-              debugger;
+              
 
 
 /*Updating the department for comments table after getting the ID for the row*/
-              debugger;
+              
               this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "Approved", false, null, true).subscribe((data: any) => {
-             debugger;
+             
              if (data.responseCode == 1) {
-               debugger;
+               
                
                this.checkCountForApprovals();
               
@@ -4056,7 +4179,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -4065,9 +4188,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "BCO Recommendation", "BCO Recommendation", 6, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -4476,7 +4599,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -4485,9 +4608,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Planning approval authority", "Planning approval authority", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
 
                 this.AddComment("Town Planner Approved", null);
               }
@@ -4552,7 +4675,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -4561,9 +4684,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Closed", "Approved", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
 
                 this.AddComment("Town Planner Approved", null);
               }
@@ -4629,7 +4752,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -4638,9 +4761,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Plan Approval Committee(PAC)", "Plan Approval Committee(PAC)", 7, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -5049,7 +5172,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -5058,9 +5181,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Jacket Upload Plans", "Jacket Upload Plans", 8, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -5128,7 +5251,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -5137,9 +5260,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Building Inspector", "Building Inspector", 9, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -5207,7 +5330,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
-      debugger;
+      
       switch (interact) {
 
         case "Approve": {
@@ -5216,9 +5339,9 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Approved", "Closed Plan", 10, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              debugger;
+              
               if (data.responseCode == 1) {
-                debugger;
+                
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
@@ -7103,10 +7226,10 @@ export class BpActionCenterComponent implements OnInit {
   getCurrentUserSubDepName() {
     this.subDepartment.getSubDepartmentBySubDepartmentID(this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
-      debugger;
+      
       const current = data.dateSet[0];
       if (data.responseCode == 1) {
-        debugger;
+        
  /*       this.loggedInUserSubDepartmentName = current.DepartmentName*/
       }
       else {
@@ -9114,7 +9237,7 @@ export class BpActionCenterComponent implements OnInit {
         const tempApplication = {} as CurrentApplicationBeingViewed;
 
         const current = data.dateSet[0];
-        
+        debugger;
         tempApplication.lsNumber = current.lsNumber;
         tempApplication.typeOfDev = current.typeOfDevelopment;
         tempApplication.typeOfAddress = current.addressType;
@@ -9127,6 +9250,7 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.currentStage = current.stage;
         tempApplication.fullName = current.firstName + " " + current.surname;
         tempApplication.userID = current.userID;
+        tempApplication.currentStatus = current.status;
         tempApplication.BPApplicationType = current.bpApplicationType;
         this.CurrentApplicationBeingViewed.push(tempApplication);
       }
@@ -9404,11 +9528,11 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   AddComment(commentStatus: any, subDepartmentForCommentID: any) {
-    debugger;
+    
     this.bpCommentsService.addUpdateComment(0, this.ApplicationID, this.functionalArea, this.leaveAComment, commentStatus, subDepartmentForCommentID, null, null, this.CurrentUser.fullName, this.CurrentApplicationBeingViewed[0].userID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         this.modalService.dismissAll();
         this.openSnackBar("Application Actioned");
         this.router.navigate(["/home"]);
@@ -9473,15 +9597,14 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   MoveApplicationToDistribution() {
-    debugger;
+    
     this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Building Plan").subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (var i = 0; i < data.dateSet.length; i++) {
-          debugger;
-          this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].departmentID, data.dateSet[i].departmentName, null, null, this.CurrentUser.appUserId)
-          .subscribe((data: any) => {
+          
+          this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].departmentID, data.dateSet[i].departmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
             if (data.responseCode == 1) {
 
             }
@@ -9524,13 +9647,13 @@ export class BpActionCenterComponent implements OnInit {
   getAllDepartmentsForCommentForBPApplication() {
     this.BPDepartmentsForCommentList.splice(0, this.BPDepartmentsForCommentList.length);
     this.BpDepartmentForCommentService.getDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempDepForComment = {} as BPDepartmentsForCommentList;
-          debugger;
+          
           tempDepForComment.DepartmendForCommentaID = current.bpDepartmentForCommentID;
           tempDepForComment.ApplicationId = current.applicationID;
           tempDepForComment.DepartmentID = current.departmentID;
@@ -9542,7 +9665,7 @@ export class BpActionCenterComponent implements OnInit {
 
           this.BPDepartmentsForCommentList.push(tempDepForComment);
         }
-
+        this.LSReviewerListTable?.renderRows();
         console.log("BPDepartmentsForCommentList", this.BPDepartmentsForCommentList);
       }
       else {
@@ -9594,6 +9717,134 @@ export class BpActionCenterComponent implements OnInit {
       }, error => {
         console.log("BuildingApplicationError: ", error)
       })
+  }
+
+  getAllDepartmentsForLandSurvey() {
+
+    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Land Survey").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDep = {} as DepartmentList;
+          
+          tempDep.departmentID = current.departmentID;
+          tempDep.departmentName = current.departmentName;
+          tempDep.functionalArea = current.funcationalArea;
+
+
+          this.DepartmentList.push(tempDep);
+
+        }
+        this.selectedDepartments = this.DepartmentList.map(dep => dep.departmentID);
+      }
+
+      console.log("gotalldepartmentsforlandsurevy", data);
+    },
+      error => {
+        console.log("Error: ", error);
+      }
+    );
+  }
+  selectedDepartments: number[] = [];
+  distributeToLandSurveyDeps() {
+    // Loop through each selected department
+    
+    this.selectedDepartments.forEach(id => {
+      const selectedDepartment = this.DepartmentList.find(dep => dep.departmentID === id);
+      if (selectedDepartment) {
+        
+        this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0,this.ApplicationID,selectedDepartment.departmentID,selectedDepartment.departmentName,null,null,this.CurrentUser.appUserId).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            
+              console.log("Success: Department added/updated", data);
+            }
+          },
+          error => {
+            console.log("Error: ", error);
+          }
+        );
+      }
+    });
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Distribution", "LS Review",  1, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Distributed");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+  oncheckRoleForUser() {
+    for (var i = 0; i < this.CurrentUserRoles.length; i++) {
+      const roleName = this.CurrentUserRoles[i].roleName;
+      if (roleName == 'LS Reviewer') {
+        this.LSReviewerRole = true;
+      }
+      if (roleName == 'TP Reviewer') {
+        this.TPReviewerRole = true;
+      }
+      if (roleName == 'BCO') {
+        this.BCORole = true;
+      }
+      if (roleName == 'PAC') {
+        this.PACRole = true;
+      }
+      if (roleName == 'Admin') {
+        this.AdminRole = true;
+      }
+
+    }
+  }
+
+
+  getAllUsersForLandSurveyReview() {
+    debugger;
+    this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(11, this.loggedInUsersDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                debugger;
+                this.userPofileService.getUserProfileById(data.dateSet[i].userID)
+                const tempZoneList = {} as LSReviewerUserList;
+                const current = data.dateSet[i];
+                tempZoneList.id = current.userID;
+                tempZoneList.fullName = current.fullName;
+                tempZoneList.Email = current.email;
+                tempZoneList.alternativeEmail = current.alternativeEmail; 
+
+                this.LSReviewerList.push(tempZoneList);
+                console.log("Got All LS Review Users", this.LSReviewerList);
+              }
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("Got All Users from land survey for land survey admin", error)
+          })
+        }
+
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log("Got All Users from land survey for land survey admin", error)
+    })
   }
 
 
@@ -9946,5 +10197,6 @@ export class BpActionCenterComponent implements OnInit {
     
   }
   
+
 }
 

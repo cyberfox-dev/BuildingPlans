@@ -300,8 +300,36 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+        [HttpPost("GetPeopleByAccessGroupAndSubDept")]
+        public async Task<IActionResult> GetPeopleByAccessGroupAndSubDept([FromBody] AccessGroupUserLinkBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGL in _context.BPAccessGroupsUserLinks
+                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID 
+                    select new AccessGroupsDTO()
+                    {
+                        AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
+                        AccessGroupID = accessGL.AccessGroupID,
+                        UserID = accessGL.UserID,
+                        UserProfileID = accessGL.UserProfileID,
+                        DateCreated = accessGL.DateCreated,
+                        DateUpdated = accessGL.DateUpdated,
+                        CreatedById = accessGL.CreatedById,
+                    }
+                ).ToListAsync();
 
-       
+                // Return an Ok response with the data
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got all these subdepartment users in specified access group", result));
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest response with the error message
+                return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
     }
 }
 

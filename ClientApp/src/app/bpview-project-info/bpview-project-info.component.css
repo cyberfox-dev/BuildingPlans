@@ -4,6 +4,7 @@
 .main {
   display: flex;
   justify-content: center;
+  margin-bottom: 62px;
 }
 .cont3 {
   display: flex;
@@ -198,14 +199,14 @@ table {
   background: #00807061 !important;
   border: none !important;
   box-shadow: 2px 3px 7px 0px #23bdad66 !important;
-  color: #26e9d0 !important;
+/*  color: #26e9d0 !important;*/
   text-align: center !important;
 }
 .alert-other {
   background: #6e008061 !important;
   border: none !important;
   box-shadow: 2px 3px 7px 0px #a020b561 !important;
-  color: #ef8bff !important;
+/*  color: #ef8bff !important;*/
   text-align: center !important;
 }
 
@@ -513,7 +514,9 @@ table {
 
 .mat-clarify2 {
   background-color: #f48a36;
-
   margin: 5px;
+}
 
+.RelaxationDocumentsUploads {
+  box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
 }

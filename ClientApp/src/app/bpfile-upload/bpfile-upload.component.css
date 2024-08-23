@@ -116,3 +116,6 @@ mat-icon {
   margin-top: 20px;
   font-size: 14px;
 }
+.mat-form-field-underline.ng-tns-c156-158.ng-star-inserted{
+    display:none !important;
+}

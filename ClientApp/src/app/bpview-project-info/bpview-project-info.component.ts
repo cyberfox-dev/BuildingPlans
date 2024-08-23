@@ -166,7 +166,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    debugger;
+    
     if (this.CurrentUserProfile[0].isInternal == true) {
       this.ActionCenter = true;
     }
@@ -190,7 +190,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     else {
       this.CommentsList[index].ViewReply = false;
     }
-    debugger;
+    
     if (this.CommentsList[index].isApplicantReply !== null && this.CommentsList[index].SecondReply == null) {
       this.reply = this.CommentsList[index].isApplicantReply;
       this.hasReply = false;
@@ -210,10 +210,11 @@ export class BPViewProjectInfoComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
 
-  async getApplicationInfo() {
-    debugger;
-    await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
+   getApplicationInfo() {
+    
+    this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         const current = data.dateSet[0];
         console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA",data.dateSet[0]);
         this.lsNumber = current.lsNumber;
@@ -255,9 +256,9 @@ export class BPViewProjectInfoComponent implements OnInit {
     })
   }
   getAllDocumentForApplication() {
-    debugger;
+    
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
@@ -280,7 +281,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         alert(data.responseMessage);
       }
       console.log("response", data);
-/*      this.loadBPDocumentsList();*/
+      this.loadBPDocumentsList();
     }, error => {
       console.log("Error: ", error);
     })
@@ -331,11 +332,11 @@ export class BPViewProjectInfoComponent implements OnInit {
 
 
   loadBPDocumentsList() {
-    debugger;
+    
     this.getBPDocumentsList().subscribe(
       data => {
         console.log('Received data:', data);
-        debugger;
+        
         this.LSMandatoryDocuments.next(data);
       },
       error => {
@@ -345,7 +346,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   getBPDocumentsList(): Observable<LSMandatoryDocumentsList[]> {
     let stageType: string;
-
+    debugger;
     if (this.currentStage === 'LS Relaxation - Unpaid') {
       stageType = 'Land Survey';
     } else if (this.currentStage === 'TP Relaxation - Unpaid') {
@@ -353,12 +354,12 @@ export class BPViewProjectInfoComponent implements OnInit {
     } else {
       throw new Error('Unknown stage type');
     }
-
+    debugger;
     /*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
           this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
         );*/
 
-
+    debugger;
     return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", stageType)
       .pipe(
         map((data: any) => {
@@ -366,10 +367,10 @@ export class BPViewProjectInfoComponent implements OnInit {
             const tempList: LSMandatoryDocumentsList[] = [];
             for (let i = 0; i < data.dateSet.length; i++) {
               const current = data.dateSet[i];
-
+              debugger;
               // Get the document name to be checked after substring operation
               const currentDocumentName = current.documentName;
-
+              debugger;
               // Check if currentDocumentName exists in this.DocumentsList after substring operation
               const documentExists = this.DocumentList.some(doc => {
                 const subDocumentName = doc.DocumentName.substring(0, doc.DocumentName.indexOf('_'));
@@ -440,16 +441,16 @@ export class BPViewProjectInfoComponent implements OnInit {
   hasReply: boolean;
 
   GetAllCommentsForApplication() {
-    debugger;
+    
     this.CommentsList.splice(0, this.CommentsList.length);
     this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempComment = {} as CommentsList;
-          debugger;
+          
           tempComment.CommentID = current.commentID;
           tempComment.ApplicationID = current.applicationID;
           tempComment.FunctionalArea = current.functionalArea;
@@ -488,10 +489,10 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
 
   SaveReply() {
-    debugger;
+    
     if (this.selectedComment.isApplicantReply == null) {
       this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, this.reply, null, null, null, null).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           const dialogRef = this.dialog.open(BpAlertModalComponent, {
             data: {
@@ -540,13 +541,13 @@ export class BPViewProjectInfoComponent implements OnInit {
   @ViewChild(MatTable)BPDepartmentsForCommentListTable: MatTable<BPDepartmentsForCommentList> | undefined;
   getAllDepartmentsForCommentForBPApplication() {
     this.BpDepartmentForCommentService.getDepartmentForComment(this.applicationId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempDepForComment = {} as BPDepartmentsForCommentList;
-          debugger;
+          
           tempDepForComment.DepartmendForCommentaID = current.bpDepartmentForCommentID;
           tempDepForComment.ApplicationId = current.applicationID;
           tempDepForComment.DepartmentID = current.departmentID;
