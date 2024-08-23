@@ -3454,7 +3454,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.addImage(page5, 'png', 0, 0, 210, 297);
 
-
+    
 
     //PAGE 6
     doc.addPage();

@@ -11,8 +11,8 @@ export class NeighbourConsentService {
   private readonly baseURL: string = this.apiUrl + "neighbourConsent/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
-
-  public addUpdateNeighbourConsent(consentID: number | null, applicationID: number | null, address: string | null, documentName: string | null, documentLocalPath: string | null, consentStatus: string | null, createdById: string | null) {
+  
+  public addUpdateNeighbourConsent(consentID: number | null, applicationID: number | null, address: string | null, documentName: string | null, documentLocalPath: string | null, consentStatus: string | null, createdById: string | null, ownerName: string | null , ownerCell:string| null , ownerEmail:string|null) {
     const body = {
       ConsentID: consentID,
       ApplicationID: applicationID,
@@ -20,7 +20,10 @@ export class NeighbourConsentService {
       DocumentName: documentName,
       DocumentLocalPath: documentLocalPath,
       ConsentStatus: consentStatus,
-      CreatedById: createdById
+      CreatedById: createdById,
+      OwnerName: ownerName,
+      OwnerCell: ownerCell,
+      OwnerEmail:ownerEmail,
     }
 
     return this.httpClient.post(this.baseURL + "AddUpdateNeighboutConsent", body);
@@ -47,5 +50,12 @@ export class NeighbourConsentService {
       ConsentID:consentID
     }
     return this.httpClient.post(this.baseURL + "DeleteNeighbourConsentByConsentID", body);
+  }
+
+  public deleteDocumentFromNeighbourConsent(consentID: number | null) {
+    const body = {
+      ConsentID :consentID
+    }
+    return this.httpClient.post(this.baseURL + "DeleteDocumentFromNeighbourConsent", body);
   }
 }

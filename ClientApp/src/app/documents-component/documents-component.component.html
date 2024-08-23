@@ -5,7 +5,7 @@
   <button mat-raised-button color="blue" *ngIf="isCalledInsidePermit && hasDocument" (click)="viewDocument(-1)" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
   <button mat-raised-button color ="warn" *ngIf="CurrentUserProfile[0].subDepartmentName == 'EMB' && hasDocument === true" matToolTip="Delete Permit Document"matTooltip="Delete Document" (click)="deletePermitDocument()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
   <!--End of permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
-  <button mat-raised-button color="action" *ngIf="currentStage == 'TP Relaxation'" (click)="getAllNeighboutConsents(neighbourConsent)">Upload Neighbour's Consent</button>
+  <button mat-raised-button color="action" *ngIf="currentStage == 'TP Relaxation'" (click)="openNeighbourConsent(neighbourConsent)">Upload Neighbour's Consent</button>
 </div>
 
 <table  *ngIf="!isCalledInsidePermit" mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
@@ -44,13 +44,13 @@
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
             <ng-container *ngIf="!isCalledInsidePermit; else permitSubForCommentIDSection">
-              <app-file-upload [ApplicationID]="ApplicationID"
+              <app-bpfile-upload [ApplicationID]="ApplicationID"
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"
                                (onUploadFinished)="onFileDelete($event, 0)"
                                (onUploadSuccess)="onFileUpload($event)"
-                               [ServiceConditionActive]="ServiceConditionActive">
-              </app-file-upload>
+                               >
+              </app-bpfile-upload>
             </ng-container>
             <!--permitUpload Sindiswa 08 January 2024-->
             <ng-template #permitSubForCommentIDSection>
@@ -85,14 +85,91 @@
 
   <div class="modal-body">
 
+    <p *ngIf="consentID == null"><em>* Selection need her to proceed further</em></p>
     <div class="row">
       <mat-form-field>
         <mat-label>Select address for neighbour consent upload</mat-label>
-        <mat-select [(value)]="selectedAddress">
-          <mat-option *ngFor="let consent of neighbourConsentList" value="{{consent}}">{{consent.Address}}</mat-option>
+        <mat-select [(value)]=" consentID" (selectionChange)=" onSelectAddressForUpload()">
+          <mat-option *ngFor="let consent of neighbourConsentList" value="{{consent.ConsentID}}">{{consent.Address}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
+    <div class="row">
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="ownerName" name="ownerName" placeholder="Property Owner's Full Name" [disabled]=" consentID == null">
+          <label for="ownerName">Property Owner's Full Name </label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="ownerCell" name="ownerCell" placeholder="Property Owner's Contact Number" [disabled]=" consentID == null">
+          <label for="ownerCell">Property Owner's Contact Number </label>
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="ownerEmail" name="Email" placeholder="Property Owner's Email Address" [disabled]=" consentID == null">
+        <label for="Email">Email Address </label>
+      </div>
+    </div>
+    <form *ngIf=" consentID != null">
+      <mat-form-field>
+
+        <input matInput [(ngModel)]="addressName" readonly name="name" />
+
+        <div class="row" style="margin-bottom:15px;">
+          <div class="container-fluid">
+            <ng-container>
+              <app-file-upload [isConsent]="isConsent"
+                               [ConsentID]="consentID"
+                               [ApplicationID]="ApplicationID"
+                               [UploadFor]="addressName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)">
+
+              </app-file-upload>
+            </ng-container>
+          </div>
+        </div>
+
+      </mat-form-field>
+
+    </form>
+
+    <form *ngIf=" consentID != null">
+      <mat-form-field>
+
+        <input matInput [(ngModel)]="IdDocName" readonly name="name" />
+
+        <div class="row" style="margin-bottom:15px;">
+          <div class="container-fluid">
+            <ng-container>
+              <app-file-upload [isConsent]="isConsent"
+                               [ConsentID]="consentID"
+                               [ApplicationID]="ApplicationID"
+                               [UploadFor]="IdDocName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)">
+
+              </app-file-upload>
+            </ng-container>
+          </div>
+        </div>
+
+      </mat-form-field>
+
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)=" validateNeighbourConsentInfo() "[disabled]="consentID == null">Save</button>
   </div>
 </ng-template>

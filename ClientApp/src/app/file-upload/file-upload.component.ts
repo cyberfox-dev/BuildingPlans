@@ -6,8 +6,13 @@ import { FinancialService } from 'src/app/service/Financial/financial.service';
 import { PermitService } from '../service/Permit/permit.service';
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { MobileFieldTrackingService } from '../service/MFT/mobile-field-tracking.service';
-
-
+import jsPDF from 'jspdf';
+import { PDFDocument } from 'pdf-lib';
+import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from "@angular/router";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 
 @Component({
   selector: 'app-file-upload',
@@ -28,6 +33,8 @@ export class FileUploadComponent implements OnInit {
   //Service Information Kyle 
   @Input() isCalledInsidePermit: boolean | null;
   @Input() permitSubForCommentID: any;
+  @Input() isConsent: boolean | null;
+  @Input() ConsentID: number | null;
 
   @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
@@ -54,7 +61,7 @@ export class FileUploadComponent implements OnInit {
   @Input() isStatusOfWork: boolean | null;
   @Input() MftNote: string | null;
   //Service Information Kyle 31/01/24
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private MFTService: MobileFieldTrackingService) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private MFTService: MobileFieldTrackingService, private neighbourConsentService: NeighbourConsentService, private modalService: NgbModal, private router: Router, private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
@@ -63,13 +70,14 @@ export class FileUploadComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Service Information Kyle 31/01/24
+    debugger;
     if (this.ApplicationID == "isRep") {
 
     }
     else {
 
       if (this.UploadFor === "Doc" || !this.UploadFor) {
-        this.ApplicationID = this.currentApplication?.applicationID;
+        /*this.ApplicationID = this.currentApplication?.applicationID;*/
       } else {
         if (this.ApplicationID === 0) {
           this.ApplicationID = this.shared.getApplicationID();
@@ -110,7 +118,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFile(files: any) {
-
+    debugger;
     if (this.ApplicationID == "isRep") {
 
       if (files && files.length === 0) {
@@ -214,7 +222,12 @@ export class FileUploadComponent implements OnInit {
         }
         return;
       }
-
+      if (this.isConsent) {
+        if (this.fileExtention != ".pdf") {
+          alert("You can only upload documents in this area as a pdf file!");
+          return;
+        }
+      }
       if (this.UploadFor == "Doc") {
 
         if (this.ApplicationID === undefined) {
@@ -276,12 +289,20 @@ export class FileUploadComponent implements OnInit {
 
 
   onDeleteFile() {
+    const confirmDelete = confirm(`Are you sure you want to delete the file "${this.fileName}"?`);
+    if (this.isConsent) {
+      if (confirmDelete) {
+        this.deleteCosentDocument();
+      }
+    
+    }
 
+    else {
     if (!this.fileName) {
       return; // No file selected, nothing to delete
     }
 
-    const confirmDelete = confirm(`Are you sure you want to delete the file "${this.fileName}"?`);
+    
 
     if (!confirmDelete) {
       return; // User cancelled the delete operation
@@ -412,6 +433,7 @@ export class FileUploadComponent implements OnInit {
               this.documentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
                 if (response) { // Assuming server responds with true on successful deletion
                   this.fileName = '';
+
                   this.onUploadFinished.emit();
                 } else {
                   alert('Failed to delete the file from the server.');
@@ -447,52 +469,69 @@ export class FileUploadComponent implements OnInit {
 
 
 
-
+  }
 
   }
 
 
-
+  file1: File;
+  file2: File;
+  sharedFileName: string;
   // Modify UploadDocuments to accept File and fileName parameters:
-  UploadDocuments(file: File, fileName: string): void {
+ UploadDocuments(file: File, fileName: string): void {
 
     const formData = new FormData();
     formData.append('file', file, fileName);
 
-    this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-      .subscribe({
-        next: (event) => {
+    debugger;
+    
 
-          if (event.type === HttpEventType.UploadProgress && event.total)
-            this.progress = Math.round(100 * event.loaded / event.total);
-          else if (event.type === HttpEventType.Response) {
-            this.message = 'Upload success.';
-            if (this.isFinancial) {
-              this.financialuploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
-            }
-            // #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
-            if (this.isCalledInsidePermit) {
-              this.permitUploadFinished(event.body, this.permitSubForCommentID);
-            }
-            // #endregion
-            //Service Information Kyle 31/01/24
-            if (this.isPlanningDoc) {
-              this.isPlanningUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
-            }
-            if (this.isStatusOfWork) {
-              this.isStatusOfWorkUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
-            }
-            //Service Information Kyle 31/01/24
-            else if ((this.isFinancial == false || this.isFinancial == null) && (this.isCalledInsidePermit == false || this.isCalledInsidePermit == null) && (this.isPlanningDoc == false || this.isPlanningDoc == null) && (this.isStatusOfWork == false || this.isStatusOfWork == null)) {
-              this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
-            }
+    if (this.isConsent == true) {
+      debugger;
+      this.shared.Files.push(file)
+      console.log(this.shared.Files);
+    }
+    else {
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              if (this.isFinancial) {
+                this.financialuploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
+              }
+              // #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+              if (this.isCalledInsidePermit) {
+                this.permitUploadFinished(event.body, this.permitSubForCommentID);
+              }
+              // #endregion
+              //Service Information Kyle 31/01/24
+              if (this.isPlanningDoc) {
+                this.isPlanningUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
+              }
+              if (this.isStatusOfWork) {
+                this.isStatusOfWorkUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
+              }
+              //Service Information Kyle 31/01/24
+              else if ((this.isFinancial == false || this.isFinancial == null) && (this.isCalledInsidePermit == false || this.isCalledInsidePermit == null) && (this.isPlanningDoc == false || this.isPlanningDoc == null) && (this.isStatusOfWork == false || this.isStatusOfWork == null)) {
+                this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
+              }
 
 
-          }
-        },
-        error: (err: HttpErrorResponse) => console.log(err)
-      });
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+
   }
+        
+    
+  
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
 
@@ -662,5 +701,140 @@ export class FileUploadComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+  
   //Service Information Kyle 31/01/24
+
+  readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = (error) => reject(error);
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  async combineFiles(): Promise<void> {
+    debugger;
+    this.ApplicationID = this.shared.getApplicationID();
+
+    this.sharedFileName = this.shared.getFileName();
+    this.ConsentID = this.shared.consentID;
+
+    this.file1 = this.shared.Files[0];
+    this.file2 = this.shared.Files[1];
+    
+
+    if (this.file1 && this.file2) {
+      // Read the files as ArrayBuffer
+      const file1Buffer = await this.readFileAsArrayBuffer(this.file1);
+      const file2Buffer = await this.readFileAsArrayBuffer(this.file2);
+
+      // Load PDF documents
+      const pdfDoc1 = await PDFDocument.load(file1Buffer);
+      const pdfDoc2 = await PDFDocument.load(file2Buffer);
+
+      // Create a new PDF document
+      const combinedPdf = await PDFDocument.create();
+
+      // Copy all pages from the first PDF
+      const pages1 = await combinedPdf.copyPages(pdfDoc1, pdfDoc1.getPageIndices());
+      pages1.forEach((page) => combinedPdf.addPage(page));
+
+      // Copy all pages from the second PDF
+      const pages2 = await combinedPdf.copyPages(pdfDoc2, pdfDoc2.getPageIndices());
+      pages2.forEach((page) => combinedPdf.addPage(page));
+
+      // Save the combined PDF as a Blob
+      const pdfBytes = await combinedPdf.save();
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const file = new File([pdfBlob], this.sharedFileName, { type: 'application/pdf' });
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.shared.pushFileForTempFileUpload(file, this.sharedFileName);
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+     /* window.open(pdfUrl, '_blank');*/
+      // Save this document
+      this.save();
+     
+    } else {
+      alert('Please select two PDF files.');
+    }
+  }
+
+  save() {
+    debugger;
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      debugger;
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              debugger;
+              this.consentUploadFinished(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+  }
+
+  consentUploadFinished(event: any) {
+    this.response = event;
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    debugger;
+    this.neighbourConsentService.addUpdateNeighbourConsent(this.ConsentID, null, null, documentName, this.response?.dbPath, null, null, null, null,null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        this.modalService.dismissAll();
+        this.openSnackBar("Upload Successfull");
+        this.router.navigate(["/home"]);
+   
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+   
+  deleteCosentDocument() {
+    debugger;
+    const index = this.shared.Files.findIndex(x => x.name == this.fileName);
+
+    if (index !== -1) {
+      this.shared.Files.splice(index, 1);
+
+    }
+
+    console.log("Files", this.shared.Files);
+
+    this.neighbourConsentService.deleteDocumentFromNeighbourConsent(this.ConsentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.fileName = '';
+        
+        
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 4 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
 }

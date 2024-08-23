@@ -11,5 +11,9 @@ namespace BuildingPlans.Data.Entities
         public string? DocumentName { get; set; }
         public string? DocumentLocalPath { get; set; }
         public string? ConsentStatus { get; set; }
+        public string? OwnerName { get; set; }
+        public string? OwnerCell { get; set; }
+        public string? OwnerEmail { get; set; }
+        
     }   
 }

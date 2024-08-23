@@ -17,6 +17,7 @@
   .example-sidenav {
     background-color: #2f3a49;
   }
+  
   .loading-screen {
     background-color: #2f3a49;
   }
@@ -441,3 +442,6 @@ tr:hover {
 
   background: #425166;
 }*/
+.cdk-overlay-container {
+  z-index: 10000 !important;
+}

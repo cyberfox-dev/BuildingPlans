@@ -8,7 +8,7 @@ import { PermitComponentComponent } from 'src/app/permit-component/permit-compon
 import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
-
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -60,7 +60,7 @@ export class DocumentsComponentComponent implements OnInit {
 
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService, private fileUploadComponent: FileUploadComponent) { }
 
   ngOnInit(): void {
     //this.currentApplication = this.shared.getViewApplicationIndex();
@@ -70,6 +70,7 @@ export class DocumentsComponentComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Permit Kyle 13-02-24
     this.getAllDocsForApplication();
+    this.getAllNeighboutConsents();
     //this.hasPermitSubForCommentDocument();
     //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
 
@@ -161,7 +162,13 @@ export class DocumentsComponentComponent implements OnInit {
     if (this.isCalledInsidePermit) {
       /*this.permitComponentComponent.getAllPermitForComment();*/
     }
+    debugger;
+    if (this.isConsent) {
+      this.getAllDocsForApplication();
+      this.getAllNeighboutConsents();
+      this.modalService.dismissAll();
 
+    }
   }
 
   viewDocument(index: any) {
@@ -318,8 +325,14 @@ export class DocumentsComponentComponent implements OnInit {
 
   }
   //Permit Kyle 13-02-24
-  selectedAddress: any;
-  getAllNeighboutConsents(neighbourConsent: any) {
+  consentID: any;
+  ownerName: string;
+  ownerCell: string;
+  IdDocName: string;
+  ownerEmail: string;
+  isConsent: boolean;
+  addressName: string;
+  getAllNeighboutConsents() {
     this.neighbourConsentList.splice(0, this.neighbourConsentList.length);
     this.neighboutConsentService.getAllNeighbourConsentForApplication(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -334,9 +347,16 @@ export class DocumentsComponentComponent implements OnInit {
             this.neighbourConsentList.push(tempConsent);
 
           }
-        }
+          else {
+            const tempDoc = {} as DocumentsList;
 
-        this.modalService.open(neighbourConsent, { centered: true, size: "xl" });
+            tempDoc.DocumentName = current.documentName;
+            tempDoc.DocumentLocalPath = current.documentLocalPath;
+            this.DocumentsList.push(tempDoc);
+          }
+        }
+        this.isConsent = true;
+
       }
       else {
         alert(data.responseMessage);
@@ -345,10 +365,107 @@ export class DocumentsComponentComponent implements OnInit {
       console.log(error);
     })
   }
-
+  openNeighbourConsent(neighbourConsent: any) {
+    this.isConsent = true;
+    this.modalService.open(neighbourConsent, { centered: true, size: "xl" });
+  }
   onSelectAddressForUpload() {
+    debugger;
+
+    for (let i = 0; i < this.neighbourConsentList.length; i++) {
+      const current = this.neighbourConsentList[i];
+      if (current.ConsentID == this.consentID) {
+        this.addressName = current.Address;
+        this.shared.consentID = this.consentID;
+
+        this.IdDocName = "Certified ID copy of owner of " + this.addressName;
+
+        const address = this.addressName.substring(0, this.addressName.indexOf(","));
+        this.shared.setFileName("Neighbour Consent For " + address + ".pdf");
+      }
+    }
+    //  this.selectedAddress = "Consent Form For " + this.selectedAddress;
+
+  }
+  onSaveFiles() {
+
+    this.fileUploadComponent.combineFiles();
+
+  }
+  validData: boolean;
+  validName: boolean;
+  validCell: boolean;
+  validEmail: boolean;
+
+  validateNeighbourConsentInfo() {
+    debugger;
+    let names = [];
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format pattern
+    const phoneNumberPattern = /^\d{10}$/; // Example: 1234567890
+    if (this.ownerName == null || this.ownerCell == null || this.ownerEmail == null) {
+      alert("Please fill in all fields");
+      return;
+    }
+    else {
+      if (this.ownerName.trim() == "" || this.ownerCell.trim() == "" || this.ownerEmail.trim() == "") {
+        alert("Please fill in all fields");
+        return;
+      }
+      else {
+        names = this.ownerName.split(' ');
+
+        if (names.length < 2 && names[1].trim() != "") {
+          alert("Enter Owner's fullname");
+
+        }
+        else {
+          this.validName = true;
+        }
+
+        if (phoneNumberPattern.test(this.ownerCell) == false || this.ownerCell.length != 10) {
+          alert("Enter a valid cell number");
+
+        }
+        else {
+          this.validCell = true;
+        }
+
+        if (emailPattern.test(this.ownerEmail) == false) {
+          alert("Enter a valid email address");
+
+        }
+        else {
+          this.validEmail = true;
+        }
+
+        if (this.validName && this.validCell && this.validEmail) {
+          this.validData = true;
+        }
+        else {
+
+        }
+      }
+    }
+    if (this.fileCount == 2 && this.validData) {
+      debugger;
+      this.neighboutConsentService.addUpdateNeighbourConsent(this.consentID, null, null, null, null, null, null, this.ownerName, this.ownerCell, this.ownerEmail).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.onSaveFiles();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+    else {
+      alert("Please Upload Both Documents Before Proceeding");
+    }
 
   }
 }
+
+
 
   

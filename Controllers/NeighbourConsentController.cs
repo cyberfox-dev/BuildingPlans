@@ -30,7 +30,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = new object();
 
-                if(model.ApplicationID == null || model.Address == null)
+                if(model == null )
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -55,7 +55,10 @@ namespace BuildingPlans.Controllers
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             CreatedById = model.CreatedById,
-                            isActive = true
+                            isActive = true,
+                            OwnerCell = model.OwnerCell,
+                            OwnerName = model.OwnerName,
+                            OwnerEmail = model.OwnerEmail,
                         };
 
                         await _context.NeighbourConsent.AddAsync(tempNeighbourConsent);
@@ -82,6 +85,18 @@ namespace BuildingPlans.Controllers
                         if (model.ConsentStatus != null)
                         {
                             tempNeighbourConsent.ConsentStatus = model.ConsentStatus;
+                        }
+                        if(model.OwnerName != null)
+                        {
+                            tempNeighbourConsent.OwnerName = model.OwnerName;
+                        }
+                        if (model.OwnerCell != null)
+                        {
+                            tempNeighbourConsent.OwnerCell = model.OwnerCell;
+                        }
+                        if(model.OwnerEmail != null)
+                        {
+                            tempNeighbourConsent.OwnerEmail = model.OwnerEmail;
                         }
                         tempNeighbourConsent.DateUpdated = DateTime.Now;
 
@@ -124,6 +139,10 @@ namespace BuildingPlans.Controllers
                                             CreatedById = consent.CreatedById,
                                             DateCreated = consent.DateCreated,
                                             DateUpdated = consent.DateUpdated, 
+                                            OwnerName = consent.OwnerName,
+                                            OwnerCell = consent.OwnerCell,
+                                            OwnerEmail = consent.OwnerEmail,
+                                            
 
                                         }).ToListAsync();
 
@@ -160,6 +179,9 @@ namespace BuildingPlans.Controllers
                                             CreatedById = consent.CreatedById,
                                             DateCreated = consent.DateCreated,
                                             DateUpdated = consent.DateUpdated,
+                                            OwnerName = consent.OwnerName,
+                                            OwnerCell = consent.OwnerCell,
+                                            OwnerEmail = consent.OwnerEmail,
 
                                         }).ToListAsync();
 
@@ -198,6 +220,41 @@ namespace BuildingPlans.Controllers
                         await _context.SaveChangesAsync();
 
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Neighbour Consent Deleted Successfully", true));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("DeleteDocumentFromNeighbourConsent")]
+        public async Task<object> DeleteDocumentFromNeighbourConsent([FromBody] NeighbourConsentBindingmodel model)
+        {
+            try
+            {
+                if(model.ConsentID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null)); 
+                }
+                else
+                {
+                    var tempConsent = _context.NeighbourConsent.FirstOrDefault(x => x.ConsentID == model.ConsentID);
+
+                    if(tempConsent == null)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Could not find Entry in database", null));
+                    }
+                    else
+                    {
+                        tempConsent.DocumentName = null;
+                        tempConsent.DocumentLocalPath = null;
+
+                        _context.Update(tempConsent);
+                        await _context.SaveChangesAsync();
+
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Consent Document Deleted Successfully", true));
                     }
                 }
             }
