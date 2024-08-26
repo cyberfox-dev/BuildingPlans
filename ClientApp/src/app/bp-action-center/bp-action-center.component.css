@@ -574,3 +574,8 @@ mat-column-zoneName {
   height: 44px;
   cursor: pointer;
 }
+
+.buildingControls{
+    border: 5px solid;
+    border-color: black;
+}

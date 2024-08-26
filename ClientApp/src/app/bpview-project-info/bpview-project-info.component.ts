@@ -492,7 +492,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     
     if (this.selectedComment.isApplicantReply == null) {
       this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, this.reply, null, null, null, null).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
           const dialogRef = this.dialog.open(BpAlertModalComponent, {
             data: {
@@ -512,6 +512,22 @@ export class BPViewProjectInfoComponent implements OnInit {
       }, error => {
         console.log(error);
       })
+      if (this.currentStage == "TP Review") {
+        this.applicationService.addUpdateBuildingApplication(this.applicationId, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, "Clarified", null, 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+            }
+            else {
+
+            }
+          }, error => {
+            console.log(error);
+          })
+      }
     }
     else {
       this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, null,this.reply,  null, null, null).subscribe((data: any) => {
@@ -620,6 +636,6 @@ export class BPViewProjectInfoComponent implements OnInit {
     })
 
   }*/
-
+ 
 }
 

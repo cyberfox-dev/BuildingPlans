@@ -373,7 +373,7 @@
 
             <div class="messageFoot">
               <p class="sub-text">{{comment.Comment}}</p>
-              <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == comment.CanReplyUserID">Reply</button>
+              <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify'">Reply</button>
               <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
 
             </div>

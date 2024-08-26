@@ -66,6 +66,87 @@
       </div>
 
       <!-- #endregion -->
+
+      <!--#region Town Planning Controls-->
+      <div class="buildControls" *ngIf="CurrentApplicationBeingViewed[0].currentStage == 'TP Review' && CurrentApplicationBeingViewed[0].currentStatus !== 'Waiting Clarification' ">
+        <h2> Building Controls</h2>
+        <mat-tab-group>
+          <mat-tab label="Section A">
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="useZone" placeholder="Enter Quantity">
+                  <label for="useZone">Use Zoning</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="densityZone" placeholder="Enter Quantity">
+                  <label for="densityZone">Bulk/Density Zone</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="proposedUse" placeholder="Enter Quantity">
+                  <label for="proposedUser">Proposed Use/ Building</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="density" placeholder="Enter Quantity">
+                  <label for="density">Density</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="minArea" placeholder="Enter Quantity">
+                  <label for="minArea">Min Area</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="minFrontage" placeholder="Enter Quantity">
+                  <label for="minFrontage">Min Frontage</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="siteArea" placeholder="Enter Quantity">
+                  <label for="siteArea">Site Area</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" name="frontage" placeholder="Enter Quantity">
+                  <label for="frontage">Frontage</label>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Section B">
+            <!--<table mat-table class="mat-elevation-z8"></table>-->
+          </mat-tab>
+        </mat-tab-group>
+        <br/>
+        <button type="submit" class="btn btn-outline-success" (click)="saveAllBuildingControls()">Save</button>
+
+      </div>
+        
+
+      
+      <!-- #endregion ---->
           <!-- #region Land survey departments review -->
           <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Distribution' && !LSReviewerRole">
             <p>Department Distribution</p>
@@ -92,10 +173,12 @@
           <!-- #endregion -->
           <!-- #region Town Planning Review for land survey application -->
 
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review'">
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review' && showApprove == true ">
         <p>TP Reviewer</p>
-        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
-        <button mat-raised-button color="relaxationBTN" (click)="openRelaxation(TPRelaxation)"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+        <p *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><em> * Waiting For Applicant To Clarify </em></p>
+        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')" [disabled]="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+        <button mat-raised-button color="relaxationBTN" (click)="openRelaxation(TPRelaxation)" [disabled]="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+        <button mat-raised-button color="clarifyBTN" (click)="onCommentTP('Clarify')" [disabled]="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">Clarify</button>
       </div>
 
       <!-- #endregion -->

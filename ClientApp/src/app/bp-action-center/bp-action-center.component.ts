@@ -3293,7 +3293,27 @@ export class BpActionCenterComponent implements OnInit {
         }
 
         case "Reject": {
-          debugger;
+
+          break;
+        }
+        case "Clarify": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Waiting Clarification", null, 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.AddComment("Clarify", null);
+              }
+              else {
+
+              }
+
+            })
+
+          break;
+        }
+        case "Relaxation": {
           this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
@@ -3305,7 +3325,7 @@ export class BpActionCenterComponent implements OnInit {
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
-                this.AddComment("TP Relaxation",null);
+                this.AddComment("TP Relaxation", null);
                 /*this.getAllServiceItemsForRelaxation();*/
               }
               else {
@@ -3319,7 +3339,6 @@ export class BpActionCenterComponent implements OnInit {
 
           break;
         }
-
 
         default: {
 
@@ -10197,6 +10216,10 @@ export class BpActionCenterComponent implements OnInit {
     
   }
   
+  showApprove: boolean = false;
 
+  saveAllBuildingControls() {
+    this.showApprove = true;
+  }
 }
 
