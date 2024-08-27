@@ -78,24 +78,20 @@
           <button mat-button type="button" [matMenuTriggerFor]="menu3" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
           </button>
-          <mat-menu #menu3="matMenu" xPosition="after" >
-            <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onChangeDataSource($event)">
-              <div class="down">
-              <mat-tab label="Pre-Submission Applications"></mat-tab>
-              <mat-divider></mat-divider>
-              <mat-tab label="Town Planning Applications"></mat-tab>
-              <mat-divider></mat-divider>
-              <mat-tab label="Building Plan Applications"></mat-tab>
-              <mat-divider></mat-divider>
-              <mat-tab label="Demolition Application"></mat-tab>
-              <mat-tab label="Sinage Application"></mat-tab>
-              <mat-tab label="Banner/Poster Application"></mat-tab>
-              <mat-tab label="Flag/Pole/Headline Application"></mat-tab>
-              <mat-tab label="Archive Application"></mat-tab>
-              <mat-tab label="All Applications"></mat-tab>
-              <mat-tab label="Wayleave"></mat-tab>
-                </div>
-            </mat-tab-group>
+          <mat-menu #menu3="matMenu" xPosition="after">
+<!--            <mat-selection-list [(ngModel)]="selectedTabIndex" (selectionChange)="onChangeDataSource([value])" [multiple]="false">
+              <mat-list-option [value]="0">Pre-Submission Applications</mat-list-option>
+              <mat-list-option [value]="1">Town Planning Applications</mat-list-option>
+              <mat-list-option [value]="2">Building Plan Applications</mat-list-option>
+              <mat-list-option [value]="3">Demolition Application</mat-list-option>
+              <mat-list-option [value]="4">Sinage Application</mat-list-option>
+              <mat-list-option [value]="5">Banner/Poster Application</mat-list-option>
+              <mat-list-option [value]="6">Flag/Pole/Headline Application</mat-list-option>
+              <mat-list-option [value]="7">Archive Application</mat-list-option>
+              <mat-list-option [value]="8">All Applications</mat-list-option>
+              <mat-list-option [value]="9">Wayleave</mat-list-option>
+            </mat-selection-list>-->
+
           </mat-menu>
           <mat-form-field appearance="outline">
             <mat-label>Search</mat-label>
