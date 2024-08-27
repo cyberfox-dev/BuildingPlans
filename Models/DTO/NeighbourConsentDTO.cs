@@ -11,5 +11,8 @@
         public string? CreatedById { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
+        public string? OwnerName { get; set; }
+        public string? OwnerCell { get; set; }
+        public string? OwnerEmail { get; set; }
     }
 }

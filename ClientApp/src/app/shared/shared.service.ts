@@ -188,6 +188,22 @@ export class SharedService {
   isFlagApplication: boolean;
     applicationBeingCreatedType: string;
 
+  Files :File[]=[];
+  fileName: string;
+
+  consentID: number;
+  setFileName(fileName) {
+    this.fileName = fileName;
+  }
+  getFileName() {
+    return this.fileName;
+  }
+  storeFile(file:any) {
+    this.Files = file;
+  }
+  getFile() {
+    return this.Files;
+  }
   setArchitectID(UserID: string) {
     this.architectUserID = UserID;
   }
