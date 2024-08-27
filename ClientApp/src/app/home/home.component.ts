@@ -770,8 +770,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.GetAllBuildingPlansApplications();
         this.getAllPreInvoiceScurtinyApplications();*/
         this.selectedTabIndex = 8;
-/*        this.dataSourceSA = this.ApplicationsBP;
-        this.originalDataSourceSA = [...this.ApplicationsBP];*/
+/*        this.dataSourceSA = this.AllApplications;
+        this.originalDataSourceSA = [...this.AllApplications];*/
 
       this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
       this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
