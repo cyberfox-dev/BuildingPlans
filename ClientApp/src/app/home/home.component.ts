@@ -7901,9 +7901,9 @@ this.subscriptions.push(subscription);
     this.modalService.open(this.archiveOption, { centered: true, size: 'xl' });
   }
   //Home Tabs Kyle 27-05 - 24
-  onChangeDataSource(event: MatTabChangeEvent) {
-    this.selectedTabIndex = event.index;
-    switch (event.index) {
+  onChangeDataSource(index:any) {
+    this.selectedTabIndex = index;
+    switch (index) {
       case 0:
 /*        this.GetAllPreInvoiceScrutinyApplications();*/
         this.GetAllPreInvoiceScrutinyApplications();

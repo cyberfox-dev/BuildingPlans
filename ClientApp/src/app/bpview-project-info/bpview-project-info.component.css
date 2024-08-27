@@ -1,6 +1,4 @@
-/*.animationSlideDown {
-  animation: fade-in-bottom 0.5s ease-out;
-}*/
+
 * {
   font-family: 'Nunito' !important;
 }
@@ -9,6 +7,7 @@
 /*  justify-content: center;
   margin-bottom: 62px;*/
 }
+
 .cont3 {
   display: flex;
   justify-content: center;
@@ -51,6 +50,7 @@ h2 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  overflow:hidden;
 }
 .cardhover:hover {
   /* box-shadow: 0 0 9px 0px rgb(239 195 115); */
@@ -76,8 +76,25 @@ h2 {
   margin: 17px 10px 10px 10px;
   height: 246px;
 }
-.applicationDeatails{
+.applicationDeatails {
+  padding: 18px;
+}
+:host ::ng-deep .mat-tab-label {
+  height: 30px !important;
+}
 
+  :host ::ng-deep .mat-tab-label.mat-tab-label-active {
+    height: 33px !important;
+    background: #ffc14f5c;
+  }
+
+h4 {
+  color: #8080806b;
+  /* margin: 0 auto; */
+  text-align: center;
+  font-size: 19px !important;
+  padding-top: 157px;
+  font-style: italic !important;
 }
 .Map {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -86,7 +103,7 @@ h2 {
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(5px);
   width: 98%;
-  padding: 10px;
+  /* padding: 10px; */
   margin: 5px 10px 5px 10px;
   height: 234px;
   overflow: auto;
@@ -115,7 +132,7 @@ h2 {
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(5px);
   width: 100%;
-  padding: 10px;
+ 
   margin: 17px 10px 5px 10px;
   height: 234px;
   overflow:auto
@@ -194,10 +211,9 @@ h3 span {
   width:100%;
 }
 h3 {
-  font-family: system-ui;
+
   font-weight: 700;
-  /* border-bottom: 2px solid; */
-  color: #d5d5d57d;
+  color: #cfcdcda1;
 }
 .Name {
   text-align: center;
@@ -208,7 +224,7 @@ h3 {
   font-feature-settings:;
   font-variant: full-width;
   text: -webkit-control;
-  font-family: system-ui;
+
   letter-spacing: 5px;
   /* margin-bottom: 15px; */
 }
@@ -310,12 +326,44 @@ table {
   hyphens: auto;
   text-align: center;
 }
-:host ::ng-deep .mat-tab-label-active {
-  background-color: #d57d38;
 
-  border-radius: 20px;
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  animation: fadein 0.2s linear forwards;
 }
 
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.loading-screen.ng-leave {
+  animation: fadeout 0.5s linear forwards;
+}
 
 .mat-menu-item:hover {
   background-color: #ccdee2;
@@ -326,7 +374,7 @@ table {
   position: relative;
   transition: transform 500ms cubic-bezier(0.35, 0, 0.25, 1);
   background-color: #d5d5d55c !important;
-  border-radius: 20px !important;
+
 }
 
 :host ::ng-deep.mat-ink-bar {
@@ -670,9 +718,47 @@ table {
   width: 100%;
 }
 .animationSlideDown {
-  animation: fade-in-bottom 1s ease-out;
+  animation: fade-in-bottom .7s ease-in-out;
 }
 
 .animationSlideUp {
-  animation: fade-in-top 1s ease-out;
+  animation: fade-in-top .7s ease-in-out;
+}
+.animationSlideLeft{
+    animation: fade-in-left .7s ease-in-out;
+}
+@keyframes fade-in-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes fade-in-top {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(90px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

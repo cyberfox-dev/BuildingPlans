@@ -223,8 +223,7 @@
   }
   .mat-tab-labels {
    
-    border-radius: 5px;
-    margin-bottom: 10px;
+
   }
 }
 
@@ -316,7 +315,7 @@ body {
 
 }.icon3 {
 
-  height: 20px;
+  height: 13px;
 
 }
 .icon4 {
@@ -658,4 +657,54 @@ li .tooltip{
 }
 .mat-tooltip{
     font-size:14px !important;
+}
+.shapes-5 {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  transform-origin: 50% 125%;
+  animation: sp5-0 1.5s infinite linear;
+}
+
+  .shapes-5:before,
+  .shapes-5:after {
+    content: "";
+    flex: 1;
+    background: orange;
+    animation: inherit;
+    transform-origin: bottom left;
+    animation-name: sp5-1;
+  }
+
+  .shapes-5:before {
+    transform-origin: bottom right;
+    --s: -1;
+  }
+
+@keyframes sp5-0 {
+  0%,10% {
+    transform: translateY(0) scaleY(1)
+  }
+
+  49.99% {
+    transform: translateY(-75%) scaleY(1)
+  }
+
+  50% {
+    transform: translateY(-75%) scaleY(-1)
+  }
+
+  90%,100% {
+    transform: translateY(-150%) scaleY(-1)
+  }
+}
+
+@keyframes sp5-1 {
+  10%,90% {
+    transform: rotate(0deg)
+  }
+
+  50% {
+    transform: rotate(calc(var(--s,1)*90deg))
+  }
 }

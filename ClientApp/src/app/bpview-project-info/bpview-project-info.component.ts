@@ -16,6 +16,7 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platf
 import { MatDialog } from '@angular/material/dialog';
 import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component';
 import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
+import { ConfigService } from '../service/Config/config.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -85,6 +86,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private DocumentsComponentComponent: DocumentsComponentComponent, private bpCommentsService: BPCommentsService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
+    private configService: ConfigService,
     private applicationService: BuildingApplicationsService,
     private BpDepartmentForCommentService: BpDepartmentForCommentService,
   ) { }
@@ -161,12 +163,11 @@ export class BPViewProjectInfoComponent implements OnInit {
   panelOpenState :boolean = false;
   ngOnInit(): void {
 
-/*    this.refreshService.enableRefreshNavigation('/home');*/
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    
+
     if (this.CurrentUserProfile[0].isInternal == true) {
       this.ActionCenter = true;
     }
@@ -175,9 +176,6 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.GetAllCommentsForApplication();
 
     this.getAllDepartmentsForCommentForBPApplication();
-
-
-
 
 
   }
@@ -244,6 +242,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.email = current.emailAddress;
         this.altEmail = current.altEmail;
         this.idNumber = current.idNumber;
+        this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
       }
       else {
@@ -436,7 +435,53 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.getAllDocumentForApplication();
     this.DocumentsComponentComponent.getAllDocsForApplication();
   }
+  generateBPApplicationID() {
 
+    this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        const current = data.dateSet[0];
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.applicationService.addUpdateBuildingApplication(this.applicationId, null, null, null, null,
+              null, null, null, null, null, null, null,
+              null, null, null, null, null, null, null, null, null,
+              null, null, null, null, null, null, null,
+              null, null, null, null, null, null, "Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  this.modalService.dismissAll();
+                  this.router.navigate(["/home"]);
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+          }
+          else {
+
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+
+  }
   reply: string;
   hasReply: boolean;
 

@@ -8,8 +8,8 @@
 
 
 <div class="content-body">
-  <div class="headerViewProject animationSlideDown">
-    <div class="leftSideHeader">
+  <div class="headerViewProject ">
+    <div class="leftSideHeader animationSlideUp">
       <div class="ProjectNumberCard">
         <h2>View Project Details : {{lsNumber}}</h2>
       </div>
@@ -33,23 +33,25 @@
           <h3>Property Owner Details</h3>
           <p class="Name">{{firstName}} {{surname}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
-          <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3">{{cellNo}}</p>
+          <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
         </div>
         <div class="PropertyOwnerDetails cardhover">
           <h3>Architect Details</h3>
-          <p class="Name">{{firstName}} {{surname}}</p>
-          <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
-          <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3">{{cellNo}}</p>
+          <p class="Name">{{architectName}}</p>
+          <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
+          <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
         </div>
       </div>
     </div>
-    <div class="rightSideHeader">
+    <div class="rightSideHeader animationSlideUp">
       <div class="Tracker">
 
         <div class="actionCenter ">
           <h3>Action Center</h3>
           <div class="cont3 " *ngIf="ActionCenter">
-            <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()" class="animationSlideUp"></app-bp-action-center>
+            <button mat-raised-button color="relaxationBTN" *ngIf="" (click)="generateBPApplicationID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
+            <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>
+
 
           </div>
         </div>
@@ -59,11 +61,10 @@
   <div class="displayRow">
     <div class="MiddleView animationSlideDown">
       <div class="Map ">
-        <h3>Map</h3>
-        <mat-tab-group>
+        <mat-tab-group dynamicHeight>
 
           <mat-tab label="Map Details">
-            <google-map height="550px"
+            <google-map height="195px"
                         width="100%">
             </google-map>
           </mat-tab>
@@ -93,20 +94,73 @@
       <div class="displayRow">
         <div class="tracker">
           <h3>Tracker</h3>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
+            <!-- Position Column -->
+            <ng-container matColumnDef="DepartmentName" class="approve">
+              <th mat-header-cell *matHeaderCellDef>Department</th>
+              <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
+
+            </ng-container>
+
+            <!-- Indication Column -->
+            <ng-container matColumnDef="indication">
+              <th mat-header-cell *matHeaderCellDef>Indication</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="contIndication">
+                  <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
+                  <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
+                  <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
+
+                  <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
+
+                  <!-- projectTracker Sindiswa 12 January 2024 -->
+                  <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
+                  <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
+                  <!-- projectTracker Sindiswa 12 January 2024 -->
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- projectTracker Sindiswa 12 January 2024 -->
+            <ng-container matColumnDef="zoneUser" class="approve">
+              <th mat-header-cell *matHeaderCellDef>User</th>
+              <td mat-cell *matCellDef="let element">{{element.zoneUser}}</td>
+            </ng-container>
+
+            <!-- end of projectTracker Sindiswa 12 January 2024 -->
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
         </div>
 
         <div class="Documents ">
-          <h3>Documents</h3>
-          <app-documents-component [currentStage]="currentStage"></app-documents-component>
+          <mat-tab-group dynamicHeight>
+
+            <mat-tab label="Documents">
+              <app-documents-component [currentStage]="currentStage"></app-documents-component>
+            </mat-tab>
+            <mat-tab label="Financial Documents">
+              <app-bpfinancials></app-bpfinancials>
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </div>
     </div>
 
-    <div class="BootomViewProject animationSlideUp">
+    <div class="BootomViewProject animationSlideLeft">
 
       <div class="Comments ">
         <h3>Comments</h3>
+        <div *ngIf="CommentsList.length === 0">
+          <h4>No comments have been made yet.</h4>
+        </div>
         <div *ngFor="let comment of CommentsList ; let i = index">
           <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
@@ -147,524 +201,531 @@
     </div>
   </div>
 
+</div>
+<ng-template #UploadProof let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">Upload Proof of Payment For Relaxation Invoice</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <ng-template #UploadProof let-modal>
 
-    <div class="modal-header">
-      <h4 class="modal-title">Upload Proof of Payment For Relaxation Invoice</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
+  <div class="modal-body">
 
-    <div class="modal-body">
+  </div>
 
-    </div>
-
-    <div class="modal-footer">
-      <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
-    </div>
-  </ng-template>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
 
 
-  <ng-template #replyModal let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Edit Reply</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-      <form>
-        <div class="row">
-
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
-            <label for="reply">Enter in a reply</label>
-          </div>
-
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="SaveReply()">Save</button>
-    </div>
-  </ng-template>
-
-
-
-
-  <!--OLD VIEW PROJECT TAB-->
-  <!--  <!--<mat-tab-group>
-
-      <mat-tab label="Application Details">
-        <div class="cont2">
-
-
-          <form>
-
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="lsNumber" name="lSNumber" placeholder="LS Number" disabled *ngIf="BPApplicationProjectNumber == null">
-                  <label for="lSNumber">LS Number </label>
-                </div>
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="BPApplicationProjectNumber" name="BPApplicationProjectNumber" placeholder="BPApplicationProjectNumber" disabled *ngIf="BPApplicationProjectNumber != null">
-                  <label for="lSNumber">Project Number </label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="typeOfDev" name="typeOfDev" placeholder="Type Of Development" disabled>
-                  <label for="typeOfDev">Type Of Development</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="typeOfAddress" name="typeOfAddress" placeholder="Type Of Address" disabled>
-                  <label for="tyoeOfaddress">Type Of Address</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="noOfUnits" name="NoOfUnits" placeholder="Number Of Units" disabled>
-                  <label for="NoOfUnits">Number Of Units</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="unitNumber" name="unitNumber" placeholder="Unit Number" disabled>
-                  <label for="unitNumber">Unit Number</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="propertyValue" name="propertyValue" placeholder="Property value" disabled>
-                  <label for="propertyValue">Property Value</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="erfNumber" name="erfNumber" placeholder="Erf Number" disabled>
-                  <label for="erfNumber">Erf Number</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="portionNumber" name="portionNumber" placeholder="Portion Number" disabled>
-                  <label for="portionNumber">Portion Number</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="premisesName" name="premisesName" placeholder="Premises Name" disabled>
-                  <label for="premisesName">Premises Name</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="propertyDescription" name="propertyDescription" placeholder="Property description" disabled>
-                  <label for="propertyDescription">Property Description</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="occupationClassification" name="occupationClass" placeholder="Occupation Classification" disabled>
-                  <label for="occupationClass">Occupation Classifcation</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="buildingPlanFor" name="bpFor" placeholder="Building Plan For" disabled>
-                  <label for="bpFor">Building Plan For</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="sGCode" name="sgCode" placeholder="SG Code" disabled>
-                  <label for="sgCode">SG Code</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="physicalAddress" name="physicalAddress" placeholder="Physical Address" disabled>
-                  <label for="physicalAddress">Physical Address Of Project</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="latitude" name="latitude" placeholder="Latitude" disabled>
-                  <label for="Latitude">Latitude</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="longitude" name="longitude" placeholder="Longitude" disabled>
-                  <label for="longitude">Longitude</label>
-                </div>
-              </div>
-            </div>-->
-  <!---------------------Map and pinned location ------------------->
-  <!--</form>
-
-      <div class="alert alert-info" role="alert" *ngIf="OmnibusServitude">
-        Applicant states that OmnibusServitude is in the title deed
-      </div>
-      <div class="alert alert-other" role="alert" *ngIf="!OmnibusServitude">
-        Applicant states that <strong>THERE IS NO</strong> OmnibusServitude in the title deed
-      </div>
-
-
-
-
-    </div>
-  </mat-tab>
-
-  <mat-tab label="Property Owner Details">
-    <div class="cont2">
+<ng-template #replyModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit Reply</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
       <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="firstName" name="firstName" placeholder="Owner Name" disabled>
-            <label for="firstName">First Name</label>
-          </div>
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+          <label for="reply">Enter in a reply</label>
         </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="surname" name="surname" placeholder="Owner Surname" disabled>
-            <label for="surname">Surname</label>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="SaveReply()">Save</button>
+  </div>
+</ng-template>
+
+
+
+
+<!--OLD VIEW PROJECT TAB-->
+<!--  <!--<mat-tab-group>
+
+    <mat-tab label="Application Details">
+      <div class="cont2">
+
+
+        <form>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="lsNumber" name="lSNumber" placeholder="LS Number" disabled *ngIf="BPApplicationProjectNumber == null">
+                <label for="lSNumber">LS Number </label>
+              </div>
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="BPApplicationProjectNumber" name="BPApplicationProjectNumber" placeholder="BPApplicationProjectNumber" disabled *ngIf="BPApplicationProjectNumber != null">
+                <label for="lSNumber">Project Number </label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="typeOfDev" name="typeOfDev" placeholder="Type Of Development" disabled>
+                <label for="typeOfDev">Type Of Development</label>
+              </div>
+            </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="typeOfAddress" name="typeOfAddress" placeholder="Type Of Address" disabled>
+                <label for="tyoeOfaddress">Type Of Address</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="noOfUnits" name="NoOfUnits" placeholder="Number Of Units" disabled>
+                <label for="NoOfUnits">Number Of Units</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="unitNumber" name="unitNumber" placeholder="Unit Number" disabled>
+                <label for="unitNumber">Unit Number</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="propertyValue" name="propertyValue" placeholder="Property value" disabled>
+                <label for="propertyValue">Property Value</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="erfNumber" name="erfNumber" placeholder="Erf Number" disabled>
+                <label for="erfNumber">Erf Number</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="portionNumber" name="portionNumber" placeholder="Portion Number" disabled>
+                <label for="portionNumber">Portion Number</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="premisesName" name="premisesName" placeholder="Premises Name" disabled>
+                <label for="premisesName">Premises Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="propertyDescription" name="propertyDescription" placeholder="Property description" disabled>
+                <label for="propertyDescription">Property Description</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="occupationClassification" name="occupationClass" placeholder="Occupation Classification" disabled>
+                <label for="occupationClass">Occupation Classifcation</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="buildingPlanFor" name="bpFor" placeholder="Building Plan For" disabled>
+                <label for="bpFor">Building Plan For</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="sGCode" name="sgCode" placeholder="SG Code" disabled>
+                <label for="sgCode">SG Code</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="physicalAddress" name="physicalAddress" placeholder="Physical Address" disabled>
+                <label for="physicalAddress">Physical Address Of Project</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="latitude" name="latitude" placeholder="Latitude" disabled>
+                <label for="Latitude">Latitude</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="longitude" name="longitude" placeholder="Longitude" disabled>
+                <label for="longitude">Longitude</label>
+              </div>
+            </div>
+          </div>-->
+<!---------------------Map and pinned location ------------------->
+<!--</form>
+
+    <div class="alert alert-info" role="alert" *ngIf="OmnibusServitude">
+      Applicant states that OmnibusServitude is in the title deed
+    </div>
+    <div class="alert alert-other" role="alert" *ngIf="!OmnibusServitude">
+      Applicant states that <strong>THERE IS NO</strong> OmnibusServitude in the title deed
+    </div>
+
+
+
+
+  </div>
+</mat-tab>
+
+<mat-tab label="Property Owner Details">
+  <div class="cont2">
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="firstName" name="firstName" placeholder="Owner Name" disabled>
+          <label for="firstName">First Name</label>
         </div>
       </div>
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="idNumber" name="idNo" placeholder="ID Number" disabled>
-          <label for="idNo">ID Number</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="email" name="email" placeholder="Email Address" disabled>
-            <label for="email">Email Address</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="altEmail" name="altEmail" placeholder="Email" disabled>
-            <label for="altEmail">Alternate Email Address</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="cellNo" name="cell" placeholder="Cell No" disabled>
-            <label for="cell">Cellphone Number</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="altCellNo" name="altCell" placeholder="Alt Cell" disabled>
-            <label for="altCell">Alternate CellPhone Number</label>
-          </div>
+          <input type="text" class="form-control" [(ngModel)]="surname" name="surname" placeholder="Owner Surname" disabled>
+          <label for="surname">Surname</label>
         </div>
       </div>
     </div>
-  </mat-tab>
-  <mat-tab label="Architect Details">
-    <div class="cont2">
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectName" name="architectName" placeholder="Architect Full Name" disabled>
-            <label for="architectName">Architect Full Name</label>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectSurname" name="architectSurname" placeholder="Architect Surname" disabled>
-            <label for="architectSurname">Architect Surname</label>
-          </div>
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="idNumber" name="idNo" placeholder="ID Number" disabled>
+        <label for="idNo">ID Number</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="email" name="email" placeholder="Email Address" disabled>
+          <label for="email">Email Address</label>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectId" name="architectId" placeholder="Architect ID No" disabled>
-            <label for="architectId">ID Number</label>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectReg" name="architectReg" placeholder="Architect Reg No" disabled>
-            <label for="architectReg">Architect Registration Number</label>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email" disabled>
-            <label for="architectEmail">Architect Email Address</label>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectCell" name="architectCell" placeholder="Architect Cell No" disabled>
-            <label for="architectCell">Architect Cellphone Number</label>
-          </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="altEmail" name="altEmail" placeholder="Email" disabled>
+          <label for="altEmail">Alternate Email Address</label>
         </div>
       </div>
     </div>
 
-
-  </mat-tab>-->
-  <!--------------------------------------- Comments ------------------------------------------->
-  <!--<mat-tab label="Comments">-->
-  <!--<div class="cardApprove ">
-
-
-    <div class="icon-containerApprove ">
-      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
-    </div>
-
-    <div class="commentbox ">
-
-      <div class="message-text-container ">
-        <h1 class="message-textApprove ">Success message</h1>
-        <h2 class="sub-text">Everything seems great</h2>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="cellNo" name="cell" placeholder="Cell No" disabled>
+          <label for="cell">Cellphone Number</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="altCellNo" name="altCell" placeholder="Alt Cell" disabled>
+          <label for="altCell">Alternate CellPhone Number</label>
+        </div>
       </div>
     </div>
-
   </div>
-  <div class="cardReject">
+</mat-tab>
+<mat-tab label="Architect Details">
+  <div class="cont2">
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectName" name="architectName" placeholder="Architect Full Name" disabled>
+          <label for="architectName">Architect Full Name</label>
+        </div>
+      </div>
 
-
-    <div class="icon-containerReject ">
-      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectSurname" name="architectSurname" placeholder="Architect Surname" disabled>
+          <label for="architectSurname">Architect Surname</label>
+        </div>
+      </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectId" name="architectId" placeholder="Architect ID No" disabled>
+          <label for="architectId">ID Number</label>
+        </div>
+      </div>
 
-    <div class="commentboxReject">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectReg" name="architectReg" placeholder="Architect Reg No" disabled>
+          <label for="architectReg">Architect Registration Number</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email" disabled>
+          <label for="architectEmail">Architect Email Address</label>
+        </div>
+      </div>
 
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="architectCell" name="architectCell" placeholder="Architect Cell No" disabled>
+          <label for="architectCell">Architect Cellphone Number</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</mat-tab>-->
+<!--------------------------------------- Comments ------------------------------------------->
+<!--<mat-tab label="Comments">-->
+<!--<div class="cardApprove ">
+
+
+  <div class="icon-containerApprove ">
+    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+  </div>
+
+  <div class="commentbox ">
+
+    <div class="message-text-container ">
+      <h1 class="message-textApprove ">Success message</h1>
+      <h2 class="sub-text">Everything seems great</h2>
+    </div>
+  </div>
+
+</div>
+<div class="cardReject">
+
+
+  <div class="icon-containerReject ">
+    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+  </div>
+
+  <div class="commentboxReject">
+
+    <div class="message-text-container">
+      <h1 class="message-textReject ">Reject</h1>
+      <h2 class="sub-text">Application has been rejected</h2>
+    </div>
+  </div>
+
+</div>
+<div class="cardClarify">
+
+
+  <div class="icon-containerClarify ">
+    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
+  </div>
+
+  <div class="commentboxClarify">
+
+    <div class="message-text-container">
+      <h1 class="message-textClarify ">Clarify</h1>
+      <h2 class="sub-text">a reviewer has requested clarification</h2>
+    </div>
+  </div>
+
+</div>
+
+<div class="cardRelaxation">
+
+
+  <div class="icon-containerRelaxation ">
+    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+  </div>
+
+  <div class="commentbox">
+
+    <div class="message-text-containerRelaxation">
+      <h1 class="message-textRelaxation ">Relaxation</h1>
+      <h2 class="sub-text">Relaxation Requested</h2>
+    </div>
+  </div>
+
+</div>-->
+<!--<div *ngFor="let comment of CommentsList ; let i = index">
+    <div [class.cardApprove]="comment.CommentStatus === 'Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
+
+      <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved'">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+      </div>
+
+      <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation'">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+      </div>
+
+      <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
+      </div>
+
+      <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+      </div>
       <div class="message-text-container">
-        <h1 class="message-textReject ">Reject</h1>
-        <h2 class="sub-text">Application has been rejected</h2>
-      </div>
-    </div>
 
-  </div>
-  <div class="cardClarify">
-
-
-    <div class="icon-containerClarify ">
-      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
-    </div>
-
-    <div class="commentboxClarify">
-
-      <div class="message-text-container">
-        <h1 class="message-textClarify ">Clarify</h1>
-        <h2 class="sub-text">a reviewer has requested clarification</h2>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="cardRelaxation">
-
-
-    <div class="icon-containerRelaxation ">
-      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
-    </div>
-
-    <div class="commentbox">
-
-      <div class="message-text-containerRelaxation">
-        <h1 class="message-textRelaxation ">Relaxation</h1>
-        <h2 class="sub-text">Relaxation Requested</h2>
-      </div>
-    </div>
-
-  </div>-->
-  <!--<div *ngFor="let comment of CommentsList ; let i = index">
-      <div [class.cardApprove]="comment.CommentStatus === 'Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
-
-        <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved'">
-          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+        <div class="messageHead">
+          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+          <p>{{comment.DateCreated}}</p>
         </div>
 
-        <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation'">
-          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+
+          <div class="messageFoot">
+            <p class="sub-text">{{comment.Comment}}</p>
+            <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify'">Reply</button>
+            <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
+
         </div>
-
-        <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
-          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
-        </div>
-
-        <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
-          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
-        </div>
-        <div class="message-text-container">
-
-          <div class="messageHead">
-            <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
-            <p>{{comment.DateCreated}}</p>
-          </div>
-
-
-            <div class="messageFoot">
-              <p class="sub-text">{{comment.Comment}}</p>
-              <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify'">Reply</button>
-              <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
-
-          </div>
-        </div>
-      </div>
-      <div *ngIf="comment.ViewReply==true" class="replyRow">
-        <textarea class="viewReply" disabled>
-       {{reply}}
-      </textarea>
-        <button mat-raised-button color="clarify2" (click)="openEditReply(i,replyModal)">Edit</button>
       </div>
     </div>
-  </mat-tab>-->
-  <!----- BP Financials Kyle ------>
-  <!--<mat-tab label="Financials">
-    <app-bpfinancials></app-bpfinancials>
-  </mat-tab>-->
-  <!----- BP Financials Kyle ------>
-  <!------------------------------------------------- Document Uploads ----------------------------------------->
-  <!--<mat-tab label="Documents Upload">
-    <div class="cont2">
-      <div *ngIf="currentStage == 'LS Relaxation - Unpaid'">
-        <div class="RelaxationDocumentsUploads">
-          <mat-list *ngFor="let LSmanDoc of LSMandatoryDocuments | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
-            <mat-divider></mat-divider>
-            <mat-list-item> {{LSmanDoc.mandatoryDocumentName}}</mat-list-item>
-            <mat-form-field>
-              <div>
-                <mat-toolbar>-->
-  <!-- Display files names -->
-  <!--<input matInput readonly name="name" class="textFuckingBox" />-->
-  <!-- app-file-upload Component -->
-  <!--<div class="container-fluid">
-    <app-bpfile-upload [ApplicationID]="applicationId"
-                       [UploadFor]="LSmanDoc.mandatoryDocumentName"
-                       (passFileName)="onPassFileName($event,i)"
-                       (onUploadFinished)="onFileDelete($event, i)"
-                       (onUploadSuccess)="onFileUpload($event)">
-    </app-bpfile-upload>
-  </div>-->
-  <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
-  <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
-  <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
-  <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
-  <!--</mat-toolbar>
-          </div>
-        </mat-form-field>
-      </mat-list>
+    <div *ngIf="comment.ViewReply==true" class="replyRow">
+      <textarea class="viewReply" disabled>
+     {{reply}}
+    </textarea>
+      <button mat-raised-button color="clarify2" (click)="openEditReply(i,replyModal)">Edit</button>
     </div>
   </div>
+</mat-tab>-->
+<!----- BP Financials Kyle ------>
+<!--<mat-tab label="Financials">
+  <app-bpfinancials></app-bpfinancials>
+</mat-tab>-->
+<!----- BP Financials Kyle ------>
+<!------------------------------------------------- Document Uploads ----------------------------------------->
+<!--<mat-tab label="Documents Upload">
+  <div class="cont2">
+    <div *ngIf="currentStage == 'LS Relaxation - Unpaid'">
+      <div class="RelaxationDocumentsUploads">
+        <mat-list *ngFor="let LSmanDoc of LSMandatoryDocuments | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
+          <mat-divider></mat-divider>
+          <mat-list-item> {{LSmanDoc.mandatoryDocumentName}}</mat-list-item>
+          <mat-form-field>
+            <div>
+              <mat-toolbar>-->
+<!-- Display files names -->
+<!--<input matInput readonly name="name" class="textFuckingBox" />-->
+<!-- app-file-upload Component -->
+<!--<div class="container-fluid">
+  <app-bpfile-upload [ApplicationID]="applicationId"
+                     [UploadFor]="LSmanDoc.mandatoryDocumentName"
+                     (passFileName)="onPassFileName($event,i)"
+                     (onUploadFinished)="onFileDelete($event, i)"
+                     (onUploadSuccess)="onFileUpload($event)">
+  </app-bpfile-upload>
+</div>-->
+<!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
+<!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
+<button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+<!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
+<!--</mat-toolbar>
+        </div>
+      </mat-form-field>
+    </mat-list>
+  </div>
+</div>
 
 
-  <div class="container04">
-    <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>-->
-  <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
-  <!--<p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
-
-
-      </div>
-
-
-    <app-documents-component [currentStage]="currentStage"></app-documents-component>
+<div class="container04">
+  <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>-->
+<!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+<!--<p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
 
 
     </div>
-  </mat-tab>
-  <mat-tab label="Stage Checklist">-->
-  <!--<app-bpview-stage-checklist [functionalArea]="functionalArea"
-                              [stageName]="currentStage">
-
-  </app-bpview-stage-checklist>-->
-  <!--</mat-tab>
 
 
-  <mat-tab label="Department Checklist">
+  <app-documents-component [currentStage]="currentStage"></app-documents-component>
+
+
+  </div>
+</mat-tab>
+<mat-tab label="Stage Checklist">-->
+<!--<app-bpview-stage-checklist [functionalArea]="functionalArea"
+                            [stageName]="currentStage">
+
+</app-bpview-stage-checklist>-->
+<!--</mat-tab>
+
+
+<mat-tab label="Department Checklist">
+
+</mat-tab>
+<mat-tab label="Department Indication">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">-->
+<!-- Position Column -->
+<!--<ng-container matColumnDef="DepartmentName" class="approve">
+  <th mat-header-cell *matHeaderCellDef>Department</th>
+  <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
+
+</ng-container>-->
+<!-- Indication Column -->
+<!--<ng-container matColumnDef="indication">
+  <th mat-header-cell *matHeaderCellDef>Indication</th>
+  <td mat-cell *matCellDef="let element">
+    <div class="contIndication">-->
+<!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
+<!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
+<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
+<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">-->
+<!-- projectTracker Sindiswa 15 January 2024 -->
+<!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
+<p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
+<p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p>-->
+<!-- projectTracker Sindiswa 15 January 2024 -->
+<!--<p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>-->
+<!-- projectTracker Sindiswa 12 January 2024 -->
+<!--<img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
+<p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>-->
+<!-- projectTracker Sindiswa 12 January 2024 -->
+<!--</div>
+  </td>
+</ng-container>-->
+<!-- projectTracker Sindiswa 12 January 2024 -->
+<!--<ng-container matColumnDef="zoneUser" class="approve">
+  <th mat-header-cell *matHeaderCellDef>User</th>
+  <td mat-cell *matCellDef="let element">{{element.zoneUser}}</td>
+</ng-container>-->
+<!-- end of projectTracker Sindiswa 12 January 2024 -->
+<!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
 
   </mat-tab>
-  <mat-tab label="Department Indication">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">-->
-  <!-- Position Column -->
-  <!--<ng-container matColumnDef="DepartmentName" class="approve">
-    <th mat-header-cell *matHeaderCellDef>Department</th>
-    <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
 
-  </ng-container>-->
-  <!-- Indication Column -->
-  <!--<ng-container matColumnDef="indication">
-    <th mat-header-cell *matHeaderCellDef>Indication</th>
-    <td mat-cell *matCellDef="let element">
-      <div class="contIndication">-->
-  <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-  <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
-  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
-  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">-->
-  <!-- projectTracker Sindiswa 15 January 2024 -->
-  <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-  <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
-  <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p>-->
-  <!-- projectTracker Sindiswa 15 January 2024 -->
-  <!--<p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>-->
-  <!-- projectTracker Sindiswa 12 January 2024 -->
-  <!--<img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
-  <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>-->
-  <!-- projectTracker Sindiswa 12 January 2024 -->
-  <!--</div>
-    </td>
-  </ng-container>-->
-  <!-- projectTracker Sindiswa 12 January 2024 -->
-  <!--<ng-container matColumnDef="zoneUser" class="approve">
-    <th mat-header-cell *matHeaderCellDef>User</th>
-    <td mat-cell *matCellDef="let element">{{element.zoneUser}}</td>
-  </ng-container>-->
-  <!-- end of projectTracker Sindiswa 12 January 2024 -->
-  <!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+  <mat-tab label="Town Planning Pre-Scrutiny Checklist">
+    <mat-selection-list>
 
-      </table>
+      <mat-list-option value="1">Project Overview: Summary of the proposed development, including purpose, scale, and intended use.</mat-list-option>
+      <mat-list-option value="2">Site Location: Check if the location is zoned appropriately for the proposed development.</mat-list-option>
+      <mat-list-option value="3">Ownership and Tenure: Verification of land ownership and tenure.</mat-list-option>
+      <mat-list-option value="4">Historical Significance: Assessment of any historical, cultural, or architectural significance of the site</mat-list-option>
 
-    </mat-tab>
+    </mat-selection-list>
 
-    <mat-tab label="Town Planning Pre-Scrutiny Checklist">
-      <mat-selection-list>
-
-        <mat-list-option value="1">Project Overview: Summary of the proposed development, including purpose, scale, and intended use.</mat-list-option>
-        <mat-list-option value="2">Site Location: Check if the location is zoned appropriately for the proposed development.</mat-list-option>
-        <mat-list-option value="3">Ownership and Tenure: Verification of land ownership and tenure.</mat-list-option>
-        <mat-list-option value="4">Historical Significance: Assessment of any historical, cultural, or architectural significance of the site</mat-list-option>
-
-      </mat-selection-list>
-
-    </mat-tab>
+  </mat-tab>
 
 
-  </mat-tab-group>-->
+</mat-tab-group>-->
+
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <!--<img src="assets/Loading.png" alt="" class="logo2">
+  Need to have an BP relevant loading shandis-->
+  <div class="shapes-5"></div>
+
+</div>
