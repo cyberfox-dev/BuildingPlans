@@ -290,7 +290,11 @@ export interface BPDepartmentsForCommentList {
   CommentStatus: string;
 }
 
-
+export interface BuildingControls {
+  Category: string;
+  Permitted: string;
+  Proposed: string;
+}
 
 @Component({
   selector: 'app-bp-action-center',
@@ -418,6 +422,8 @@ export class BpActionCenterComponent implements OnInit {
   CommentsList: CommentsList[] = [];
   LinkedSubDepartmentsList: SubDepartmentListForComment[] = []; //escalation Sindiswa 30 January 2024
 
+
+
   //Service Information Kyle 31/01/24
   ServiceInfoDocumentsList: ServiceInfoDocumentsList[] = [];
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
@@ -472,6 +478,10 @@ export class BpActionCenterComponent implements OnInit {
 
   displayedColumnsPermitIssuers: string[] = ['fullName', 'actions'];
   dataSourcePermitIssuers = this.PermitIssuerList;
+
+  displayedColumns: string[] = ['category', 'permitted', 'proposed'];
+  buildingControlsList: BuildingControls[] = [];
+  dataSource = this.buildingControlsList;
 
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
@@ -614,6 +624,13 @@ export class BpActionCenterComponent implements OnInit {
     this.getApplicationInfo();
     debugger;
     this.getAllApplicationInfo();
+    this.addCategory('Floor Area Ratio');
+    this.addCategory('COVERAGE');
+    this.addCategory('HEIGHT');
+    this.addCategory('BUILDING LINE');
+    this.addCategory('SIDE SPACE');
+    this.addCategory('REAR SPACE');
+    this.addCategory('ONSITE PARKING');
     this.getAllNeighbourConsent();
     this.getUserRoles();
     this.getServicesByDepID();
@@ -738,6 +755,15 @@ export class BpActionCenterComponent implements OnInit {
     /* this.refreshService.disableRefreshNavigation();*/
   }
 
+  addCategory(category: string) {
+    const tempEntry = {} as BuildingControls;
+
+    tempEntry.Category = category;
+    tempEntry.Permitted = '';
+    tempEntry.Proposed = '';
+
+    this.buildingControlsList.push(tempEntry);
+  }
 
   setProjectNumber() {
 
