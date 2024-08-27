@@ -130,7 +130,34 @@
           </mat-tab>
 
           <mat-tab label="Section B">
-            <!--<table mat-table class="mat-elevation-z8"></table>-->
+            <table mat-table  [dataSource]="dataSource"class="mat-elevation-z8">
+
+              <ng-container matColumnDef="category">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.Category}} </mat-cell>
+              </ng-container>
+
+              <!-- Permitted Column -->
+              <ng-container matColumnDef="permitted">
+                <mat-header-cell *matHeaderCellDef> Permitted </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <input matInput style="background-color:white" [(ngModel)]="element.permitted">
+                </mat-cell>
+              </ng-container>
+
+              <!-- Proposed Column -->
+              <ng-container matColumnDef="proposed">
+                <mat-header-cell *matHeaderCellDef> Proposed </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <input matInput [(ngModel)]="element.proposed">
+                </mat-cell>
+              </ng-container>
+
+              <!-- Header and Row Declarations -->
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </table>
           </mat-tab>
         </mat-tab-group>
         <br/>
