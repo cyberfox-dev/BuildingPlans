@@ -356,7 +356,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
-  selectedTabIndex: number = 0;
+  selectedTabIndex: number;
 
 
   filterValue = '';
@@ -714,7 +714,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-    setTimeout(() => {
+
 
       // #region reapply Sindiswa 26 January 2024
       /*this.routerSubscription = this.sharedService.getRoutingToOldAapp();
@@ -724,6 +724,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.sharedService.setShowFormerApps(true);
       this.sharedService.setFromReApplyArchive(false);
       // #endregion
+    this.GetAllApplications();
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -763,30 +764,27 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.Reviews = 'Current';
       //this.ServerType = this.sharedService.getServerType();onFilterButtonClick
       this.isBannerVisible();
-      if (this.CurrentUserProfile[0].isInternal == true) {
-        
-        this.GetAllPreInvoiceScrutinyApplications();
+ 
+    this.GetAllApplications();
+/*        this.GetAllPreInvoiceScrutinyApplications();
         this.GetAllBuildingPlansApplications();
-        this.getAllPreInvoiceScurtinyApplications();
-        this.selectedTabIndex = 7;
-        this.dataSourceSA = this.ApplicationsBP;
-        this.originalDataSourceSA = [...this.ApplicationsBP];
-      }
-      else if (this.CurrentUserProfile[0].isInternal == false) {
-        this.GetAllApplicationsForExternalUser();
-      }
+        this.getAllPreInvoiceScurtinyApplications();*/
+        this.selectedTabIndex = 8;
+/*        this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP];*/
+
       this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
       this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
 
-      this.GetAllApplications();
+ 
       this.onCheckAllRolesForUser();
       this.getAllClientsForArchitect();
       this.setSelectedVal();
       // Call the appropriate method based on the initially selected value
-      this.onToggleChange(this.selectedVal);
+/*      this.onToggleChange(this.selectedVal);*/
       /*      this.initializeApp();*/
       //this.function();
-    }, 100);
+  
 
     //this.defaultPageSize = 10;
   }
@@ -7343,7 +7341,7 @@ this.subscriptions.push(subscription);
         this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         debugger;
         this.applicationTypeName = "Build Plan";
-        this.selectedTabIndex = 8;
+
         this.dataSourceSA = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
         this.originalDataSourceSA = [...this.AllApplications];
       }
@@ -7901,9 +7899,10 @@ this.subscriptions.push(subscription);
     this.modalService.open(this.archiveOption, { centered: true, size: 'xl' });
   }
   //Home Tabs Kyle 27-05 - 24
-  onChangeDataSource(index:any) {
-    this.selectedTabIndex = index;
-    switch (index) {
+  onChangeDataSource(event: any) {
+    debugger;
+    this.selectedTabIndex = event.options[0].value;
+    switch (this.selectedTabIndex) {
       case 0:
 /*        this.GetAllPreInvoiceScrutinyApplications();*/
         this.GetAllPreInvoiceScrutinyApplications();

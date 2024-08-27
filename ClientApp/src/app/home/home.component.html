@@ -79,7 +79,7 @@
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
           </button>
           <mat-menu #menu3="matMenu" xPosition="after">
-<!--            <mat-selection-list [(ngModel)]="selectedTabIndex" (selectionChange)="onChangeDataSource([value])" [multiple]="false">
+            <mat-selection-list [(ngModel)]="selectedTabIndex" (selectionChange)="onChangeDataSource($event)" [multiple]="false">
               <mat-list-option [value]="0">Pre-Submission Applications</mat-list-option>
               <mat-list-option [value]="1">Town Planning Applications</mat-list-option>
               <mat-list-option [value]="2">Building Plan Applications</mat-list-option>
@@ -90,7 +90,7 @@
               <mat-list-option [value]="7">Archive Application</mat-list-option>
               <mat-list-option [value]="8">All Applications</mat-list-option>
               <mat-list-option [value]="9">Wayleave</mat-list-option>
-            </mat-selection-list>-->
+            </mat-selection-list>
 
           </mat-menu>
           <mat-form-field appearance="outline">
