@@ -1352,7 +1352,12 @@ export class NavMenuComponent implements OnInit {
   }
 
 
+  opensideNav() {
+    let btn = document.querySelector('#menu');
+    let sideBar = document.querySelector('.sidebar');
 
+    sideBar.classList.toggle('active');
+  }
 }
 
 

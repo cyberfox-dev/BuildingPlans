@@ -161,7 +161,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   panelOpenState :boolean = false;
   ngOnInit(): void {
 
-    this.refreshService.enableRefreshNavigation('/home');
+/*    this.refreshService.enableRefreshNavigation('/home');*/
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));

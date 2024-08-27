@@ -62,13 +62,14 @@ table {
 h1 {
   font-family: 'Nunito', sans-serif;
   margin: 0 auto;
-  text-align: center;
-  padding-top: 40px;
+  /* text-align: center; */
+  /* padding-top: 40px; */
   color: #343a40;
   font-size: 70px;
   font-weight: bold;
-  margin-top: 152px;
-  margin-bottom: 246px;
+  margin-top: 39px;
+  margin-bottom: 58px;
+  /* padding: 35px; */
 }
 
 

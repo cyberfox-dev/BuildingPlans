@@ -1,10 +1,13 @@
-.animationSlideDown {
+/*.animationSlideDown {
   animation: fade-in-bottom 0.5s ease-out;
+}*/
+* {
+  font-family: 'Nunito' !important;
 }
 .main {
   display: flex;
-  justify-content: center;
-  margin-bottom: 62px;
+/*  justify-content: center;
+  margin-bottom: 62px;*/
 }
 .cont3 {
   display: flex;
@@ -15,15 +18,134 @@
   /* margin-bottom: 150px; */
 }
 h2 {
-
-  margin-top: 200px;
+  margin-top: 4px;
   margin-bottom: 0px;
-  text-align: center;
   font-family: 'Nunito';
-  font-size: 55px;
+  font-size: 27px;
   font-weight: 600;
+  padding: 12px;
 }
+.PropertyOwnerDetails {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 25px 10px 13px 10px;
+  height: 161px;
+}
+.tracker {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 17px 10px 25px 10px;
+  height: 154px;
+}
+.displayRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.cardhover:hover {
+  /* box-shadow: 0 0 9px 0px rgb(239 195 115); */
+  background: #ffa5000d;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+}
+.BootomViewProject {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 50%;
+}
+.actionCenter {
+  border: 2px solid;
+  height: 350px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 17px 10px 10px 10px;
+  height: 246px;
+}
+.applicationDeatails{
 
+}
+.Map {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 98%;
+  padding: 10px;
+  margin: 5px 10px 5px 10px;
+  height: 234px;
+  overflow: auto;
+}
+.MiddleView {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.Comments {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 0px 10px 5px 10px;
+  height: 495px;
+  overflow:auto;
+}
+.Documents {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 17px 10px 5px 10px;
+  height: 234px;
+  overflow:auto
+}
+.progressText {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 9px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  padding: 10px;
+  margin: 17px 10px 25px 10px;
+  height: 68px;
+}
+.headerViewProject {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.rightSideHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.leftSideHeader {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .example-h2 {
   margin: 10px;
 }
@@ -39,7 +161,9 @@ h3 span {
 
   font-size: 23px;
 }
+.icon3{
 
+}
 .card {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
   margin: 20px;
@@ -70,18 +194,32 @@ h3 span {
   width:100%;
 }
 h3 {
-  width: 30em;
-  border-color: #00cdff;
-  text-align: center;
-  font-family: 'Nunito', sans-serif;
-  border-bottom: 1px solid #0487a7;
-  line-height: 0.1em;
-  margin: 0 auto;
-  padding-top: 50px;
-  margin-bottom: 50px;
-  justify-content: space-around;
+  font-family: system-ui;
+  font-weight: 700;
+  /* border-bottom: 2px solid; */
+  color: #d5d5d57d;
 }
-
+.Name {
+  text-align: center;
+  font-size: 31px;
+  /* margin-top: -4px; */
+  font-weight: 500;
+  color: #b9a7887d;
+  font-feature-settings:;
+  font-variant: full-width;
+  text: -webkit-control;
+  font-family: system-ui;
+  letter-spacing: 5px;
+  /* margin-bottom: 15px; */
+}
+.Email {
+  text-align: center;
+  margin: 10px 0px;
+}
+.CellNo {
+  text-align: center;
+  margin: 10px 0px;
+}
 .mat-form-field {
   /*  margin: 10px 0;*/
   width: 100%;
@@ -213,8 +351,8 @@ table {
 .cardApprove {
   height: 80px;
   border-radius: 50px;
-  border: 2px solid;
-  border-color: #046b02;
+  /* border: 2px solid; */
+  border-color: #bcbcbc;
   box-sizing: border-box;
   padding: 10px 15px;
   position: relative;
@@ -225,6 +363,7 @@ table {
   align-content: center;
   flex-direction: row;
   margin-top: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -295,8 +434,9 @@ table {
 .cardReject {
   height: 80px;
   border-radius: 50px;
-  border: 2px solid;
-  border-color: #730303;
+  /* border: 2px solid; */
+  border-color: #bcbcbc;
+  box-sizing: border-box;
   padding: 10px 15px;
   position: relative;
   overflow: hidden;
@@ -306,6 +446,7 @@ table {
   align-content: center;
   flex-direction: row;
   margin-top: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -356,11 +497,10 @@ table {
 .cardClarify {
   height: 80px;
   border-radius: 50px;
-  border-block-color: #046b02;
+  /* border: 2px solid; */
+  border-color: #bcbcbc;
   box-sizing: border-box;
   padding: 10px 15px;
-  border: 2px solid;
-  border-color: #d57d38;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -369,6 +509,7 @@ table {
   align-content: center;
   flex-direction: row;
   margin-top: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -419,10 +560,10 @@ table {
 .cardRelaxation {
   height: 80px;
   border-radius: 50px;
+  /* border: 2px solid; */
+  border-color: #bcbcbc;
   box-sizing: border-box;
   padding: 10px 15px;
-  border: 2px solid;
-  border-color: #0be7fd;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -431,6 +572,7 @@ table {
   align-content: center;
   flex-direction: row;
   margin-top: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -450,7 +592,7 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0be7fd;
+  background-color: #77c1c8;
   border-radius: 100%;
   margin-left: 0;
 }
@@ -519,4 +661,21 @@ table {
 
 .RelaxationDocumentsUploads {
   box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
+}
+.ProjectNumberCard {
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 10px;
+  background-color: rgb(255 165 0 / 69%);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(5px);
+  margin-top: 16px;
+  width: 100%;
+}
+.animationSlideDown {
+  animation: fade-in-bottom 1s ease-out;
+}
+
+.animationSlideUp {
+  animation: fade-in-top 1s ease-out;
 }

@@ -32,10 +32,10 @@
     color: white !important;
   }
   .container {
-    background-color: #323e4e;
+
   }
-  .backgroundWLMS{
-    width: 100%;
+  .backgroundWLMS {
+/*    width: 100%;
     height: 470px;
     position: absolute;
     background-image: url('assets/pietermaritzburg-modified-12.png');
@@ -47,7 +47,22 @@
     margin: 0;
     outline: none;
     box-shadow: none;
+    background-clip: content-box;*/
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-image: url('assets/pietermaritzburg-modified-12.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
     background-clip: content-box;
+    padding-left: 102px;
+    padding-right: 19px;
   }
   .offcanvas-menu {
     background-color: #323e53 !important;
@@ -181,14 +196,14 @@
   }
 
   .container {
-    background-color: white;
+
   }
 
   .backgroundWLMS {
     width: 100%;
-    height: 581px;
+    height: 100%;
     position: absolute;
-    background-image: url('assets/pietermaritzburg-modified-12(light).png.jpg');
+    /* background-image: url('assets/pietermaritzburg-modified-12(light).png.jpg'); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -198,13 +213,17 @@
     outline: none;
     box-shadow: none;
     background-clip: content-box;
+    padding-left: 102px;
+    padding-right: 19px;
   }
   body {
     background: #ffffff00;
     color:black !important;
   }
   .mat-tab-labels {
-    background-color: #eaeaea !important;
+   
+    border-radius: 5px;
+    margin-bottom: 10px;
   }
 }
 
@@ -262,7 +281,8 @@ body {
 }
 .mat-tab-labels {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+
 }
 
 .mat-toolbar {
@@ -450,4 +470,191 @@ tr:hover {
 }*/
 .mat-form-field-underline {
   /*display: none !important;*/
+}
+.ProjectHeading{
+    font-weight:800;
+}
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.mat-sidenav-content {
+  width: 100%;
+  height: 470px;
+  position: absolute;
+  background-image: url('assets/pietermaritzburg-modified-12(light).png.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+  background-clip: content-box;
+}
+.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown {
+  background-color: rgb(0 0 0 / 0%);
+}
+.mat-sidenav.mat-drawer.mat-sidenav.ng-tns-c173-0.ng-trigger.ng-trigger-transform.mat-drawer-over.ng-star-inserted.mat-drawer-opened {
+  background: #ffffffd9;
+
+}
+  .mat-sidenav.mat-drawer.mat-sidenav.ng-tns-c173-0.ng-trigger.ng-trigger-transform.mat-drawer-over.ng-star-inserted.mat-drawer-opened:hover {
+    width: 210px;
+  }
+.user-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  margin-top: 15px;
+}
+.sidebar {
+  position: absolute;
+  top: 15px;
+  left: 11px;
+  height: 96vh;
+  width: 80px;
+  background-color: #ffffff;
+  padding: .4rem 0.8rem;
+  transition: all 0.5s ease;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 20px;
+  background-color: rgb(255 255 255 / 12%);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
+  .sidebar.active ~ main-content{
+      left:250px;
+      width:calc(100% -250px);
+  }
+  .sidebar.active{
+      width:250px;
+  }
+  .sidebar #menu {
+    position: absolute;
+    top: 1px;
+    left: 47%;
+    font-size: 1.2rem;
+    transform: translateX(-50%);
+    cursor: pointer;
+    border-radius: inherit;
+    border-color: none;
+  }
+    .sidebar.active #menu {
+        left:83%;
+    }
+  .sidebar .top .logo {
+    display: flex;
+    height: 47px;
+    width: 100%;
+    /* align-items: center; */
+    pointer-events: none;
+    opacity: 0;
+    /* flex-direction: row; */
+    line-height: 68px;
+    font-size: 23px;
+    color: #adadad4a;
+  }
+    .bold{
+        font-weight:600;
+    }
+    .sidebar.active .top .logo{
+        opacity:1;
+    }
+    .top .logo i{
+        font-size :2rem;
+        margin-right:5px;
+    }
+    .user{
+        display:flex;
+        align-items:center;
+        margin:1rem 0;
+    }
+    .user p{
+        opacity:1;
+        margin-left:1rem;
+    }
+
+    .sidebar p{
+       opacity: 0;
+    }
+.sidebar.active p {
+  opacity: 1;
+  margin: 0 18px;
+  transform: translateX()
+}
+.sidebar ul li{
+    position:relative;
+    list-style-type:none;
+    height:50px;
+    width:90%;
+    margin:.8rem auto;
+
+}
+.sidebar ul li a{
+    display:flex;
+    align-items:center;
+    text-decoration:none;
+    border-radius:.8rem;
+
+}
+.sidebar ul li a:hover {
+    background-color:orange;
+    color:white;
+    cursor:pointer;
+
+}
+
+  .sidebar ul li a i {
+    min-width: 50px;
+    text-align: center;
+    height: 50px;
+    border-radius: 12px;
+    line-height: 50px;
+    font-size: 18px;
+  }
+ul {
+  margin-left: -34px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .nav-item{
+    opacity:0;
+}
+.sidebar.active .nav-item {
+  opacity: 1;
+  transform: translateX();
+  animation-delay: 1s;
+  transition-delay: .1s;
+  text-wrap: nowrap;
+}
+
+.sidebar ul li .tooltip {
+  position: absolute;
+  left: 73px;
+  top: 15%;
+  transform: translate(-50%,/50%);
+  box-shadow: 0 0.5rem 0.8rem rgba(0,0,0,0.2);
+  border-radius: .6rem;
+  padding: .4rem 1.2rem;
+  line-height: 1.8rem;
+  z-index: 202;
+  opacity: 0;
+  text-wrap: nowrap;
+}
+li:hover .tooltip{
+    opacity:1;
+}
+li .tooltip{
+    display:none;
+}
+.mat-tooltip{
+    font-size:14px !important;
 }

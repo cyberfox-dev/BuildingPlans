@@ -3,80 +3,57 @@
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
 <head>
-  <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="src/assets/js/all.js"></script>
-    <script src="src/assets/js/all.min.js"></script>
-    <link rel="stylesheet" href="/src/assets/all.css">
-    <link rel="stylesheet" href="/src/assets/all.min.css">
-    <script defer src="src/assets/fontawesome-free-6.4.2-web/js/brands.js"></script>
-    <script defer src="src/assets/fontawesome-free-6.4.2-web/js/solid.js"></script>
-    <script defer src="src/assets/fontawesome-free-6.4.2-web/js/fontawesome.js"></script>
-    <script defer src="src/assets/fontawesome-free-6.4.2-web/js/sharp-solid.js"></script>
-    <script defer src="src/assets/fontawesome-free-6.4.2-web/js/custom-icons.js"></script>-->
+
 
 </head>
-<!--<h1>Navbar</h1>-->
-<!--<button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openSpin(spin)">-->
-<!--color="configureActingDepartment"-->
-<!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-gear-solid.svg" class="icon">
-</button>-->
 
 
 
 
-<div class="container-fluid main">
+<div class="containerMain">
+  <div class="container-fluid main">
 
-  <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
-  <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-</div>
+    <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
+    <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
+  </div>
+  <div class="cont3 ">
+    <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
+    <!--<button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>-->
+    <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
+    <!-- Service Information Kyle 31/01/24-->
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
+    <mat-menu #menu2="matMenu" xPosition="after">
+      <!--THIS IS ACTUALLY LAND SURVEY-->
+      <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Building Plan Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="GoToBuildingApplication(false,null,true)">Wayleave Application</button>
 
-<div class="tag-list" *ngIf="showBanner">
-  <div class="loop-slider" [style.--startPoint]="tagLength">
-    <div class="inner">
-      <div class="tag" [style.--tagLength]="tagLength">
-        {{ alertMessage }} {{showDates}}
-      </div>
+      <!--JUST INCASE THEY CHANGE THEIR MINDS AGAIN, UNCOMMENT THE BELOW OUT FOR SEPERATE BUILDING PLANS APPLICATION-->
+      <!--    <mat-divider></mat-divider>
+        <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>-->
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="openArchiveOption()" *ngIf="this.CurrentUserProfile[0].isInternal == true">Archive</button>
+    </mat-menu>
 
-    </div>
-
+    <!--OLD CREATE NEW WAYLEAVE, MOVED INSIDE THWE MAIN BUTTON-->
+    <!-- <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>-->
+    <!-- Service Information Kyle 31/01/24-->
   </div>
 </div>
-<!--Sytem Alert Kyle 12-03-24-->
 
-<div class="cont3 ">
-  <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
-  <!--<button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>-->
-  <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
-  <!-- Service Information Kyle 31/01/24-->
-  <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
-  <mat-menu #menu2="matMenu" xPosition="after">
-    <!--THIS IS ACTUALLY LAND SURVEY-->
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Building Plan Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="GoToBuildingApplication(false,null,true)">Wayleave Application</button>
 
-    <!--JUST INCASE THEY CHANGE THEIR MINDS AGAIN, UNCOMMENT THE BELOW OUT FOR SEPERATE BUILDING PLANS APPLICATION-->
-    <!--    <mat-divider></mat-divider>
-      <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>-->
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="openArchiveOption()" *ngIf="this.CurrentUserProfile[0].isInternal == true">Archive</button>
-  </mat-menu>
 
-<!--OLD CREATE NEW WAYLEAVE, MOVED INSIDE THWE MAIN BUTTON-->
- <!-- <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>-->
-  
-  <!-- Service Information Kyle 31/01/24-->
-</div>
+
 
 
 
@@ -91,37 +68,17 @@
 
     <div class="table container-fluid animationFadeIn">
 
-      <div class="">
-        <div class="filterValue">
+      
+<!--        <div class="filterValue">
           <p>You Are Currently Viewing The 30 Latest {{applicationTypeName}} Applications </p>
-        </div>
+        </div>-->
         <div class="container02">
 
 
-          <button mat-button type="button" (click)="drawer.toggle()" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
+          <button mat-button type="button" [matMenuTriggerFor]="menu3" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
           </button>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Search</mat-label>
-            <div class="cont6">
-
-              <input matInput [(ngModel)]="searchInput" (input)=" SearchForApplication()" #input>
-              <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/magnifying-glass.svg" class="icon3">
-            </div>
-
-          </mat-form-field>
-
-
-        </div>
-
-      </div>
-
-      <div class="tableContainer">
-        <mat-drawer-container class="example-container">
-          <mat-drawer #drawer class="example-sidenav" mode="side">
-            <p>Filter Applications By :</p>
-            <!-- Tabs inside the drawer -->
+          <mat-menu #menu3="matMenu" xPosition="after" >
             <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onChangeDataSource($event)">
               <mat-tab label="Pre-Submission Applications"></mat-tab>
               <mat-divider></mat-divider>
@@ -137,6 +94,28 @@
               <mat-tab label="All Applications"></mat-tab>
               <mat-tab label="Wayleave"></mat-tab>
             </mat-tab-group>
+          </mat-menu>
+          <mat-form-field appearance="outline">
+            <mat-label>Search</mat-label>
+            <div class="cont6">
+
+              <input matInput [(ngModel)]="searchInput" (input)=" SearchForApplication()" #input>
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/magnifying-glass.svg" class="icon3">
+            </div>
+
+          </mat-form-field>
+
+
+        </div>
+
+     
+
+      <div class="tableContainer">
+        <mat-drawer-container class="example-container">
+          <mat-drawer #drawer class="example-sidenav" mode="side">
+            <p>Filter Applications By :</p>
+            <!-- Tabs inside the drawer -->
+
           </mat-drawer>
 
           <div class="example-sidenav-content">
@@ -810,6 +789,7 @@
 
     </div>
 
+  </div>
   </div>
   <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->
   <ng-template #internalOpt let-modal>
