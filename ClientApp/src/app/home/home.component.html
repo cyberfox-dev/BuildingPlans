@@ -80,6 +80,7 @@
           </button>
           <mat-menu #menu3="matMenu" xPosition="after" >
             <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onChangeDataSource($event)">
+              <div class="down">
               <mat-tab label="Pre-Submission Applications"></mat-tab>
               <mat-divider></mat-divider>
               <mat-tab label="Town Planning Applications"></mat-tab>
@@ -93,6 +94,7 @@
               <mat-tab label="Archive Application"></mat-tab>
               <mat-tab label="All Applications"></mat-tab>
               <mat-tab label="Wayleave"></mat-tab>
+                </div>
             </mat-tab-group>
           </mat-menu>
           <mat-form-field appearance="outline">

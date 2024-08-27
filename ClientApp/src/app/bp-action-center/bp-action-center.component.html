@@ -1,6 +1,6 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Action Center</button>
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Show My Actions</button>
  
 </div>
 
@@ -41,21 +41,15 @@
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && LSReviewerRole">
         <p>LS Reviewer</p>
 
-        <mat-selection-list [(ngModel)]="selectedDepartments" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'">
-          <mat-list-option *ngFor="let dep of DepartmentList" [value]="dep.departmentID">
-            <mat-divider></mat-divider>
-            {{ dep.departmentName }}
-            <mat-divider></mat-divider>
-          </mat-list-option>
-        </mat-selection-list>
+
 <!--        <div class="containerCard">
           <p class="cardHeader">Assign Reviewer</p>
           <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
           <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
         </div>-->
         <div class="containerLS">
-          <button mat-raised-button color="approveBTN" (click)="distributeToLandSurveyDeps()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'">Distribute To Selected Departments</button>
-          <div class="containerLS" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Distribution' && this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'">
+          
+          <div class="containerLS" >
             <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
             <button mat-raised-button color="relaxationBTN" (click)="onComment('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
             <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
@@ -158,6 +152,14 @@
 
           <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation - Unpaid'">
             <p>LS Reviewer</p>
+            <mat-selection-list [(ngModel)]="selectedDepartments" >
+              <mat-list-option *ngFor="let dep of DepartmentList" [value]="dep.departmentID">
+                <mat-divider></mat-divider>
+                {{ dep.departmentName }}
+                <mat-divider></mat-divider>
+              </mat-list-option>
+            </mat-selection-list>
+            <button mat-raised-button color="approveBTN" (click)="distributeToLandSurveyDeps()" >Distribute To Selected Departments</button>
             <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplication()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
           </div>
 

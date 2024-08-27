@@ -161,12 +161,11 @@ export class BPViewProjectInfoComponent implements OnInit {
   panelOpenState :boolean = false;
   ngOnInit(): void {
 
-/*    this.refreshService.enableRefreshNavigation('/home');*/
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    
+
     if (this.CurrentUserProfile[0].isInternal == true) {
       this.ActionCenter = true;
     }
@@ -175,9 +174,6 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.GetAllCommentsForApplication();
 
     this.getAllDepartmentsForCommentForBPApplication();
-
-
-
 
 
   }
@@ -244,6 +240,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.email = current.emailAddress;
         this.altEmail = current.altEmail;
         this.idNumber = current.idNumber;
+        this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
       }
       else {
