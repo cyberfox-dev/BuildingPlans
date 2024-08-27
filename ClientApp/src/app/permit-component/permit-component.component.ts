@@ -91,7 +91,7 @@ export class PermitComponentComponent implements OnInit {
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService, private http: HttpClient, private _snackBar: MatSnackBar,) { }
 
   ngOnInit(): void {
-    this.getAllPermitForComment();
+   /* this.getAllPermitForComment()*/;
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);

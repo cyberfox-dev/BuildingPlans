@@ -10206,7 +10206,7 @@ export class BpActionCenterComponent implements OnInit {
       await this.neighbourConsentService.addUpdateNeighbourConsent(0, this.bpApplicationId, locationName, null, null, "waiting", this.CurrentUser.appUserId,null,null,null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           if (i == Number(this.markers.length - 1)) {
-             this.onCommentTP('Reject');
+            this.onCommentTP('Relaxation');
 
             this.modalService.dismissAll();
           }
