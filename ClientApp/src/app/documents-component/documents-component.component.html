@@ -5,7 +5,7 @@
   <button mat-raised-button color="blue" *ngIf="isCalledInsidePermit && hasDocument" (click)="viewDocument(-1)" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
   <button mat-raised-button color ="warn" *ngIf="CurrentUserProfile[0].subDepartmentName == 'EMB' && hasDocument === true" matToolTip="Delete Permit Document"matTooltip="Delete Document" (click)="deletePermitDocument()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
   <!--End of permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
-  <button mat-raised-button color="action" *ngIf="currentStage == 'TP Relaxation'" (click)="openNeighbourConsent(neighbourConsent)">Upload Neighbour's Consent</button>
+  <button mat-raised-button color="action" *ngIf="currentStage == 'TP Relaxation' && this.neighbourConsentList.length >  0" (click)="openNeighbourConsent(neighbourConsent)">Upload Neighbour's Consent</button>
 </div>
 
 <table  *ngIf="!isCalledInsidePermit" mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">

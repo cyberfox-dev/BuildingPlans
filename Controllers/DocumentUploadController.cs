@@ -1,9 +1,11 @@
 ﻿using BuildingPlans.Data;
 using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
 using BuildingPlans.IServices;
 using BuildingPlans.Models;
 using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -428,6 +430,43 @@ namespace BuildingPlans.Controllers
             }
         }
 
+
+        [HttpPost("GetDocumentByDocumentGroup")]
+        public async Task<object> GetDocumentByDocumentGroup([FromBody] DocumentUploadBindingModel model)
+        {
+            try
+            {
+                if(model.DocumentGroupName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+
+                else
+                {
+                    var result = await (from document in _context.DocumentUpload
+                                        where document.DocumentGroupName == model.DocumentGroupName && document.isActive == true
+                                        select new DocumentUploadDTO()
+                                        {
+                                            DocumentID = document.DocumentID,
+                                            DocumentName = document.DocumentName,
+                                            DocumentLocalPath = document.DocumentLocalPath,
+                                            ApplicationID = document.ApplicationID,
+                                            AssignedUserID = document.AssignedUserID,
+                                            DateCreated = document.DateCreated,
+                                            DateUpdated = document.DateUpdated,
+
+                                        }).ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Documents For Document Group", result));
+                }
+            }
+            catch (Exception ex) 
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+        }
 
     }
 }

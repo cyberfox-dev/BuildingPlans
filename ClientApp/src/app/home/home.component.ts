@@ -722,6 +722,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (this.routerSubscription) {
         this.routerSubscription.unsubscribe();
       }*/
+    this.selectedTabIndex = 8;
       this.sharedService.setShowFormerApps(true);
       this.sharedService.setFromReApplyArchive(false);
       // #endregion
@@ -770,7 +771,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 /*        this.GetAllPreInvoiceScrutinyApplications();
         this.GetAllBuildingPlansApplications();
         this.getAllPreInvoiceScurtinyApplications();*/
-        this.selectedTabIndex = 8;
+      
 /*        this.dataSourceSA = this.AllApplications;
         this.originalDataSourceSA = [...this.AllApplications];*/
 
@@ -7336,9 +7337,9 @@ this.subscriptions.push(subscription);
             this.AllApplications.push(tempApplication);
           }
 
+        
 
-
-
+       
         debugger;
         this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         debugger;
@@ -7601,9 +7602,11 @@ this.subscriptions.push(subscription);
   // #endregion BPRegister Sindiswa 20 June 2024
   ViewProject(index) {
     let applicationId: any;
+    debugger;
+    applicationId = this.dataSourceSA;
     switch (this.selectedTabIndex) {
       case 0:
-         applicationId = this.ApplicationsBP[index].applicationID;
+        applicationId = this.ApplicationsBP[index].applicationID;
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         //BPRegister Sindiswa 20062024
@@ -7632,10 +7635,12 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         applicationId = this.AllApplications[index].applicationID;
+        this.sharedService.currentStage = this.AllApplications[index].stage;
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         break;
     }
+  
   }
   DeleteBuildingApplication(index: any) {
     if (confirm("Are you sure you want to delete this Application")) {

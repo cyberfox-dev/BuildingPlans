@@ -190,7 +190,7 @@ export class SharedService {
 
   Files :File[]=[];
   fileName: string;
-
+  currentStage: string;
   consentID: number;
   setFileName(fileName) {
     this.fileName = fileName;

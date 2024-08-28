@@ -145,7 +145,7 @@
           <mat-tab-group dynamicHeight>
 
             <mat-tab label="Documents">
-              <app-documents-component [currentStage]="currentStage"></app-documents-component>
+              <app-documents-component ></app-documents-component>
             </mat-tab>
             <mat-tab label="Financial Documents">
               <app-bpfinancials></app-bpfinancials>
@@ -170,13 +170,13 @@
             <div *ngFor="let comment of CommentsList ; let i = index">
               <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
-                <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
-                </div>
+            <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved'">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+            </div>
 
-                <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
-                </div>
+            <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+            </div>
 
                 <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
                   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
@@ -191,6 +191,10 @@
                     <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
                     <p>{{comment.DateCreated}}</p>
                   </div>
+              <div class="messageHead">
+                <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                <p>{{comment.DateCreated}}</p>
+              </div>
 
 
                   <div class="messageFoot">
