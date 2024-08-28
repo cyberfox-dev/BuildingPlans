@@ -177,8 +177,6 @@ body {
 
 
 
-
-
 .mat-green {
   background-color: #005870;
   color: #fff;
@@ -628,8 +626,8 @@ h2 {
   width: 300px;
 }
 
-.fa{
-    font-size:20px;
+.fa {
+  font-size: 17px;
 }
 
 .sideNavIcons {
@@ -1073,4 +1071,12 @@ body {
 .toggle-checkbox:checked ~ .toggle-slot .moon-icon-wrapper {
   opacity: 1;
   transform: translate(12em, 2em) rotate(-15deg);
+}
+
+.spacer {
+  flex: 1 1 auto; /* Takes up remaining space, pushing the logout button to the bottom */
+}
+
+.logout-button {
+  align-self: flex-end; /* Aligns the logout button to the end of the flex container */
 }
