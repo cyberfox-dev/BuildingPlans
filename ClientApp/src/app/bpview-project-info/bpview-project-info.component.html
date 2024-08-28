@@ -48,12 +48,13 @@
 
         <div class="actionCenter ">
           <h3>Action Center</h3>
-          <div class="cont3 " *ngIf="ActionCenter">
-            <button mat-raised-button color="relaxationBTN" *ngIf="" (click)="generateBPApplicationID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
+          <div class="cont3 " >
+            
             <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>
 
 
           </div>
+          
         </div>
       </div>
     </div>
