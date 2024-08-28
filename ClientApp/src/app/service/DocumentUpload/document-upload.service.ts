@@ -70,4 +70,12 @@ export class DocumentUploadService {
     return this.httpClient.post(this.baseURL + "GetAllDocumentsForUser", body);
 
   }
+
+  public GetDocumentByDocumentGroup(documentGroupName: string | null) {
+    const body = {
+      DocumentGroupName: documentGroupName
+    }
+
+    return this.httpClient.post(this.baseURL + "GetDocumentByDocumentGroup", body);
+  }
 }

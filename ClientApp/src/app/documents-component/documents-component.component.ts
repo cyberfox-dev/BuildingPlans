@@ -241,8 +241,31 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
+    this.currentStage = this.shared.currentStage;
     this.DocumentsList.splice(0, this.DocumentsList.length);
+    debugger;
+    if (this.currentStage.trim() == "TP Relaxation") {
+      this.documentUploadService.GetDocumentByDocumentGroup("NeighbourConsent").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempDoc = {} as DocumentsList;
 
+            tempDoc.DocumentID = current.documentID;
+            tempDoc.DocumentName = current.documentName;
+            tempDoc.DocumentLocalPath = current.documentLocalPath;
+            tempDoc.DocumentGroupName = current.documentGroupName;
+
+            this.DocumentsList.push(tempDoc);
+          }
+        }
+        else {
+
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
     this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -332,6 +355,8 @@ export class DocumentsComponentComponent implements OnInit {
   ownerEmail: string;
   isConsent: boolean;
   addressName: string;
+  showConsentUpload: boolean;
+
   getAllNeighboutConsents() {
     this.neighbourConsentList.splice(0, this.neighbourConsentList.length);
     this.neighboutConsentService.getAllNeighbourConsentForApplication(this.ApplicationID).subscribe((data: any) => {
@@ -356,7 +381,7 @@ export class DocumentsComponentComponent implements OnInit {
           }
         }
         this.isConsent = true;
-
+      
       }
       else {
         alert(data.responseMessage);
@@ -367,6 +392,7 @@ export class DocumentsComponentComponent implements OnInit {
   }
   openNeighbourConsent(neighbourConsent: any) {
     this.isConsent = true;
+    this.getAllNeighboutConsents();
     this.modalService.open(neighbourConsent, { centered: true, size: "xl" });
   }
   onSelectAddressForUpload() {

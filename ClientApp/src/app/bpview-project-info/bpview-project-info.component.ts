@@ -249,7 +249,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         alert(data.responseMessage);
       }
       this.getAllDocumentForApplication();
-      console.log("response", data);
+      console.log("responseKyle", data);
     }, error => {
       console.log("Error: ", error);
     })
