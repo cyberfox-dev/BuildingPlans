@@ -271,6 +271,7 @@ export interface ApplicationsListBP {
   status: string;
   dateCreated: any;
   dateUpdated: any;
+  justForFilteringByDate: any;
   BPApplicationID: string;
 }
 
@@ -7127,6 +7128,7 @@ this.subscriptions.push(subscription);
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
             tempApplication.stageAge = stageDateDiff;
             tempApplication.status = current.status;
+            tempApplication.justForFilteringByDate = current.dateCreated;
             this.ApplicationsBP.push(tempApplication);
           }
 
@@ -7134,10 +7136,10 @@ this.subscriptions.push(subscription);
          
 
         }
-        this.dataSourceBP = this.ApplicationsBP.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());;
+        this.dataSourceBP = this.ApplicationsBP.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());;
 
         this.applicationTypeName = "Build Plan";
-        this.dataSourceSA = this.ApplicationsBP.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceSA = this.ApplicationsBP.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         this.originalDataSourceSA = [...this.ApplicationsBP];
       }
       else {
@@ -7192,7 +7194,7 @@ this.subscriptions.push(subscription);
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
             tempApplication.stageAge = stageDateDiff;
           tempApplication.status = current.status;
-
+          tempApplication.justForFilteringByDate = current.dateCreated;
             tempApplication.BPApplicationID = current.bpApplicationID;
             this.AllBPApplications.push(tempApplication);
           }
@@ -7201,10 +7203,10 @@ this.subscriptions.push(subscription);
 
 
         
-        this.dataSourceBP = this.AllBPApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceBP = this.AllBPApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
 
         this.applicationTypeName = "Build Plan";
-        this.dataSourceSA = this.AllBPApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceSA = this.AllBPApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         this.originalDataSourceSA = [...this.AllBPApplications];
       }
       else {
@@ -7260,7 +7262,7 @@ this.subscriptions.push(subscription);
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
             tempApplication.stageAge = stageDateDiff;
             tempApplication.status = current.status;
-
+          tempApplication.justForFilteringByDate = current.dateCreated;
           this.AllTownPlanningApplications.push(tempApplication);
           }
 
@@ -7268,10 +7270,10 @@ this.subscriptions.push(subscription);
 
 
 
-        this.dataSourceBP = this.AllTownPlanningApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceBP = this.AllTownPlanningApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
 
         this.applicationTypeName = "Town Planning";
-        this.dataSourceSA = this.AllTownPlanningApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceSA = this.AllTownPlanningApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         this.originalDataSourceSA = [...this.AllTownPlanningApplications];
         
       }
@@ -7330,8 +7332,8 @@ this.subscriptions.push(subscription);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
             tempApplication.stageAge = stageDateDiff;
-            tempApplication.status = current.status;
-            
+          tempApplication.status = current.status;
+          tempApplication.justForFilteringByDate = current.dateCreated;
             this.AllApplications.push(tempApplication);
           }
 
@@ -7339,11 +7341,11 @@ this.subscriptions.push(subscription);
 
        
         debugger;
-        this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         debugger;
         this.applicationTypeName = "Build Plan";
 
-        this.dataSourceSA = this.AllApplications.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.dataSourceSA = this.AllApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
         this.originalDataSourceSA = [...this.AllApplications];
       }
       else {

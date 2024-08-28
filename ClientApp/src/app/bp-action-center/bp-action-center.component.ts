@@ -356,6 +356,7 @@ export class BpActionCenterComponent implements OnInit {
   AdminRole: boolean = false;
   PlansExaminerRole: boolean = false;
   SystemConfigurations: boolean = false;
+    ActionCenter: boolean = false;
 
   //  loggedInUserName: any;
   /*textfields*/
@@ -614,6 +615,9 @@ export class BpActionCenterComponent implements OnInit {
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.functionalArea = this.CurrentUserProfile[0].departmentName;
     this.getAllDepartmentsForCommentForBPApplication();
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      this.ActionCenter = true;
+    }
 /*    this.getCurrentUserSubDepName();*/
     //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
@@ -3275,6 +3279,56 @@ export class BpActionCenterComponent implements OnInit {
       })
   }
 
+  MoveToBpApplicationPending() {
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Pending", "BP Verfication", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          /*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*/
+          /*  this.moveToFinalApprovalForDepartment();*/
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);
+/*          this.getAllServiceItemsForRelaxation();
+          this.AddComment("Applicant Applied For Relaxation", null);*/
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+  applyForRelaxation() {
+
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          /*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*/
+          /*  this.moveToFinalApprovalForDepartment();*/
+          //this.modalService.dismissAll();
+          //this.openSnackBar("Application Actioned");
+          this.getAllServiceItemsForRelaxation();
+
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
   onCommentTP(interact: any) {
     if (this.leaveAComment == "") {
       const dialogRef = this.dialog.open(BpAlertModalComponent, {
@@ -3430,7 +3484,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation Pending", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);

@@ -13,7 +13,9 @@ mat-sidenav-content {
 mat-form-field {
   width: 100%;
 }
-
+.applicantActions{
+    display:flex;
+}
 .mat-saveDoc {
   background-color: #446414;
   color: #fff;
