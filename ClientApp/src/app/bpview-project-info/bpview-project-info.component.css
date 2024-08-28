@@ -113,6 +113,9 @@ h4 {
   flex-direction: column;
   width: 100%;
 }
+.generalcomments{
+    margin-bottom:10px;
+}
 .Comments {
   border: 1px solid rgba(255, 255, 255, .25);
   border-radius: 9px;
@@ -120,10 +123,10 @@ h4 {
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(5px);
   width: 100%;
-  padding: 10px;
+  /*  padding: 10px;*/
   margin: 0px 10px 5px 10px;
   height: 495px;
-  overflow:auto;
+  overflow: auto;
 }
 .Documents {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -211,9 +214,8 @@ h3 span {
   width:100%;
 }
 h3 {
-
   font-weight: 700;
-  color: #cfcdcda1;
+  color: #5d5d5d;
 }
 .Name {
   text-align: center;
