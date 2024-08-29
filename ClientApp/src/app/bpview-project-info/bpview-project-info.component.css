@@ -17,12 +17,12 @@
   /* margin-bottom: 150px; */
 }
 h2 {
-  margin-top: 4px;
+  margin-top: -2px;
   margin-bottom: 0px;
   font-family: 'Nunito';
-  font-size: 27px;
+  font-size: 21px;
   font-weight: 600;
-  padding: 12px;
+  padding: 15px;
 }
 .PropertyOwnerDetails {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -44,7 +44,7 @@ h2 {
   width: 100%;
   padding: 10px;
   margin: 17px 10px 10px 10px;
-  height: 230px;
+  height: 177px;
   overflow: auto;
 }
 .displayRow {
@@ -76,7 +76,7 @@ h2 {
   width: 100%;
   padding: 10px;
   margin: 17px 10px 10px 10px;
-  height: 246px;
+  height: 228px;
 }
 .applicationDeatails {
   padding: 18px;
@@ -137,10 +137,9 @@ h4 {
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
   width: 100%;
- 
   margin: 17px 10px 5px 10px;
-  height: 234px;
-  overflow:auto
+  height: 177px;
+  overflow: auto
 }
 .progressText {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -225,17 +224,12 @@ h3 {
 }
 .Name {
   text-align: center;
-  font-size: 31px;
+  font-size: 26px;
   font-weight: 600;
-  /* color: #4393d7; */
-  font-variant: full-width;
-  text: -webkit-control;
-  letter-spacing: 5px;
+  letter-spacing: 2px;
 }
 @media (min-width:900){
-  .Comments {
-      height:100% !important;
-  }
+
 
 }
 .Email {
