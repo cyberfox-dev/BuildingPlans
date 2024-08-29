@@ -190,8 +190,17 @@ export class SharedService {
 
   Files :File[]=[];
   fileName: string;
-
+  currentStage: string;
   consentID: number;
+
+  setCurrentStage(stage: string) {
+    this.currentStage = stage;
+  }
+
+  getCurrentStage() {
+    return this.currentStage;
+  }
+  
   setFileName(fileName) {
     this.fileName = fileName;
   }

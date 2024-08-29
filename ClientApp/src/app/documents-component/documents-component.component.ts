@@ -72,9 +72,16 @@ export class DocumentsComponentComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Permit Kyle 13-02-24
-    this.getCurrentStage();
-    this.getAllDocsForApplication();
-    this.getAllNeighboutConsents();
+    /*this.getCurrentStage();*/
+    this.currentStage = this.shared.getCurrentStage();
+    this.getAllNeighbourConsents();
+    
+    if (this.currentStage == "TP Relaxation") {
+      this.getNeighbourConsentDoc();
+    }
+    else {
+      this.getAllDocsForApplication();
+    }
     //this.hasPermitSubForCommentDocument();
     //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
 
@@ -170,8 +177,9 @@ export class DocumentsComponentComponent implements OnInit {
     }
     debugger;
     if (this.isConsent) {
+      this.getAllNeighbourConsents();
       this.getAllDocsForApplication();
-      this.getAllNeighboutConsents();
+     
       this.modalService.dismissAll();
 
     }
@@ -244,34 +252,36 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   }
+  getNeighbourConsentDoc() {
+    this.documentUploadService.GetDocumentByDocumentGroup("NeighbourConsent").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+          const current = data.dateSet[0];
+          const tempDoc = {} as DocumentsList;
 
+          tempDoc.DocumentID = current.documentID;
+          tempDoc.DocumentName = current.documentName;
+          tempDoc.DocumentLocalPath = current.documentLocalPath;
+          tempDoc.DocumentGroupName = current.documentGroupName;
+
+        this.DocumentsList.push(tempDoc);
+
+        this.getAllDocsForApplication();
+        
+      }
+      else {
+
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
 
   getAllDocsForApplication() {
 
-    this.DocumentsList.splice(0, this.DocumentsList.length);
+   
     debugger;
-    if (this.currentStage == "TP Relaxation") {
-      this.documentUploadService.GetDocumentByDocumentGroup("NeighbourConsent").subscribe((data: any) => {
-        if (data.responseCode == 1) {
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const current = data.dateSet[i];
-            const tempDoc = {} as DocumentsList;
-
-            tempDoc.DocumentID = current.documentID;
-            tempDoc.DocumentName = current.documentName;
-            tempDoc.DocumentLocalPath = current.documentLocalPath;
-            tempDoc.DocumentGroupName = current.documentGroupName;
-
-            this.DocumentsList.push(tempDoc);
-          }
-        }
-        else {
-
-        }
-      }, error => {
-        console.log(error);
-      })
-    }
+    
     this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -365,8 +375,8 @@ export class DocumentsComponentComponent implements OnInit {
   showConsentUpload: boolean;
 
 
-  getAllNeighboutConsents() {
-
+  getAllNeighbourConsents() {
+    this.DocumentsList.splice(0, this.DocumentsList.length);
     this.neighbourConsentList.splice(0, this.neighbourConsentList.length);
     this.neighboutConsentService.getAllNeighbourConsentForApplication(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -391,7 +401,9 @@ export class DocumentsComponentComponent implements OnInit {
         }
         this.isConsent = true;
         debugger;
-        
+        if (this.neighbourConsentList.length > 0 && this.currentStage.trim() == "TP Relaxation") {
+          this.showConsentUpload = true;
+        }
       }
 
       else {
@@ -404,7 +416,7 @@ export class DocumentsComponentComponent implements OnInit {
   }
   openNeighbourConsent(neighbourConsent: any) {
     this.isConsent = true;
-    this.getAllNeighboutConsents();
+    this.getAllNeighbourConsents();
     this.modalService.open(neighbourConsent, { centered: true, size: "xl" });
   }
   onSelectAddressForUpload() {

@@ -9327,6 +9327,7 @@ export class BpActionCenterComponent implements OnInit {
     this.router.navigate(["/home"]);
 
   }
+  showCreateBP: boolean = false;
    getApplicationInfo() {
     
      this.bpService.getBuildingApplicationByApplicationID(this.bpApplicationId).subscribe((data: any) => {
@@ -9352,12 +9353,17 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.currentStatus = current.status;
         tempApplication.BPApplicationType = current.bpApplicationType;
         this.CurrentApplicationBeingViewed.push(tempApplication);
+        debugger;
+        if (tempApplication.currentStage == "Closed" && tempApplication.userID == this.CurrentUser.appUserId) {
+          this.showCreateBP = true;
+        }
+
       }
       else {
         alert(data.responseMessage);
        }
 
-      console.log("THIS IS CURRENT APPLICATION DATA", data);
+       console.log("THIS IS CURRENT APPLICATION DATA", data, this.CurrentApplicationBeingViewed);
     }, error => {
       console.log("Error: ", error);
     })
