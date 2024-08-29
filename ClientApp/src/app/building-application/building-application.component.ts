@@ -958,7 +958,7 @@ export class BuildingApplicationComponent implements OnInit {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
-              alert("Application Created");
+              
               this.router.navigate(["/home"]);
             }
             else {
@@ -1067,7 +1067,7 @@ export class BuildingApplicationComponent implements OnInit {
     else {
       this.typeOfApplicationOtherDes = false;
     }
-          alert(this.TPTOA);
+        
   }
 
 

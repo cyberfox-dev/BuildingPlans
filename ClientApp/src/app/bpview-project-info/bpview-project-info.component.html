@@ -9,7 +9,7 @@
 
 <div class="content-body">
   <div class="headerViewProject ">
-    <div class="leftSideHeader animationSlideUp">
+    <div class="leftSideHeader ">
       <div class="ProjectNumberCard">
         <h2>View Project Details : {{lsNumber}}</h2>
       </div>
@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div class="rightSideHeader animationSlideUp">
+    <div class="rightSideHeader">
       <div class="Tracker">
 
         <div class="actionCenter ">
@@ -60,7 +60,7 @@
     </div>
   </div>
   <div class="displayRow">
-    <div class="MiddleView animationSlideDown">
+    <div class="MiddleView">
       <div class="Map ">
         <mat-tab-group dynamicHeight>
 
@@ -145,7 +145,7 @@
           <mat-tab-group dynamicHeight>
 
             <mat-tab label="Documents">
-              <app-documents-component ></app-documents-component>
+              <app-documents-component></app-documents-component>
             </mat-tab>
             <mat-tab label="Financial Documents">
               <app-bpfinancials></app-bpfinancials>
@@ -158,67 +158,63 @@
       </div>
     </div>
 
-    <div class="BootomViewProject animationSlideLeft">
+    <div class="BootomViewProject ">
       <div class="Comments ">
-        <mat-tab-group >
+        <mat-tab-group>
 
           <mat-tab label=" General Comments">
             <div class="generalcomments">
-            <div *ngIf="CommentsList.length === 0">
-              <h4>No comments have been made yet.</h4>
-            </div>
-            <div *ngFor="let comment of CommentsList ; let i = index">
-              <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
-
-            <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved'">
-              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
-            </div>
-
-            <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'">
-              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
-            </div>
-
-                <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
-                </div>
-
-                <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
-                </div>
-                <div class="message-text-container">
-
-                  <div class="messageHead">
-                    <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                    <p>{{comment.DateCreated}}</p>
-                  </div>
-              <div class="messageHead">
-                <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                <p>{{comment.DateCreated}}</p>
+              <div *ngIf="CommentsList.length === 0">
+                <h4>No comments have been made yet.</h4>
               </div>
+              <div *ngFor="let comment of CommentsList ; let i = index">
+                <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
+                  <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved'">
+                    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+                  </div>
 
-                  <div class="messageFoot">
-                    <p class="sub-text">{{comment.Comment}}</p>
-                    <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == comment.CanReplyUserID">Reply</button>
-                    <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
+                  <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'">
+                    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+                  </div>
 
+                  <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
+                    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
+                  </div>
+
+                  <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
+                    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+                  </div>
+                  <div class="message-text-container">
+
+                    <div class="messageHead">
+                      <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                      <p>{{comment.DateCreated}}</p>
+                    </div>
+                    <div class="messageFoot">
+                      <p class="sub-text">{{comment.Comment}}</p>
+                      <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == comment.CanReplyUserID">Reply</button>
+                      <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
+
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
+          </mat-tab>
+          <mat-tab label="Internal Comments">
+          </mat-tab>
+          <mat-tab label="Notes">
+          </mat-tab>
+        </mat-tab-group>
+
 
       </div>
-      </mat-tab>
-      <mat-tab label="Internal Comments">
-      </mat-tab>
-      <mat-tab label="Notes">
-      </mat-tab>
-      </mat-tab-group>
-
 
     </div>
-
-</div>
+  </div>
+  </div>
 <ng-template #UploadProof let-modal>
 
   <div class="modal-header">
@@ -740,7 +736,7 @@
 
 </mat-tab-group>-->
 
-<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen" [class.fade-out]="!isLoading">
   <!--<img src="assets/Loading.png" alt="" class="logo2">
   Need to have an BP relevant loading shandis-->
   <div class="shapes-5"></div>

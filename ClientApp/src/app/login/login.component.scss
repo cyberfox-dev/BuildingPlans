@@ -53,8 +53,8 @@ a {
 }
 .submit {
   border-radius: 20px;
-  border: 1px solid orange;
-  background-color: orange;
+  border: 1px solid #4393d7;
+  background-color: #4393d7;
   color: #FFFFFF;
   font-size: 12px;
   font-weight: bold;
@@ -63,9 +63,8 @@ a {
   text-transform: uppercase;
   transition: transform 80ms ease-in;
 }
-.submit:hover {
-  background-color: orange;
-}
+
+
 
 .button2 {
   border-radius: 20px;
@@ -197,7 +196,7 @@ form {
 }
 
 .overlay {
-  background: #576a83;
+  background: #345774;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
@@ -432,7 +431,7 @@ h2 {
   display: flex;
   margin: 0;
   justify-content: left;
-  width: 15em;
+  width: 11em;
   height: 100%;
   animation: bounceIn 0.6s;
   transform: rotate(0deg) scale(1) translateZ(0);

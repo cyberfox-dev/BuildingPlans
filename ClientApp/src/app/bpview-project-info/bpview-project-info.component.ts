@@ -162,6 +162,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   panelOpenState :boolean = false;
   ngOnInit(): void {
+    this.isLoading = true;
     this.refreshService.enableRefreshNavigation('/home');
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -626,7 +627,7 @@ export class BPViewProjectInfoComponent implements OnInit {
       else {
 
       }
-
+      this.isLoading = false;
     }, error => {
       console.log(error);
     })
