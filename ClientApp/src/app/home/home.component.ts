@@ -7337,16 +7337,12 @@ this.subscriptions.push(subscription);
             this.AllApplications.push(tempApplication);
           }
 
-        
+        this.dataSourceBP = this.AllApplications;
+        this.dataSourceSA = this.AllApplications;
 
        
-        debugger;
-        this.dataSourceBP = this.AllApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
-        debugger;
-        this.applicationTypeName = "Build Plan";
-
-        this.dataSourceSA = this.AllApplications.sort((a, b) => new Date(b.justForFilteringByDate).getTime() - new Date(a.justForFilteringByDate).getTime());
-        this.originalDataSourceSA = [...this.AllApplications];
+        
+       
       }
       else {
         alert(data.responseMessage);
@@ -7608,17 +7604,20 @@ this.subscriptions.push(subscription);
       case 0:
         applicationId = this.ApplicationsBP[index].applicationID;
         this.sharedService.setApplicationID(applicationId);
+       
         this.router.navigate(['bpview-project-info']);
         //BPRegister Sindiswa 20062024
         break;
       case 1:
         applicationId = this.AllTownPlanningApplications[index].applicationID;
+       
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         break;
 
       case 2:
         applicationId = this.AllBPApplications[index].applicationID;
+       
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         break;
@@ -7635,7 +7634,7 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         applicationId = this.AllApplications[index].applicationID;
-        this.sharedService.currentStage = this.AllApplications[index].stage;
+        
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         break;

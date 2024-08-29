@@ -3455,13 +3455,13 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              
+
               if (data.responseCode == 1) {
-                
+
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
-               
+
                 this.AddComment("LS Approved", null);
               }
               else {
@@ -3476,8 +3476,8 @@ export class BpActionCenterComponent implements OnInit {
 
 
           break;
-        }
 
+        }
         case "Reject": {
 
           this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,

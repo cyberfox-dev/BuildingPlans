@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild,ChangeDetectorRef} from '@angular/core';
 import { BuildingApplicationsService } from 'src/app/service/BuildingApplications/building-applications.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { RefreshService } from '../shared/refresh.service';
@@ -89,6 +89,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private configService: ConfigService,
     private applicationService: BuildingApplicationsService,
     private BpDepartmentForCommentService: BpDepartmentForCommentService,
+    private cdRef: ChangeDetectorRef,
   ) { }
 
   // Properties
@@ -160,7 +161,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectCell: string;
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  panelOpenState :boolean = false;
+  panelOpenState: boolean = false;
   ngOnInit(): void {
     this.isLoading = true;
     this.refreshService.enableRefreshNavigation('/home');
@@ -189,12 +190,12 @@ export class BPViewProjectInfoComponent implements OnInit {
     else {
       this.CommentsList[index].ViewReply = false;
     }
-    
+
     if (this.CommentsList[index].isApplicantReply !== null && this.CommentsList[index].SecondReply == null) {
       this.reply = this.CommentsList[index].isApplicantReply;
       this.hasReply = false;
     }
-    
+
     else if (this.CommentsList[index].isApplicantReply != null && this.CommentsList[index].SecondReply != null) {
       this.reply = this.CommentsList[index].SecondReply;
       this.hasReply = true;
@@ -209,13 +210,13 @@ export class BPViewProjectInfoComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
 
-   getApplicationInfo() {
-    
+  getApplicationInfo() {
+
     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
         const current = data.dateSet[0];
-        console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA",data.dateSet[0]);
+        console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA", data.dateSet[0]);
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -245,6 +246,8 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.idNumber = current.idNumber;
         this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
+
+        this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
       else {
         alert(data.responseMessage);
@@ -256,9 +259,9 @@ export class BPViewProjectInfoComponent implements OnInit {
     })
   }
   getAllDocumentForApplication() {
-    
+
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
@@ -332,11 +335,11 @@ export class BPViewProjectInfoComponent implements OnInit {
 
 
   loadBPDocumentsList() {
-    
+
     this.getBPDocumentsList().subscribe(
       data => {
         console.log('Received data:', data);
-        
+
         this.LSMandatoryDocuments.next(data);
       },
       error => {
@@ -487,16 +490,16 @@ export class BPViewProjectInfoComponent implements OnInit {
   hasReply: boolean;
 
   GetAllCommentsForApplication() {
-    
+
     this.CommentsList.splice(0, this.CommentsList.length);
     this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempComment = {} as CommentsList;
-          
+
           tempComment.CommentID = current.commentID;
           tempComment.ApplicationID = current.applicationID;
           tempComment.FunctionalArea = current.functionalArea;
@@ -511,11 +514,11 @@ export class BPViewProjectInfoComponent implements OnInit {
           tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
           tempComment.ViewReply = false;
 
-         
+
           this.CommentsList.push(tempComment);
         }
 
-        console.log("BPComments",this.CommentsList);
+        console.log("BPComments", this.CommentsList);
       }
       else {
 
@@ -527,15 +530,15 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
 
   selectedComment: any;
-  openEditReply(index: any, replyModal:any) {
+  openEditReply(index: any, replyModal: any) {
     this.selectedComment = this.CommentsList[index];
     this.CommentsList[index].ViewReply = false;
     this.modalService.open(replyModal, { centered: true, size: 'l' });
-    
+
   }
 
   SaveReply() {
-    
+
     if (this.selectedComment.isApplicantReply == null) {
       this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, this.reply, null, null, null, null).subscribe((data: any) => {
 
@@ -576,7 +579,7 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
     }
     else {
-      this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, null,this.reply,  null, null, null).subscribe((data: any) => {
+      this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, null, this.reply, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           const dialogRef = this.dialog.open(BpAlertModalComponent, {
             data: {
@@ -598,18 +601,18 @@ export class BPViewProjectInfoComponent implements OnInit {
       })
     }
   }
-  displayedColumns: string[] = ['DepartmentName','indication']; 
+  displayedColumns: string[] = ['DepartmentName', 'indication'];
   dataSource = this.BPDepartmentsForCommentList;
-  @ViewChild(MatTable)BPDepartmentsForCommentListTable: MatTable<BPDepartmentsForCommentList> | undefined;
+  @ViewChild(MatTable) BPDepartmentsForCommentListTable: MatTable<BPDepartmentsForCommentList> | undefined;
   getAllDepartmentsForCommentForBPApplication() {
     this.BpDepartmentForCommentService.getDepartmentForComment(this.applicationId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempDepForComment = {} as BPDepartmentsForCommentList;
-          
+
           tempDepForComment.DepartmendForCommentaID = current.bpDepartmentForCommentID;
           tempDepForComment.ApplicationId = current.applicationID;
           tempDepForComment.DepartmentID = current.departmentID;
@@ -634,54 +637,120 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   configNumberOfProject: any;
   configMonthYear: any;
-/*  generateBPApplicationID() {
-
-    this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        const current = data.dateSet[0];
-        this.configNumberOfProject = current.utilitySlot1;
-        this.configMonthYear = current.utilitySlot2;
-        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            this.applicationService.addUpdateBuildingApplication(this.applicationId, null, null, null, null,
-              null, null, null, null, null, null, null,
-              null, null, null, null, null, null, null, null, null,
-              null, null, null, null, null, null, null,
-              null, null, null, null, null, null, "Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  this.modalService.dismissAll();
-                  this.openSnackBar("Application Actioned");
-                  this.router.navigate(["/home"]);
-                }
-                else {
-                  alert(data.responseMessage)
-                }
-              }, error => {
-                console.log("BuildingApplicationError: ", error)
-              })
-          }
-          else {
-
-            alert(data.responseMessage);
-          }
-          console.log("addUpdateConfigReponse", data);
-
-        }, error => {
-          console.log("addUpdateConfigError: ", error);
-        })
-
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("getConfigsByConfigNameReponse", data);
-
-    }, error => {
-      console.log("getConfigsByConfigNameError: ", error);
-    })
-
-  }*/
+  /*  generateBPApplicationID() {
+  
+      this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+  
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.applicationService.addUpdateBuildingApplication(this.applicationId, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null, null, null, null, "Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    this.modalService.dismissAll();
+                    this.openSnackBar("Application Actioned");
+                    this.router.navigate(["/home"]);
+                  }
+                  else {
+                    alert(data.responseMessage)
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+            }
+            else {
+  
+              alert(data.responseMessage);
+            }
+            console.log("addUpdateConfigReponse", data);
+  
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+  
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getConfigsByConfigNameReponse", data);
+  
+      }, error => {
+        console.log("getConfigsByConfigNameError: ", error);
+      })
+  
+    }*/
+  showMap: boolean = false;
+  Markers: any = [];
  
+  zoom = 18;
+  locationName: any;
+  center: google.maps.LatLngLiteral = {
+    lat: -29.6168,
+    lng:30.3928
+  }
+  mapOptions = {
+    center: this.center,
+    zoom: this.zoom,
+    mapTypeControl: true,
+    zoomControl: true,
+    scrollwheel: false,
+
+    
+  };
+  async updateCenter(newLat: number, newLng: number) {
+    debugger;
+    this.center = {
+      lat: newLat,
+      lng: newLng
+    };
+    // Trigger change detection if needed
+    const position = {
+      lat: newLat,
+      lng: newLng,
+    };
+
+    this.locationName = await this.getLocationName(position);
+    const newMarker = new google.maps.Marker({
+      position,
+      animation: google.maps.Animation.BOUNCE,
+      title: this.locationName, // Set the marker's title to the location name
+      draggable: false,
+      clickable: false
+    });
+
+
+    debugger;
+    this.Markers.push(newMarker);
+    this.cdRef.detectChanges();
+    this.showMap = true;
+  }
+  getLocationName(latLng: google.maps.LatLngLiteral): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ location: latLng }, (results, status) => {
+
+        if (status === google.maps.GeocoderStatus.OK) {
+
+          if (results[0]) {
+
+            const locationName = results[0].formatted_address;
+            resolve(locationName);
+
+          } else {
+            resolve(null); // No results found
+          }
+        } else {
+          reject(status);
+        }
+      });
+    });
+  }
 }
 

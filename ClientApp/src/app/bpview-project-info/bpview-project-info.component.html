@@ -62,11 +62,19 @@
   <div class="displayRow">
     <div class="MiddleView">
       <div class="Map ">
-        <mat-tab-group dynamicHeight>
+        <mat-tab-group *ngIf="showMap" dynamicHeight>
 
-          <mat-tab label="Map Details">
+          <mat-tab  label="Map Details">
             <google-map height="195px"
-                        width="100%">
+                        width="100%"
+                        [center]="center"
+                        [options]="mapOptions">
+
+                        <map-marker *ngFor="let marker of Markers"
+                                    [position]="marker.position"
+                                    [title]="marker.title">
+
+                          </map-marker>
             </google-map>
           </mat-tab>
           <mat-tab label="Application Details">
