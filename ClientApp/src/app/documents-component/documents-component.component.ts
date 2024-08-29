@@ -9,6 +9,7 @@ import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { BuildingApplicationsService } from '../service/BuildingApplications/building-applications.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -56,27 +57,32 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() permitSubForCommentID: any;
   @Input() permitDocumentName: any | null;
   @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
-  @Input() currentStage: string | null;
 
+  currentStage: string;
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService, private fileUploadComponent: FileUploadComponent) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService, private fileUploadComponent: FileUploadComponent, private bpApplicationService: BuildingApplicationsService) { }
 
   ngOnInit(): void {
     //this.currentApplication = this.shared.getViewApplicationIndex();
+
     this.ApplicationID = this.shared.applicationID;
+
     //Permit Kyle 13-02-24
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Permit Kyle 13-02-24
+    this.getCurrentStage();
     this.getAllDocsForApplication();
     this.getAllNeighboutConsents();
     //this.hasPermitSubForCommentDocument();
     //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
 
-
+   
   }
 
+ 
+  
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -241,10 +247,10 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
-    this.currentStage = this.shared.currentStage;
+
     this.DocumentsList.splice(0, this.DocumentsList.length);
     debugger;
-    if (this.currentStage.trim() == "TP Relaxation") {
+    if (this.currentStage == "TP Relaxation") {
       this.documentUploadService.GetDocumentByDocumentGroup("NeighbourConsent").subscribe((data: any) => {
         if (data.responseCode == 1) {
           for (let i = 0; i < data.dateSet.length; i++) {
@@ -288,6 +294,7 @@ export class DocumentsComponentComponent implements OnInit {
           }
 
         }
+       
 
         this.DocumentsListTable?.renderRows();
         console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
@@ -357,7 +364,9 @@ export class DocumentsComponentComponent implements OnInit {
   addressName: string;
   showConsentUpload: boolean;
 
+
   getAllNeighboutConsents() {
+
     this.neighbourConsentList.splice(0, this.neighbourConsentList.length);
     this.neighboutConsentService.getAllNeighbourConsentForApplication(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -381,14 +390,17 @@ export class DocumentsComponentComponent implements OnInit {
           }
         }
         this.isConsent = true;
-      
+        debugger;
+        
       }
+
       else {
         alert(data.responseMessage);
       }
     }, error => {
       console.log(error);
     })
+
   }
   openNeighbourConsent(neighbourConsent: any) {
     this.isConsent = true;
@@ -490,7 +502,27 @@ export class DocumentsComponentComponent implements OnInit {
     }
 
   }
+
+  getCurrentStage() {
+    this.bpApplicationService.getBuildingApplicationByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        debugger;
+        this.currentStage = current.stage;
+
+        
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("CurrentStage", this.currentStage);
+    }, error => {
+      console.log(error);
+    })
+  }
+
 }
+
 
 
 

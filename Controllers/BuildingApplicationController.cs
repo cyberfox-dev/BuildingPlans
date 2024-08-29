@@ -569,7 +569,8 @@ namespace BuildingPlans.Controllers
                 }
                 else
                 {
-                    _context.BuildingApplications.Remove(tempApplicationTable);
+                    tempApplicationTable.isActive = false;
+                    _context.Update(tempApplicationTable);
                     await _context.SaveChangesAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted successfully", true));
                 }
@@ -935,6 +936,7 @@ namespace BuildingPlans.Controllers
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
                     where buildingApplication.isActive == true && buildingApplication.FirstName != null
+                    orderby buildingApplication.DateCreated descending
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
