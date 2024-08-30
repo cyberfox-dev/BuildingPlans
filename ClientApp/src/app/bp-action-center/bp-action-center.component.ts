@@ -6740,7 +6740,7 @@ export class BpActionCenterComponent implements OnInit {
           } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
             //Rejection Pack
             this.viewProjectInfoComponent.getAllComments();
-            this.viewProjectInfoComponent.onCrreateRejectionPack();
+            
             this.countApprove = 0;
             this.countReject = 0;
             this.MoveToClosedStage(false);
@@ -9327,6 +9327,7 @@ export class BpActionCenterComponent implements OnInit {
     this.router.navigate(["/home"]);
 
   }
+  showCreateBP: boolean = false;
    getApplicationInfo() {
     
      this.bpService.getBuildingApplicationByApplicationID(this.bpApplicationId).subscribe((data: any) => {
@@ -9352,12 +9353,17 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.currentStatus = current.status;
         tempApplication.BPApplicationType = current.bpApplicationType;
         this.CurrentApplicationBeingViewed.push(tempApplication);
+        debugger;
+        if (tempApplication.currentStage == "Closed" && tempApplication.userID == this.CurrentUser.appUserId) {
+          this.showCreateBP = true;
+        }
+
       }
       else {
         alert(data.responseMessage);
        }
 
-      console.log("THIS IS CURRENT APPLICATION DATA", data);
+       console.log("THIS IS CURRENT APPLICATION DATA", data, this.CurrentApplicationBeingViewed);
     }, error => {
       console.log("Error: ", error);
     })
@@ -10090,8 +10096,8 @@ export class BpActionCenterComponent implements OnInit {
     streetViewControl: false,
     mapTypeControl: false,
     drawingControl: true,
-    zoomControl: false,       // Disable zoom control buttons
-    scrollwheel: false,       // Disable zooming with mouse scrol
+    zoomControl: true,       // Disable zoom control buttons
+    scrollwheel: true,       // Disable zooming with mouse scrol
   };
   
   

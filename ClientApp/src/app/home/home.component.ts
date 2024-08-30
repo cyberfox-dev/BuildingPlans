@@ -7634,7 +7634,7 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         applicationId = this.AllApplications[index].applicationID;
-        
+        this.sharedService.setCurrentStage(this.AllApplications[index].stage);
         this.sharedService.setApplicationID(applicationId);
         this.router.navigate(['bpview-project-info']);
         break;
