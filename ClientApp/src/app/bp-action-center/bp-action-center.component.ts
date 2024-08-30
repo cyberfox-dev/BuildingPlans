@@ -6740,7 +6740,7 @@ export class BpActionCenterComponent implements OnInit {
           } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
             //Rejection Pack
             this.viewProjectInfoComponent.getAllComments();
-            this.viewProjectInfoComponent.onCrreateRejectionPack();
+            
             this.countApprove = 0;
             this.countReject = 0;
             this.MoveToClosedStage(false);
@@ -10096,8 +10096,8 @@ export class BpActionCenterComponent implements OnInit {
     streetViewControl: false,
     mapTypeControl: false,
     drawingControl: true,
-    zoomControl: false,       // Disable zoom control buttons
-    scrollwheel: false,       // Disable zooming with mouse scrol
+    zoomControl: true,       // Disable zoom control buttons
+    scrollwheel: true,       // Disable zooming with mouse scrol
   };
   
   

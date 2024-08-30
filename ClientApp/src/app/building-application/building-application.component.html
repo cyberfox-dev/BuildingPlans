@@ -373,7 +373,7 @@
       <div class="row">
         <mat-form-field>
           <mat-label>Type Of Development *</mat-label>
-          <mat-select [(ngModel)]="typeOfDevelopment" name="typeOfDevelopment">
+          <mat-select [(ngModel)]="typeOfDevelopment" name="typeOfDevelopment" (selectionChange)="getDocsForApplication() " >
             <mat-option value="Domestic">Domestic</mat-option>
             <mat-option value="Commercial">Commercial</mat-option>
           </mat-select>

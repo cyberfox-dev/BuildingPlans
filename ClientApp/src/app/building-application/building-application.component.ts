@@ -240,10 +240,7 @@ export class BuildingApplicationComponent implements OnInit {
     private bpNotificationService: BPNotificationsService,
     private modalService: NgbModal
   ) {
-    this.BPMandatoryDocumentList = this.getBPDocumentsList();
-
-    this.BPMandatoryDocumentList.subscribe(data => console.log(data));
-    console.log("BPMandatory Documents",  this.BPMandatoryDocumentList);
+    
 }
 
   ngOnInit(): void {
@@ -551,37 +548,80 @@ export class BuildingApplicationComponent implements OnInit {
 
     console.log(this.configMonthYear);
   }
+  getDocsForApplication() {
+    this.BPMandatoryDocumentList = this.getBPDocumentsList();
 
+    this.BPMandatoryDocumentList.subscribe(data => console.log(data));
+    console.log("BPMandatory Documents",  this.BPMandatoryDocumentList);
+  }
     
   getBPDocumentsList(): Observable<BPMandatoryDocumentUploadList[]> {
-    
-    return this.bpManDocService.getAllMandatoryDocuments()
-      .pipe(
-        map((data: any) => {
-          
-          if (data.responseCode === 1) {
-            
-            const tempList: BPMandatoryDocumentUploadList[] = [];
-            for (let i = 0; i < data.dateSet.length; i++) {
-              
-              const current = data.dateSet[i];
-              const tempRequiredDocuments: BPMandatoryDocumentUploadList = {
-                mandatoryDocumentID: current.mandatoryDocumentID,
-                mandatoryDocumentName: current.mandatoryDocumentName,
-                stageID: null,
-                dateCreated: current.dateCreated
-              };
-              tempList.push(tempRequiredDocuments);
-              this.totalDocs = tempList.length;
+    debugger;
+    if (this.typeOfDevelopment == "Commercial") {
+      return this.bpManDocService.getAllMandatoryDocuments()
+        .pipe(
+          map((data: any) => {
+
+            if (data.responseCode === 1) {
+
+              const tempList: BPMandatoryDocumentUploadList[] = [];
+              for (let i = 0; i < data.dateSet.length; i++) {
+
+                const current = data.dateSet[i];
+                const tempRequiredDocuments: BPMandatoryDocumentUploadList = {
+                  mandatoryDocumentID: current.mandatoryDocumentID,
+                  mandatoryDocumentName: current.mandatoryDocumentName,
+                  stageID: null,
+                  dateCreated: current.dateCreated
+                };
+                tempList.push(tempRequiredDocuments);
+                this.totalDocs = tempList.length;
+              }
+
+              return tempList;
+            } else {
+              // Handle the error case here if needed
+              throw new Error(data.responseMessage);
             }
-           
-            return tempList;
-          } else {
-            // Handle the error case here if needed
-            throw new Error(data.responseMessage);
-          }
-        })
-      );
+          })
+        );
+    }
+    else if (this.typeOfDevelopment == "Domestic") {
+      return this.bpManDocService.getAllMandatoryDocuments()
+        .pipe(
+          map((data: any) => {
+
+            if (data.responseCode === 1) {
+
+              const tempList: BPMandatoryDocumentUploadList[] = [];
+              for (let i = 0; i < data.dateSet.length; i++) {
+
+                const current = data.dateSet[i];
+                const tempRequiredDocuments: BPMandatoryDocumentUploadList = {
+                  mandatoryDocumentID: current.mandatoryDocumentID,
+                  mandatoryDocumentName: current.mandatoryDocumentName,
+                  stageID: null,
+                  dateCreated: current.dateCreated
+                };
+                if (tempRequiredDocuments.mandatoryDocumentName != "Occupation Certificate") {
+                  tempList.push(tempRequiredDocuments);
+                }
+                
+                this.totalDocs = tempList.length;
+              }
+
+              return tempList;
+            } else {
+              // Handle the error case here if needed
+              throw new Error(data.responseMessage);
+            }
+          })
+        );
+    }
+    else{
+      return null
+    }
+    
   }
 
   updateMandatoryDocumentsLinkedStagesList(list: any[]) {
