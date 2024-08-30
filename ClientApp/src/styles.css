@@ -6,7 +6,7 @@
 }
 @media(prefers-color-scheme:dark) {
   form {
-    backdrop-filter: blur(15px)  !important;
+
   }
     *{
         color:white !important;
@@ -159,6 +159,12 @@
 @media(prefers-color-scheme:light) {
   .fa-bars{
       color:black !important;
+  }
+  .modal-content {
+    background: #ffffffb5 !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    backdrop-filter: blur(15px) !important;
+    /* color: black; */
   }
   .card {
     box-shadow: 0 4px 8px 0 #26262661, 0 6px 20px 0 #71717100 !important;
@@ -668,7 +674,7 @@ li .tooltip{
   .shapes-5:after {
     content: "";
     flex: 1;
-    background: orange;
+    background: #0067ff75;
     animation: inherit;
     transform-origin: bottom left;
     animation-name: sp5-1;

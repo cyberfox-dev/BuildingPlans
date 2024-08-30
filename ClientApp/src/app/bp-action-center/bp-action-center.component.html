@@ -1,6 +1,6 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
- <!-- <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="ActionCenter == true">Show My Actions</button>-->
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="ActionCenter == true">Show My Actions</button>
   <!--  <div class="applicantActions" *ngIf="ActionCenter == false">
     <button mat-raised-button color="relaxationBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Relaxation Pending'" (click)="applyForRelaxation()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Apply For Relaxation</button>
     <button mat-raised-button color="relaxationBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'" (click)="generateBPApplicationID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
@@ -458,11 +458,7 @@
 
 
           <ng-container matColumnDef="fullName">
-            <th mat-header-cell *matHeaderCellDef> User N
-ame
-            </th>
-             N
-            -c
+            <th mat-header-cell *matHeaderCellDef> User Name</th>
             <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
           </ng-container>
 

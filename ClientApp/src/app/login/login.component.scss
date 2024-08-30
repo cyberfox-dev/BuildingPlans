@@ -105,7 +105,8 @@ form {
   padding: 0 50px;
   height: 100%;
   text-align: center;
-  background: white;
+
+
 }
 *{
     
@@ -125,7 +126,7 @@ form {
   justify-content: center;
 }
 .container {
-/*  background-color: #323e4e;*/
+backdrop-filter:blur(15px);
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
@@ -1015,7 +1016,7 @@ img {
 .shapes-5:after {
   content: "";
   flex: 1;
-  background: orange;
+  background: #0067ff75;
   animation: inherit;
   transform-origin: bottom left;
   animation-name: sp5-1;

@@ -72,6 +72,7 @@ export interface CommentsList {
 })
 
 export class BPViewProjectInfoComponent implements OnInit {
+    ApplicationType: any;
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -159,11 +160,12 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectReg: string;
   architectEmail: string;
   architectCell: string;
-
+      isLoading = false;
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   panelOpenState: boolean = false;
   ngOnInit(): void {
-    this.isLoading = true;
+
+
     this.refreshService.enableRefreshNavigation('/home');
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -179,6 +181,7 @@ export class BPViewProjectInfoComponent implements OnInit {
 
     this.getAllDepartmentsForCommentForBPApplication();
 
+  
 
   }
 
@@ -246,7 +249,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.idNumber = current.idNumber;
         this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
-
+        this.ApplicationType = current.bpApplicationType;
         this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
       else {
@@ -411,7 +414,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   totalDocs: number;
   totalDocs2: string;
-  isLoading = false;
+
   public successfulUploads = 0;
   public successfulUploads2 = '';
   fileAttrs: string[] = [];

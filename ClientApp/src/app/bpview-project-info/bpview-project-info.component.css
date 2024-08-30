@@ -211,8 +211,8 @@ h3 span {
 }
 .fade-out {
   opacity: 0;
-  transition: opacity 0.5s ease-out;
-  display: none; /* Optionally add display: none; after animation */
+  transition: opacity 1s ease-out;
+   /* Optionally add display: none; after animation */
 }
 .example-card {
   margin-bottom: 10px;
