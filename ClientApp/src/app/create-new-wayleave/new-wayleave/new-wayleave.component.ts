@@ -5797,10 +5797,10 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
         this.configID = current.configID;
-        this.configNumberOfProject = current.utilitySlot1;
+        this.configNumberOfProject = parseFloat(current.utilitySlot1) + 1;
         this.configMonthYear = current.utilitySlot2;
 
-        this.projectNumber = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+        this.projectNumber = "WL:" + this.configNumberOfProject.toString() + "/" + this.configMonthYear;
 
         this.UpdateConfig(appUserId, isPlanning);
       }
@@ -5939,7 +5939,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   UpdateConfig(appUserId:any,isPlanning:boolean) {
-    this.configService.addUpdateConfig(this.configID, null, null, (Number(this.configNumberOfProject + 1)).toString(), null, null).subscribe((data: any) => {
+    this.configService.addUpdateConfig(this.configID, null, null, this.configNumberOfProject.toString(), null, null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.AddNewApplication(appUserId, isPlanning);
       }

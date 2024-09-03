@@ -887,7 +887,7 @@ export class ActionCenterComponent implements OnInit {
 
   getAllPermitForComment() {
 
-    this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
 
@@ -907,7 +907,7 @@ export class ActionCenterComponent implements OnInit {
 
         }
 
-        this.canApprovePTW();
+        
 
 
       }
@@ -1175,7 +1175,7 @@ export class ActionCenterComponent implements OnInit {
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, "PTW").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
-
+        this.moveToMonitoring();
       }
 
     }, error => {
@@ -1282,7 +1282,7 @@ export class ActionCenterComponent implements OnInit {
           //Request For Delete Kyle 22-02-24
 
 
-          this.moveToMonitoring();
+        
           this.generatePTW(this.CurrentApplication.FullName);
           this.AddComment("Permit Approved", null);
 
@@ -7093,14 +7093,17 @@ export class ActionCenterComponent implements OnInit {
   projectNumber: string;
 
   generateProjectNumber() {
+    debugger;
     this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      debugger;
       if (data.responseCode == 1) {
+        debugger;
         const current = data.dateSet[0];
         this.configID = current.configID;
-        this.configNumberOfProject = current.utilitySlot1;
+        this.configNumberOfProject = parseFloat(current.utilitySlot1) + 1;
         this.configMonthYear = current.utilitySlot2;
 
-        this.projectNumber = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+        this.projectNumber = "WL:" + this.configNumberOfProject .toString() + "/" + this.configMonthYear;
 
         this.UpdateConfig();
       }
@@ -7114,7 +7117,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   UpdateConfig() {
-    this.configService.addUpdateConfig(this.configID, null, null, (Number(this.configNumberOfProject + 1)).toString(), null, null).subscribe((data: any) => {
+    this.configService.addUpdateConfig(this.configID, null, null, this.configNumberOfProject .toString(), null, null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.moveApplicationToPaid();
       }
