@@ -1020,7 +1020,7 @@ export class BuildingApplicationComponent implements OnInit {
             this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
                 this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
-                  this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+                  this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
                   this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
                   this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
                   this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
@@ -1057,7 +1057,7 @@ export class BuildingApplicationComponent implements OnInit {
         })
 
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
-          this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+          this.clientEmail, this.clientCell, this.architectEmail, this.architectCell,  this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, this.servitudeBox,null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
@@ -1076,7 +1076,7 @@ export class BuildingApplicationComponent implements OnInit {
       }
       else if (this.applicationBeingCreatedType == "Land Survey") {
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
-          this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+          this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
