@@ -1,8 +1,8 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" *ngIf=" isInternal && CurrentApplication.ApplicationStatus !='Unpaid' && CurrentApplication.ApplicationStatus != 'PTW'" (click)="actionCentreView(content)">Action Center</button>
-  <button mat-raised-button color="relaxationBTN" *ngIf="isInternal && CurrentApplication.ApplicationStatus == 'Unpaid'" (click)="openPaidModal(paidDateModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move Application To Paid</button>
-  <button mat-raised-button color="relaxationBTN" *ngIf=" isInternal && CurrentApplication.ApplicationStatus == 'PTW'" (click)="openPermitModal(permitModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">Apply For Permit</button>
+  <button mat-raised-button color="createWayleave" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus !='Unpaid' && CurrentApplication.ApplicationStatus != 'PTW'" (click)="actionCentreView(content)">Action Center</button>
+  <button mat-raised-button color="relaxationBTN" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus == 'Unpaid'" (click)="openPaidModal(paidDateModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move Application To Paid</button>
+  <button mat-raised-button color="relaxationBTN" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus == 'PTW'" (click)="openPermitModal(permitModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">Apply For Permit</button>
   <!--<button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>-->
 </div>
 
