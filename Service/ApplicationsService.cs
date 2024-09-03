@@ -405,7 +405,10 @@ namespace BuildingPlans.Service
             }
             else
             {
-                _context.Application.Remove(tempApplicationTable);
+                tempApplicationTable.isActive = false;
+                tempApplicationTable.DateUpdated = DateTime.Now;
+                _context.Update(tempApplicationTable);
+                //_context.Application.Remove(tempApplicationTable);
                 await _context.SaveChangesAsync();
                 return true;
             }

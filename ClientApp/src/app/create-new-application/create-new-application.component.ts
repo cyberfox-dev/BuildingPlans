@@ -159,7 +159,9 @@ export class CreateNewApplicationComponent implements OnInit {
   }
 
   ViewApplication(index: any) {
+    debugger;
     const applicationID = this.ApplicationsList[index].ApplicationID;
+    this.sharedService.setApplicationID(applicationID);
     this.applicationsService.getApplicationsByApplicationID(applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const tempApplicationListShared = {} as ApplicationList;

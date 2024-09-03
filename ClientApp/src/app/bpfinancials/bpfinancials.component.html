@@ -42,21 +42,33 @@
           <mat-toolbar >
             <div class="row" style="margin-bottom:15px;">
               <div class="container-fluid">
-                <ng-container>
-                 <app-bpfile-upload [ApplicationID]="ApplicationID"
-                                    [UploadFor]="fileAttrs"
-                                    [isFinancial]="isFinancial"
+                <ng-container *ngIf="!isWayleave">
+                  <app-bpfile-upload [ApplicationID]="ApplicationID"
+                                     [UploadFor]="fileAttrs"
+                                     [isFinancial]="isFinancial"
                                      (passFileName)="onPassFileName($event)"
-                                    (onUploadFinished)="onFileDelete($event, 0)"
-                                    (onUploadSuccess)="onFileUpload($event)">
+                                     (onUploadFinished)="onFileDelete($event, 0)"
+                                     (onUploadSuccess)="onFileUpload($event)">
 
-                 </app-bpfile-upload>
+                  </app-bpfile-upload>
+                </ng-container>
+
+
+                <ng-container *ngIf="isWayleave">
+                  <app-file-upload [ApplicationID]="ApplicationID"
+                                     [UploadFor]="fileAttrs"
+                                     [isFinancial]="isFinancial"
+                                     (passFileName)="onPassFileName($event)"
+                                     (onUploadFinished)="onFileDelete($event, 0)"
+                                     (onUploadSuccess)="onFileUpload($event)">
+
+                  </app-file-upload>
                 </ng-container>
 
               </div>
             </div>
           </mat-toolbar>
-        </div>
+        </div> 
       </mat-form-field>
     </form>
   </div>

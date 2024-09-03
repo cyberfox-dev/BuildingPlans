@@ -748,22 +748,23 @@ export class NavMenuComponent implements OnInit {
     
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+      //this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+      //  if (data.responseCode == 1) {
 
-          this.shared.setApplicationID(0);
-          /*          this.homeComponent.getAllApplicationsByUserID();*/
-          this.router.navigate(["/home"]);
-        }
-        else {
-          alert("RefreshService Delete Application Error");
-        }
+      //    this.shared.setApplicationID(0);
+      //    /*          this.homeComponent.getAllApplicationsByUserID();*/
+      //    this.router.navigate(["/home"]);
+      //  }
+      //  else {
+      //    alert("RefreshService Delete Application Error");
+      //  }
 
-        console.log("responseAddApplication", data);
+      //  console.log("responseAddApplication", data);
 
-      }, error => {
-        console.log("Error", error);
-      })
+      //}, error => {
+      //  console.log("Error", error);
+      //})
+      this.shared.setApplicationID(0);
     }
     this.router.navigate(["/home"]);
   }
@@ -772,23 +773,23 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      
-      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+      this.shared.setApplicationID(0);
+      //this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+      //  if (data.responseCode == 1) {
 
-          this.shared.setApplicationID(0);
-          /* this.homeComponent.getAllApplicationsByUserID();*/
-          this.router.navigate(["/user-settings"]);
-        }
-        else {
-          alert("RefreshService Delete Application Error");
-        }
+        
+      //    /* this.homeComponent.getAllApplicationsByUserID();*/
+      //    this.router.navigate(["/user-settings"]);
+      //  }
+      //  else {
+      //    alert("RefreshService Delete Application Error");
+      //  }
 
-        console.log("responseAddApplication", data);
+      //  console.log("responseAddApplication", data);
 
-      }, error => {
-        console.log("Error", error);
-      })
+      //}, error => {
+      //  console.log("Error", error);
+      //})
     }
     this.router.navigate(["/user-settings"]);
   }
@@ -797,25 +798,25 @@ export class NavMenuComponent implements OnInit {
     
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      
-      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+      this.shared.setApplicationID(0);
+      //this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+      //  if (data.responseCode == 1) {
 
-          this.shared.setApplicationID(0);
-          /* this.homeComponent.getAllApplicationsByUserID();*/
-          this.router.navigate(["/"]);
-          localStorage.removeItem('LoggedInUserInfo');
-          localStorage.removeItem('userProfile');
-        }
-        else {
-          alert("RefreshService Delete Application Error");
-        }
+         
+      //    /* this.homeComponent.getAllApplicationsByUserID();*/
+      //    this.router.navigate(["/"]);
+      //    localStorage.removeItem('LoggedInUserInfo');
+      //    localStorage.removeItem('userProfile');
+      //  }
+      //  else {
+      //    alert("RefreshService Delete Application Error");
+      //  }
 
-        console.log("responseAddApplication", data);
+      //  console.log("responseAddApplication", data);
 
-      }, error => {
-        console.log("Error", error);
-      })
+      //}, error => {
+      //  console.log("Error", error);
+      //})
     }
     this.router.navigate(["/"]);
     localStorage.removeItem('LoggedInUserInfo');
@@ -826,24 +827,25 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      
-      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+      this.shared.setApplicationID(0);
+    //  this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+    //    if (data.responseCode == 1) {
 
-          this.shared.setApplicationID(0);
-          /* this.homeComponent.getAllApplicationsByUserID();*/
-          this.router.navigate(["/configuration"]);
-        }
-        else {
-          alert("RefreshService Delete Application Error");
-        }
+    //      this.shared.setApplicationID(0);
+    //      /* this.homeComponent.getAllApplicationsByUserID();*/
+    //      this.router.navigate(["/configuration"]);
+    //    }
+    //    else {
+    //      alert("RefreshService Delete Application Error");
+    //    }
 
-        console.log("responseAddApplication", data);
+    //    console.log("responseAddApplication", data);
 
-      }, error => {
-        console.log("Error", error);
-      })
+    //  }, error => {
+    //    console.log("Error", error);
+    //  })
     }
+   
     this.router.navigate(["/configuration"]);
   }
 
@@ -851,23 +853,23 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      
-      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+      this.shared.setApplicationID(0);
+      //this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+      //  if (data.responseCode == 1) {
 
-          this.shared.setApplicationID(0);
-          /* this.homeComponent.getAllApplicationsByUserID();*/
-          this.router.navigate(["/cyberfox-config"]);
-        }
-        else {
-          alert("RefreshService Delete Application Error");
-        }
 
-        console.log("responseAddApplication", data);
+      //    /* this.homeComponent.getAllApplicationsByUserID();*/
+      //    this.router.navigate(["/cyberfox-config"]);
+      //  }
+      //  else {
+      //    alert("RefreshService Delete Application Error");
+      //  }
 
-      }, error => {
-        console.log("Error", error);
-      })
+      //  console.log("responseAddApplication", data);
+
+      //}, error => {
+      //  console.log("Error", error);
+      //})
     }
     this.router.navigate(["/cyberfox-config"]);
   }
