@@ -5302,6 +5302,8 @@ export class ActionCenterComponent implements OnInit {
       
     }
     else {
+      this.permit = false;
+      this.canCommentFinalApprover = false;
       this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -6717,7 +6719,7 @@ export class ActionCenterComponent implements OnInit {
       debugger;
       if (data.responseCode == 1) {
         debugger;
-        if (this.CurrentApplication.ApplicationStatus == "Distrubuted") {
+        if (this.CurrentApplication.ApplicationStatus == "Distributed") {
           this.onCheckApprovalCount();
         }
         

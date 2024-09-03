@@ -264,7 +264,7 @@
 
     </div>
 
-    <div class="cont6" *ngIf="permit">
+    <div class="cont6" *ngIf="permit == true">
       <button mat-raised-button color="approveBTN"  (click)="PermitIssue('Approve')">Approve Permit</button>
       
       <button mat-raised-button color="rejectBTN" (click)="PermitIssue('Reject')">Reject Permit</button>
