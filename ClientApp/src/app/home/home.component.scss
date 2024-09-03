@@ -1441,18 +1441,19 @@ h6 {
 
 
 .mat-client {
-  background-color: #d57d38;
+  background: #4393d7;
   color: #ccdee2;
   width: 100%;
   margin: 10px;
   height: 68px;
 }
 .matactive {
-  background-color: #1d2024;
+  background-color: #0aaf578c;
   color: #ffffff;
   width: 100%;
   margin: 10px;
   height: 68px;
+  transform: scale(1.08);
 }
 
 .mat-internal {

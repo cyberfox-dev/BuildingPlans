@@ -35,6 +35,21 @@ h2 {
   margin: 25px 10px 13px 10px;
   height: 141px;
 }
+.ExpandIcon {
+  height: 159px;
+  margin: 10px auto;
+  align-items: flex-start;
+  text-align: center;
+  display: flex;
+  opacity: 15%;
+}
+h4 {
+  font-weight: 700;
+  color: #5d5d5d;
+  margin-bottom: 0;
+  font-size: 18px;
+  text-align: center;
+}
 .tracker {
   border: 1px solid rgba(255, 255, 255, .25);
   border-radius: 9px;
@@ -90,14 +105,6 @@ h2 {
     background: #4393d7;
   }
 
-h4 {
-  color: #8080806b;
-  /* margin: 0 auto; */
-  text-align: center;
-  font-size: 19px !important;
-  padding-top: 157px;
-  font-style: italic !important;
-}
 .Map {
   border: 1px solid rgba(255, 255, 255, .25);
   border-radius: 9px;
@@ -115,8 +122,9 @@ h4 {
   flex-direction: column;
   width: 100%;
 }
-.generalcomments{
-    margin-bottom:10px;
+.generalcomments {
+  margin-bottom: 10px;
+  padding: 5px;
 }
 .Comments {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -127,7 +135,7 @@ h4 {
   width: 100%;
   margin: 0px 4px 5px 9px;
   height: 100%;
-  min-height: 424px;
+  max-height: 437px;
   overflow: auto;
 }
 .Documents {
@@ -219,8 +227,9 @@ h3 span {
   width:100%;
 }
 h3 {
-  font-weight: 700;
-  color: #5d5d5d;
+  font-weight: 600;
+  color: #57575773;
+  margin-bottom: 10px;
 }
 .Name {
   text-align: center;
@@ -461,7 +470,7 @@ table {
 }
 
 .message-textApprove {
-  color: #269b24 !important;
+ /* color: #269b24 !important;*/
   font-size: 17px;
   font-weight: 700;
 }
@@ -537,7 +546,7 @@ table {
 }
 
 .message-textReject {
-  color: #730303 !important;
+/*  color: #730303 !important;*/
   font-size: 17px;
   font-weight: 700;
 }
@@ -600,7 +609,7 @@ table {
 }
 
 .message-textClarify {
-  color: #d57d38 !important;
+/*  color: #d57d38 !important;*/
   font-size: 17px;
   font-weight: 700;
 }
@@ -647,6 +656,7 @@ table {
   background-color: #77c1c8;
   border-radius: 100%;
   margin-left: 0;
+  fill:white;
 }
 
 .iconRelaxation {
@@ -664,7 +674,7 @@ table {
 }
 
 .message-textRelaxation {
-  color: #0be7fd !important;
+/*  color: #0be7fd !important;*/
   font-size: 17px;
   font-weight: 700;
 }
@@ -766,4 +776,43 @@ table {
     opacity: 1;
     transform: translateX(0);
   }
+}
+.bottom-0 {
+  position: sticky;
+  z-index: 2;
+
+  height: 34px;
+  top: 6px;
+  right: 16px;
+}
+.bottom-1 {
+  position: sticky;
+  z-index: 2;
+ 
+  height: 34px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  align-content: flex-start;
+  flex-wrap: nowrap;
+}
+.mat-expand {
+  scale: .5;
+  opacity: 50%;
+  background: none;
+  box-shadow: none;
+  background: white;
+  left: -19px;
+  /* bottom: -9px; */
+  position: fixed;
+  margin: end 0 !important;
+  display: table-column-group;
+}
+.mat-expand2 {
+  scale: .5;
+  opacity: 50%;
+  background: none;
+  box-shadow: none;
+  bottom: 35px;
+  right: 27px;
 }

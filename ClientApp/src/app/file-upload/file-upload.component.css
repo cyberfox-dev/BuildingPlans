@@ -10,11 +10,12 @@
   grid-template-columns: 1fr auto auto;
   align-items: baseline;
 }
-
+img {
+  filter: invert(1);
+}
 .mat-btn {
-  background-color: #005870;
-  color: white;
-  /* top: -2px; */
+  background-color: #8fc6e4;
+  /* color: white; */
   height: 63px;
   margin-left: 13px;
 }

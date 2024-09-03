@@ -66,23 +66,12 @@ namespace BuildingPlans.Controllers
                         //After the inizlization add to the db
                         await _context.BPDepartmentForComment.AddAsync(tempBPDepartmentForCommentTable);
                         await _context.SaveChangesAsync();
-                        return tempBPDepartmentForCommentTable;
+
                     }
 
                     else
                     {
-                        if (model.ApplicationID != null)
-                        {
-                            tempBPDepartmentForCommentTable.ApplicationID = model.ApplicationID;
-                        }
-                        if (model.DepartmentID != null)
-                        {
-                            tempBPDepartmentForCommentTable.DepartmentID = model.DepartmentID;
-                        }
-                        if (model.DepartmentName != null)
-                        {
-                            tempBPDepartmentForCommentTable.DepartmentName = model.DepartmentName;
-                        }
+
                         if (model.UserAssaignedToComment != null)
                         {
                             tempBPDepartmentForCommentTable.UserAssaignedToComment = model.UserAssaignedToComment;

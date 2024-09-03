@@ -357,6 +357,8 @@ export class BpActionCenterComponent implements OnInit {
   PlansExaminerRole: boolean = false;
   SystemConfigurations: boolean = false;
     ActionCenter: boolean = false;
+    LSAdminRole: boolean = false;
+    TPAdminRole: boolean = false;
 
   //  loggedInUserName: any;
   /*textfields*/
@@ -607,8 +609,8 @@ export class BpActionCenterComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].DepartmentID;
     this.loggedInUserSubDepartmentName = this.CurrentUserProfile[0].departmentName;
 
-    this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].sDepartmentName;
-    this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
+    this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.getAllUsersForLandSurveyReview();
     this.getLSReviewerForLink();
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
@@ -2631,10 +2633,75 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   onManuallyAssignUser() {
-
-
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
-      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id, false, "").subscribe((data: any) => {
+      debugger;
+      this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+
+        
+
+          if (data.dateSet.length > 0) {
+            this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+            this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
+
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+          }
+          else {
+            this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+                debugger;
+                this.modalService.dismissAll();
+                this.openSnackBar("Application Actioned");
+                this.router.navigate(["/home"]);
+/*                this.bpCommentsService.addUpdateComment(0, this.ApplicationID, this.functionalArea, null, "Assigned To Reviewer", null, null, null, this.CurrentUserProfile[0].fullName, this.CurrentApplicationBeingViewed[0].userID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+                  debugger;
+                  if (data.responseCode == 1) {
+                    debugger;
+                    this.modalService.dismissAll();
+                    this.openSnackBar("Application Actioned");
+                    this.router.navigate(["/home"]);
+                  }
+                  else {
+                   
+                  }
+                })*/
+
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+          }
+
+        }
+        else {
+          alert("Doesnt exisit in DB");
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+    }
+    else {
+
+    }
+
+
+/*    if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
+      this.bpDepartmentForCommentService.addUpdateDepartmentForComment().subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -2645,51 +2712,15 @@ export class BpActionCenterComponent implements OnInit {
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
 
-          const emailContent = `
-      <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.UserSelectionForManualLink.selected[0].fullName},</p>
-            <p>You have been assigned as reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
-                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-    `;
+      
 
 
           this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "Review Wayleave Application", emailContent, emailContent);
           if (this.UserSelectionForManualLink.selected[0].alternativeEmail) { //checkingNotifications 15 February 2024
             this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "Review Wayleave Application", emailContent, emailContent);
           }
-/*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
+*//*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*//*          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -2722,7 +2753,7 @@ export class BpActionCenterComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-    }
+    }*/
   }
   /*JJS 13-03-24*/
   /*JJS 07-03-24 GIS Reviewer*/
@@ -3317,7 +3348,7 @@ export class BpActionCenterComponent implements OnInit {
                       this.CreateNotification(this.clientUserID);*/
           /*  this.moveToFinalApprovalForDepartment();*/
           //this.modalService.dismissAll();
-          //this.openSnackBar("Application Actioned");
+          this.openSnackBar("Application Actioned");
           this.getAllServiceItemsForRelaxation();
 
         }
@@ -3428,6 +3459,107 @@ export class BpActionCenterComponent implements OnInit {
     }
   }
 
+
+  onCommentLSDistributedReviewer(interact: any) {
+    if (this.leaveAComment == "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
+
+      switch (interact) {
+
+        case "Approve": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Submission Plan", "Closed", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+                this.AddComment("TP Approved", null);
+
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+
+
+
+
+          break;
+        }
+
+        case "Reject": {
+
+          break;
+        }
+        case "Clarify": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Waiting Clarification", null, 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.AddComment("Clarify", null);
+              }
+              else {
+
+              }
+
+            })
+
+          break;
+        }
+        case "Relaxation": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation ", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+                this.AddComment("TP Relaxation", null);
+                /*this.getAllServiceItemsForRelaxation();*/
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+        default: {
+
+          break;
+        }
+      }
+    }
+  }
+
+
   onComment(interact: any) {
 
     let SubDepartmentName = "";
@@ -3450,7 +3582,58 @@ export class BpActionCenterComponent implements OnInit {
        
         case "Approve": {
 
-          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+
+          this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
+
+
+
+              if (data.dateSet.length > 0) {
+                this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+                this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "LS Reviewer Approved", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+                    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+                        if (data.responseCode == 1) {
+
+                        }
+                        else {
+                          alert(data.responseMessage)
+                        }
+                      }, error => {
+                        console.log("BuildingApplicationError: ", error)
+                      })
+                    this.AddComment("LS Reviewer Approved", this.currentBPDepartmentforCommentID);
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+              }
+              else {
+                alert("Error With Fetching getDepForCommentByID");
+              }
+              
+
+            }
+            else {
+              alert("Doesnt exisit in DB");
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+
+
+/*          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
@@ -3458,9 +3641,9 @@ export class BpActionCenterComponent implements OnInit {
 
               if (data.responseCode == 1) {
 
-                /*            this.CreateNotification(this.CurrentUser.appUserId);
-                            this.CreateNotification(this.clientUserID);*/
-                /*  this.moveToFinalApprovalForDepartment();*/
+                *//*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*//*
+                *//*  this.moveToFinalApprovalForDepartment();*//*
 
                 this.AddComment("LS Approved", null);
               }
@@ -3470,7 +3653,7 @@ export class BpActionCenterComponent implements OnInit {
             }, error => {
               console.log("BuildingApplicationError: ", error)
             })
-
+*/
 
 
 
@@ -3478,6 +3661,28 @@ export class BpActionCenterComponent implements OnInit {
           break;
 
         }
+
+        case "ApproveLSReviewer": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+
+                    this.AddComment("LS Approved", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+          break;
+        }
+
         case "Reject": {
 
           this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
@@ -3704,6 +3909,8 @@ export class BpActionCenterComponent implements OnInit {
       }
     }
   }
+
+  
   currentBPDepartmentforCommentID: any;
   countApproveBP = 0;
 
@@ -3725,11 +3932,11 @@ export class BpActionCenterComponent implements OnInit {
           if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Town Planning") {
             this.moveApplicationToTownPlanner();
           }
-          else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Building Plans") {
+          else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Building Plans" || this.CurrentApplicationBeingViewed[0].BPApplicationType == "Land Survey" && this.CurrentApplicationBeingViewed[0].currentStage == "Distribution") {
             this.moveApplicationToPlanExaminer();
           }
           else {
-
+    
           }
 
         } else {
@@ -3864,7 +4071,8 @@ export class BpActionCenterComponent implements OnInit {
                
                
                this.checkCountForApprovals();
-              
+               this.openSnackBar("Application Actioned");
+               this.router.navigate(["/home"]);
               
             }
             else {
@@ -4316,7 +4524,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Plans Examiner", "Referral", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -9633,7 +9841,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   AddComment(commentStatus: any, subDepartmentForCommentID: any) {
-    
+    debugger;
     this.bpCommentsService.addUpdateComment(0, this.ApplicationID, this.functionalArea, this.leaveAComment, commentStatus, subDepartmentForCommentID, null, null, this.CurrentUser.fullName, this.CurrentApplicationBeingViewed[0].userID, this.CurrentUser.appUserId).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
@@ -9650,6 +9858,32 @@ export class BpActionCenterComponent implements OnInit {
         });
       }
     })
+  }
+
+  applyForBuildingPLans() {
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Pending", "Building Plan",  2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          /*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*/
+          /*  this.moveToFinalApprovalForDepartment();*/
+          //this.modalService.dismissAll();
+          //this.openSnackBar("Application Actioned");
+          //this.getAllServiceItemsForRelaxation();
+          /* this.AddComment("LS Relaxation", null);*/
+          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
   }
 
   generateBPApplicationID() {
@@ -9876,7 +10110,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Distribution", "LS Review",  1, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+      null, null, null, null, null, null, "Distribution", "LS Relaxation",  1, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.modalService.dismissAll();
           this.openSnackBar("Application Distributed");
@@ -9907,6 +10141,12 @@ export class BpActionCenterComponent implements OnInit {
       }
       if (roleName == 'Admin') {
         this.AdminRole = true;
+      }
+      if (roleName == 'LS Admin') {
+        this.LSAdminRole = true;
+      }
+      if (roleName == 'TP Admin') {
+        this.TPAdminRole = true;
       }
 
     }
