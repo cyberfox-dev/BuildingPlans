@@ -1,6 +1,8 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Action Center</button>
+  <button mat-raised-button color="createWayleave" *ngIf="CurrentApplication.ApplicationStatus !='Unpaid' && CurrentApplication.ApplicationStatus != 'PTW'" (click)="actionCentreView(content)">Action Center</button>
+  <button mat-raised-button color="relaxationBTN" *ngIf="CurrentApplication.ApplicationStatus == 'Unpaid'" (click)="openPaidModal(paidDateModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move Application To Paid</button>
+  <button mat-raised-button color="relaxationBTN" *ngIf="CurrentApplication.ApplicationStatus == 'PTW'" (click)="openPermitModal(permitModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">Apply For Permit</button>
   <!--<button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>-->
 </div>
 
@@ -262,10 +264,10 @@
 
     </div>
 
-    <div class="cont6" *ngIf="permit && canApprovePermit">
-      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
-      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
-      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
+    <div class="cont6" *ngIf="permit">
+      <button mat-raised-button color="approveBTN"  (click)="PermitIssue('Approve')">Approve Permit</button>
+      
+      <button mat-raised-button color="rejectBTN" (click)="PermitIssue('Reject')">Reject Permit</button>
     </div>
     <!-- Permit Kyle 13-02 - 24-->
 
@@ -866,3 +868,58 @@
 
 </ng-template>
 <!-- Permit Kyle 13-02 - 24-->
+<ng-template #paidDateModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please select the date client paid for this application</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+
+
+    <div class="row">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="date" class="form-control" [(ngModel)]="selectPaidDate" id="selectPaidDate" placeholder="Enter the date this application was paid for...">
+        <label for="selectPaidDate">Select Paid Date</label>
+      </div>
+
+    </div>
+
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)=" moveApplicationToPaid() ;modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #permitModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please select a date for your Service Verification Meeting</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+
+
+    <div class="row">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+        <label for="permitStartDate">Select date</label>
+      </div>
+
+
+
+    </div>
+
+   
+
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" [disabled]=" permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>

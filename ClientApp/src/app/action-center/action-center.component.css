@@ -533,3 +533,10 @@ mat-column-zoneName {
   height: 44px;
   cursor:pointer;
 }
+.mat-relaxationBTN {
+  background-color: #24a2bd;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin: 20px;
+}

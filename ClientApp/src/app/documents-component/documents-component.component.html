@@ -43,7 +43,7 @@
         <!-- app-file-upload Component -->
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
-            <ng-container *ngIf="!isCalledInsidePermit; else permitSubForCommentIDSection">
+            <ng-container *ngIf="!isCalledInsidePermit && !isWayleave ; else permitSubForCommentIDSection">
               <app-bpfile-upload [ApplicationID]="ApplicationID"
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"

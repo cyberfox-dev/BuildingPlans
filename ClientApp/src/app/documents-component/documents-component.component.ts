@@ -57,7 +57,7 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() permitSubForCommentID: any;
   @Input() permitDocumentName: any | null;
   @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
-
+  @Input() isWayleave: boolean = false;
   currentStage: string;
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
@@ -73,15 +73,21 @@ export class DocumentsComponentComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Permit Kyle 13-02-24
     /*this.getCurrentStage();*/
-    this.currentStage = this.shared.getCurrentStage();
-    this.getAllNeighbourConsents();
-    
-    if (this.currentStage == "TP Relaxation") {
-      this.getNeighbourConsentDoc();
-    }
-    else {
+    if (this.isWayleave) {
       this.getAllDocsForApplication();
     }
+    else {
+      this.currentStage = this.shared.getCurrentStage();
+      this.getAllNeighbourConsents();
+
+      if (this.currentStage == "TP Relaxation") {
+        this.getNeighbourConsentDoc();
+      }
+      else {
+        this.getAllDocsForApplication();
+      }
+    }
+   
     //this.hasPermitSubForCommentDocument();
     //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
 
@@ -183,6 +189,7 @@ export class DocumentsComponentComponent implements OnInit {
       this.modalService.dismissAll();
 
     }
+    
   }
 
   viewDocument(index: any) {
@@ -281,43 +288,83 @@ export class DocumentsComponentComponent implements OnInit {
 
    
     debugger;
-    
-    this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+    if (this.isWayleave) {
+      this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDocList = {} as DocumentsList;
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempDocList = {} as DocumentsList;
 
-          const current = data.dateSet[i];
-          const nameCheck = current.documentName.substring(0, 13);
+            const current = data.dateSet[i];
+            const nameCheck = current.documentName.substring(0, 13);
 
-          if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
-            tempDocList.DocumentID = current.documentID;
+            if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
+              tempDocList.DocumentID = current.documentID;
 
-            tempDocList.DocumentName = current.documentName;
-            tempDocList.DocumentLocalPath = current.documentLocalPath;
-            tempDocList.ApplicationID = current.applicationID;
-            tempDocList.AssignedUserID = current.assignedUserID;
+              tempDocList.DocumentName = current.documentName;
+              tempDocList.DocumentLocalPath = current.documentLocalPath;
+              tempDocList.ApplicationID = current.applicationID;
+              tempDocList.AssignedUserID = current.assignedUserID;
 
-            this.DocumentsList.push(tempDocList);
+              this.DocumentsList.push(tempDocList);
+            }
+
           }
 
+
+          this.DocumentsListTable?.renderRows();
+          console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
         }
-       
+        else {
+          alert(data.responseMessage);
 
-        this.DocumentsListTable?.renderRows();
-        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
-      }
-      else {
-        alert(data.responseMessage);
+        }
+        console.log("reponseGetAllDocsForApplication", data);
 
-      }
-      console.log("reponseGetAllDocsForApplication", data);
+      }, error => {
+        console.log("ErrorGetAllDocsForApplication: ", error);
+      })
+    }
+    else {
+      this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempDocList = {} as DocumentsList;
+
+            const current = data.dateSet[i];
+            const nameCheck = current.documentName.substring(0, 13);
+
+            if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
+              tempDocList.DocumentID = current.documentID;
+
+              tempDocList.DocumentName = current.documentName;
+              tempDocList.DocumentLocalPath = current.documentLocalPath;
+              tempDocList.ApplicationID = current.applicationID;
+              tempDocList.AssignedUserID = current.assignedUserID;
+
+              this.DocumentsList.push(tempDocList);
+            }
+
+          }
+
+
+          this.DocumentsListTable?.renderRows();
+          console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponseGetAllDocsForApplication", data);
+
+      }, error => {
+        console.log("ErrorGetAllDocsForApplication: ", error);
+      })
+    }
+   
 
   }
   openDocUpload(newSub: any) {

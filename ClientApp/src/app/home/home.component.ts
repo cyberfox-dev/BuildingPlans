@@ -7633,6 +7633,7 @@ this.subscriptions.push(subscription);
       case 7:
         break;
       case 8:
+        debugger;
         applicationId = this.AllApplications[index].applicationID;
         this.sharedService.setCurrentStage(this.AllApplications[index].stage);
         this.sharedService.setApplicationID(applicationId);

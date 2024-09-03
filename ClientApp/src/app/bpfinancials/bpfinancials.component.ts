@@ -1,8 +1,9 @@
-import { Component, OnInit ,ViewChild} from '@angular/core';
+import { Component, Input, OnInit ,ViewChild} from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
 import { SharedService } from '../shared/shared.service';
+import { FinancialService } from '../service/Financial/financial.service';
 export interface FinancialDocumentList {
   FinancialID: number;
   FinancialDocumentName: string;
@@ -29,12 +30,14 @@ export class BPFinancialsComponent implements OnInit {
   fileCount: number = 0;
   fileAttrs = '';
 
+  @Input() isWayleave: boolean = false;
+
   financialDocumentList: FinancialDocumentList[] = [];
   @ViewChild(MatTable) financialsTable: MatTable<FinancialDocumentList> | null;
   displayedColumns: string[] = ['FinancialName', 'FinancialDocumentName', 'actions'];
   dataSource = this.financialDocumentList;
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  constructor(private financialService: BPFinancialService, private sharedService: SharedService, private modalService: NgbModal) { }
+  constructor(private bpFinancialService: BPFinancialService, private sharedService: SharedService, private modalService: NgbModal, private financialService: FinancialService) { }
 
   ngOnInit(): void {
     this.ApplicationID = this.sharedService.getApplicationID();
@@ -72,35 +75,68 @@ export class BPFinancialsComponent implements OnInit {
     this.modalService.open(UploadProof, { centered: true, size: 'xl' });
   }
   getAllFinancialDocuments() {
-    
-    this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
-      
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          const tempDoc = {} as FinancialDocumentList;
+    if (this.isWayleave) {
+      this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
-          tempDoc.FinancialID = current.financialID;
-          tempDoc.FinancialName = current.financialName;
-          tempDoc.FinancialDocumentName = current.documentName;
-          tempDoc.FinancialDocumentLocalPath = current.documentLocalPath;
-          tempDoc.FinancialType = current.financialType;
-          tempDoc.ApplicationID = current.applicationID;
-          tempDoc.CreatedById = current.createdById;
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempDoc = {} as FinancialDocumentList;
 
-          this.financialDocumentList.push(tempDoc);
+            tempDoc.FinancialID = current.financialID;
+            tempDoc.FinancialName = current.financialName;
+            tempDoc.FinancialDocumentName = current.documentName;
+            tempDoc.FinancialDocumentLocalPath = current.documentLocalPath;
+            tempDoc.FinancialType = current.financialType;
+            tempDoc.ApplicationID = current.applicationID;
+            tempDoc.CreatedById = current.createdById;
+
+            this.financialDocumentList.push(tempDoc);
+          }
+          this.dataSource = this.financialDocumentList;
+          this.financialsTable?.renderRows();
+
         }
-        this.dataSource = this.financialDocumentList;
-        this.financialsTable?.renderRows();
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("BPFinancials ", this.dataSource);
+      }, error => {
+        console.log(error);
+      })
+    }
+    
+    else {
+      this.bpFinancialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("BPFinancials ", this.dataSource);
-    }, error => {
-      console.log(error);
-    })
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempDoc = {} as FinancialDocumentList;
+
+            tempDoc.FinancialID = current.financialID;
+            tempDoc.FinancialName = current.financialName;
+            tempDoc.FinancialDocumentName = current.documentName;
+            tempDoc.FinancialDocumentLocalPath = current.documentLocalPath;
+            tempDoc.FinancialType = current.financialType;
+            tempDoc.ApplicationID = current.applicationID;
+            tempDoc.CreatedById = current.createdById;
+
+            this.financialDocumentList.push(tempDoc);
+          }
+          this.dataSource = this.financialDocumentList;
+          this.financialsTable?.renderRows();
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("BPFinancials ", this.dataSource);
+      }, error => {
+        console.log(error);
+      })
+    }
+    
   }
 
   viewDocument(index: any) {

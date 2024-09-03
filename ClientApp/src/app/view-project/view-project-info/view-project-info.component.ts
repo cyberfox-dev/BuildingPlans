@@ -112,6 +112,7 @@ export interface StagesList {
 }
 
 export interface SubDepConditionalApproveList {
+  SubDepForCommentID: number;
   SubDepID: number;
   SubDepName: string;
   ApplicationID: number;
@@ -341,56 +342,27 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined;
 
-  //applying for a client...
-  originatorID: any | undefined;
+ 
 
   rejected: boolean = false;
   approved: boolean = false;
 
-   //  Financial POP Kyle 15/01/24
+
   uploadingPOP: boolean = false;
   uploadedPOP: boolean = false;
-   //  Financial POP Kyle 15/01/24
-  canClarify: boolean;
-  /*type of applicant*/
-  isInternal = true;
-  toa = '';
-  /*external*/
-  extApplicantBpNoApplicant = '';
-  extApplicantCompanyName = '';
-  extApplicantCompanyRegNo = '';
-  extApplicantCompanyType = '';
-  extApplicantName = '';
-  extApplicantSurname = '';
-  extApplicantTellNo = '';
-  extApplicantEmail = '';
-  extApplicantPhyscialAddress = '';
-  extApplicantIDNumber = '';
-  extApplicantICASALicense = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
-  isTelecomms: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
-  isExtApplicantViewer: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
 
-  /*internal*/
-  internalApplicantName = '';
-  internalApplicantSurname = '';
-  internalApplicantDirectorate = '';
-  internalApplicantDepartment = '';
-  internalApplicantTellNo = '';
-  internalApplicantBranch = '';
-  internalApplicantCostCenterNo = '';
-  internalApplicantCostCenterOwner = '';
+ 
+  
 
   permitDate = '';
 
-  ExternalPaid: boolean = false;
+
 
   option: any;
 
-  wbsNumberRequested = '';
-  WBSBtn: boolean = false;
-  WBSField: boolean = false;
+  
   logoUrl: any;
-  try: any;
+ 
   currentDate = new Date();
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
@@ -424,91 +396,27 @@ export class ViewProjectInfoComponent implements OnInit {
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
-  ReApplyCount: number | undefined; //reapply Sindiswa 25 January 2024
+
  
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
-  clarifyBtn: boolean = false;
-  replyCreated: boolean = false;
-  editComment: boolean = true;
-  ApplicantReply = '';
+ 
   //reply = ''
   /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
   //commentEdit: any;
-  currentApplication: number;
-  configNumberOfProject: any;
-  configMonthYear: any;
-  wbs: any;
-  WBS: string;
-  wbsButton: boolean;
-  CurrentApplicant: number;
-  wbsRequired: boolean;
-  typeOfApp: string;
-  NotificationNumber: string;
-  WBSNumber: string;
-  PhysicalAddressOfProject: string;
-  DescriptionOfProject: string;
-  NatureOfWork: string;
-  ExcavationType: string;
-  ProjectNum: string;
-  clientName: string;
-  ApprovalPackBtn: boolean = false;
-  RejectionPackBtn: boolean = false;
-  depID: any;
-  subDepNameForClarify: any;
-  currentIndex: any;
-  subDepartmentForComment: any;
-  permitStartDate: Date;
-  permitBtn: boolean;
-  permitTextBox: boolean = false;
-  startDate: string;
-  selectPaidDate: Date;
+ 
+ 
 
-  showFormerApps: boolean;
-  fromReApplyArchive: boolean;
-
-  fileAttrs = "Upload File:" ;
-  fileAttrsName = "Doc";
-
-  ApForUpload: string;
-  showPermitTab: boolean;
-  showStatusOfWorksTab: boolean;
-  generateApproval: boolean;
-  hasFile: boolean;
-  EMBUsers: any;
-  loggedInUsersSubDepartmentID: number;
-  CurrentUserProfile: any;
-  stringifiedDataUserProfile: any;
-  isEMBUser: boolean;
-  datePaid: string;
-  Paid: string;
-  canReviewerClarify: boolean;
-    previousReviewer: any;
-  referComment: boolean;
-  PacksTab: boolean = false;
-  public InternalExternalUser: boolean=false;
-    isExternalApplicant: boolean;
   SuccessfulUploads: number = 0;
  //Audit Trail Kyle
   stringifiedDataRoles: any;
   AllCurrentUserRoles: any;
   //Audit Trail Kyle
 
-  //Final Approver && Senior Approver Kyle 01/02/24
-  reviewerToReply: boolean = false;
-  progressBar: number = 0;
-  reply: string = "";
- commentEdit: string = "";
-  //Final Approver && Senior Approver Kyle 01/02/24
-  canCreateNote: boolean = false;
-  showPreInvoice: boolean = false //zxNum-and-contractorAccount Sindiswa 28 February 2024
-  waterZXEnabled: boolean = false;
-  rimZXEnabled: boolean = false;
-  contractorInfEnabled: boolean = false;
-  showEMBInput: boolean = false;
-  totalZXDepartments: number;
+
+
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -550,6 +458,8 @@ export class ViewProjectInfoComponent implements OnInit {
     });
   }
   isDeposit: boolean = false;
+  fileAttrsName: any;
+  fileAttrs; any;
   onUploadDepositPOP() {
     this.fileAttrsName = "Deposit Proof Of Payment";
     this.fileAttrs = "Deposit Proof Of Payment";
@@ -631,6 +541,13 @@ export class ViewProjectInfoComponent implements OnInit {
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
   applicationData: any;
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+  loggedInUsersSubDepartmentID: any;
+  currentApplication: any;
+  reply = '';
+  isWayleave: boolean;
+
   ngOnInit(): void {
 
     
@@ -641,13 +558,13 @@ export class ViewProjectInfoComponent implements OnInit {
     
 
     if (this.CurrentUser == null) {
-      console.log("Not");
+      console.log("Current User Error");
     }
     else {
       console.log(this.CurrentUser);
     }
     
-
+    this.isWayleave = true;
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     
@@ -659,7 +576,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    
     
     // #region icasaDetailsDisplay Sindiswa 16 January 2024, when the logged in user is external the "Applicant" details show funny | USERID??
     console.log("This is the current user's details --- 280200224", this.CurrentUserProfile);
@@ -672,19 +589,7 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("This is the current user's roles --- 280200224", this.AllCurrentUserRoles);
     
   
-    // Audit Trail Kyle
-
-    //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
-    if (this.CurrentUserProfile[0].departmentID == 28 /*EMB*/ || (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ || this.CurrentUserProfile[0].departmentID == 25/*RIM*/))) {
-      this.showPreInvoice = true;
-      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ )) {
-        this.waterZXEnabled = true;
-      }
-      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 25/*RIM*/)) {
-        this.rimZXEnabled = true;
-      }
-    }
-    //#endregion
+    
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
@@ -695,14 +600,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //#region reapply Sindiswa 26 January 2024
     
 /*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
-    if (this.sharedService.getShowFormerApps.length > 0) {
-      this.showFormerApps = true
-    }
-    else {
-      this.showFormerApps = false;
-    }
-
-    this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
+  
     this.routerSubscription = this.sharedService.getRoutingToOldAapp();
     // #endregion
     const setValues = this.applicationDataForView[0];
@@ -720,7 +618,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
     
-    this.CurrentApplicant = setValues.CreatedById;
+    
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
@@ -744,7 +642,11 @@ export class ViewProjectInfoComponent implements OnInit {
     /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
-    
+    this.getAllComments();
+    this.getAllDocuments();
+    this.getAllFinancials();
+    this.getAllSubDepartmentForComments();
+    this.getCurrentApplicationInfo();
     //#endregion
   }
   // #region reapply Sindiswa 26 January 2024
@@ -768,23 +670,181 @@ export class ViewProjectInfoComponent implements OnInit {
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i ++ ) {
+          const current = data.dateSet[i];
+          const tempComment = {} as CommentsList;
 
+          tempComment.CommentID = current.commentID;
+          tempComment.CommentStatus = current.commentStatus;
+          tempComment.Comment = current.comment;
+          tempComment.SubDepartmentName = current.subDepartmentName;
+          tempComment.CanReplyUserID = current.canReplyUserID;
+          tempComment.isApplicantReplay = current.isApplicantReply;
+          tempComment.UserName = current.userName;
+          if (tempComment.isApplicantReplay != null) {
+            tempComment.HasReply = true;
+          }
+          else {
+            tempComment.HasReply = false;
+          }
+          tempComment.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+
+          this.CommentsList.push(tempComment);
         }
       }
       else {
         alert(data.responseMessage);
       }
+    }, error => {
+      console.log("Comments Error", error);
     })
   }
- 
-  getCurrentApplication() {
+  description: string;
+  typeOfApplication: string;
+  typeOFWorks: string;
+  typeOfExcavation: string;
+  expectedStartDate: any;
+  expectedEndDate: any;
+  physicalAddress: any;
+  coordinates: any;
+  userID: string;
+  applicantName: string;
+  applicantCell: string;
+  applicantEmail: string;
+  contractorName: string;
+  contractorCell: string;
+  contractorEmail: string;
+  EngineerName: string;
+  EngineerCell: string;
+  EngineerEmail: string;
+  Coordinates: any;
+  natureOfWork: string;
 
+  getCurrentApplicationInfo(){
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        const current = data.dateSet[0];
+        this.description = current.descriptionOfProject;
+        this.applicantName = current.fullName;
+        this.expectedStartDate = current.expectedStartDate.substring(0, current.expectedStartDate.indexOf("T"));
+        this.expectedEndDate = current.expectedEndDate.substring(0, current.expectedEndDate.indexOf("T"));
+        this.Coordinates = current.coordinates;
+        this.physicalAddress = current.physicalAddressOfProject;
+        this.applicantEmail = current.email;
+        this.applicantCell = current.phoneNumber;
+        this.coordinates = current.coordinates;
+        this.typeOfApplication = current.typeOfApplication;
+        this.userID = current.userID;
+        this.typeOfExcavation = current.excavationType;
+        this.natureOfWork = current.natureOfWork;
+
+        
+      }
+
+      else {
+       
+      }
+    }, error => {
+      console.log("Error", error);
+    })
   }
 
+  getCurrentApplication(): any {
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        return data.dateSet[0];
+      }
+      else {
+        return null;
+      }
+
+    }, error => {
+      console.log("Error", error);
+    })
+    return this.CurrentApplicationBeingViewed[0];
+  }
   openViewReply(index: any) {
 
   }
   SaveReply() {
 
   }
+
+  getEngineerAndContractorInfo() {
+    
+  }
+
+  getAllDocuments() {
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDoc = {} as DocumentsList;
+
+          tempDoc.DocumentID = current.documentID;
+          tempDoc.DocumentName = current.documentName;
+          tempDoc.DocumentLocalPath = current.documentLocalPath;
+
+          this.DocumentsList.push(tempDoc);
+        }
+      }
+      else {
+
+      }
+    }, error => {
+      console.log("DocumentsList Error", error);
+    })
+  }
+
+  getAllFinancials() {
+    this.financial.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDoc = {} as FinancialDocumentsList;
+
+          tempDoc.FinancialID = current.financialID;
+          tempDoc.FinancialType = current.financialType;
+          tempDoc.FinancialName = current.financialName;
+          tempDoc.FinancialDocumentName = current.documentName;
+          tempDoc.FinancialDocumentLocalPath = current.documentLocalPath;
+
+          this.FinancialDocumentsList.push(tempDoc);
+        }
+      }
+      else {
+
+      }
+    }, error => {
+      console.log("Financial Documents Error", error);
+    })
+  }
+
+  getAllSubDepartmentForComments() {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempSubDepartment = {} as AllSubDepartmentList
+
+          tempSubDepartment.subdepartmentForCommentID = current.subDepartmentForCommentID;
+          tempSubDepartment.subDepartmentID = current.subDepartmentID;
+          tempSubDepartment.subDepartmentName = current.subDepartmentName;
+          tempSubDepartment.commentStatus = current.commentStatus;
+          tempSubDepartment.UserAssaignedToComment = current.userAssaignedToComment;
+
+          this.AllSubDepartmentList.push(tempSubDepartment);
+        }
+        this.dataSource = this.AllSubDepartmentList;
+
+        console.log("SubDepartmentList", this.AllSubDepartmentList);
+      }
+      else {
+
+      }
+    }, error => {
+      console.log("SubDepartment For Comment List Error", error);
+    })
+  }
+ 
 }

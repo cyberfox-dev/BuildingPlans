@@ -51,6 +51,7 @@ import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
 import { FinancialService } from '../service/Financial/financial.service';
 import { ConfigService } from '../service/Config/config.service';
 import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
+import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
  //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -472,6 +473,7 @@ export class ActionCenterComponent implements OnInit {
     private financialService: FinancialService,
     private auditTrailService: AuditTrailService,
     private configService: ConfigService,
+    private bpDepartmentService: BpDepartmentsService
     //Audit Trail Kyle
 
 
@@ -501,7 +503,7 @@ export class ActionCenterComponent implements OnInit {
   saveBtn: boolean = true;
   option = '';
   planningWayleave: boolean = false;
-  selectSI :any;
+  selectSI: any;
 
   leaveAComment = "";
   leaveACommentGIS = "";
@@ -528,7 +530,7 @@ export class ActionCenterComponent implements OnInit {
     this.getAllSubDepartments();
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-      //PTW flow Kyle 06-03-24
+    //PTW flow Kyle 06-03-24
     this.stringifiedDataUserRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.CurrentUserRoles = JSON.parse(this.stringifiedDataUserRoles);
     if (this.CurrentUser == null) {
@@ -547,14 +549,12 @@ export class ActionCenterComponent implements OnInit {
 
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
 
-    if (!this.CurrentApplication.ProjectNumber.startsWith("WL")) {
-      return;
-    }
+    console.log("CurrentApplication:", this.CurrentApplication);
 
-    if (this.CurrentApplication.isPlanning === true) {
+    //if (this.CurrentApplication.isPlanning === true) {
 
-      this.planningWayleave = true;
-    }
+    //  this.planningWayleave = true;
+    //}
 
     //// this giving some shit 
     // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
@@ -565,9 +565,8 @@ export class ActionCenterComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
-    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    console.log("This is the Current User's Details", this.CurrentUserProfile);
+
+    console.log("Action Center CurrentUser Profile : ", this.CurrentUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
@@ -584,7 +583,7 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
 
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-     
+
 
       this.showPermitTab = true;
 
@@ -667,7 +666,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   }
-/*JJS 07-03-24 GIS Reviewer*/
+  /*JJS 07-03-24 GIS Reviewer*/
   @Input() ServiceConditionActive: boolean | null;
 
   // Assuming fileAttrs is a string, you may adjust the type accordingly
@@ -843,11 +842,11 @@ export class ActionCenterComponent implements OnInit {
 
         const current = data.dateSet[0];
         this.PermitIssue
-        
+
         if (current.userAssaignedToComment == null) {
-          
+
           const canAssign = this.CurrentUserRoles.map(x => x.roleName == "Permit Coordinator");
-          
+
           for (let i = 0; i < canAssign.length; i++) {
             if (canAssign[i] == true) {
               this.CanAssignPermitIssuer = true;
@@ -855,7 +854,7 @@ export class ActionCenterComponent implements OnInit {
           }
         }
         else if (current.userAssaignedToComment != null) {
-          
+
           if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.permitComment == null) {
             this.canApprovePermit = true;
           }
@@ -1173,7 +1172,7 @@ export class ActionCenterComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, "PTW").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
 
@@ -1275,112 +1274,65 @@ export class ActionCenterComponent implements OnInit {
     //}
 
 
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+    switch (interact) {
 
-        let current = data.dateSet[0];
-        switch (interact) {
-
-          case "Approve": {
-            if (confirm("Are you sure you want to approve permit this application?")) {
-              //Request For Delete Kyle 22-02-24
-            
-            
-                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
-                  if (data.responseCode == 1) {
-
-                    alert("Permit Approved");
-                    this.CheckAllLinkedDepartmentsApproved();
-                    this.onSaveToAuditTrail2("A permit issuer has aprroved the permit application");
-                    this.router.navigate(["/home"]);
+      case "Approve": {
+        if (confirm("Are you sure you want to approve permit this application?")) {
+          //Request For Delete Kyle 22-02-24
 
 
-                  }
-                  else {
-                    alert(data.responseMessage);
+          this.moveToMonitoring();
+          this.generatePTW(this.CurrentApplication.FullName);
+          this.AddComment("Permit Approved", null);
 
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-              }
+          this.modalService.dismissAll();
 
 
-              this.modalService.dismissAll();
-             
-
-            
-            break;
-          }
-
-          case "MeetOnSite": {
-            if (confirm("Are you sure you want to meet applicant On site?")) {
-            
-              
-                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
-                  if (data.responseCode == 1) {
-                    alert("Meet Applicant On Site");
-                    this.onSaveToAuditTrail2("A permit issuer has requested to meet on site");
-                    this.router.navigate(["/home"]);
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-              }
-              this.modalService.dismissAll();
-          
-            break;
-          }
-
-          case "Reject": {
-            if (confirm("Are you sure you want to reject permit?")) {
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  alert("Permit Rejected");
-                  this.onSaveToAuditTrail2("A permit issuer has reject the permit application");
-                  this.router.navigate(["/home"]);
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-              this.modalService.dismissAll();
-            }
-
-            break;
-          }
-
-          default: {
-
-            break;
-          }
         }
+        break;
+      }
+
+      case "MeetOnSite": {
+        if (confirm("Are you sure you want to meet applicant On site?")) {
+
+
+          //this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
+          //  if (data.responseCode == 1) {
+          //    alert("Meet Applicant On Site");
+          //    this.onSaveToAuditTrail2("A permit issuer has requested to meet on site");
+          //    this.router.navigate(["/home"]);
+
+          //  }
+          //  else {
+          //    alert(data.responseMessage);
+
+          //  }
+          //  console.log("reponse", data);
+
+          //}, error => {
+          //  console.log("Error: ", error);
+          //})
+        }
+        this.modalService.dismissAll();
+
+        break;
+      }
+
+      case "Reject": {
 
       }
-      else {
-        alert(data.responseMessage);
 
+        break;
+
+
+      default: {
+
+        break;
       }
-      console.log("reponse", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
+
+    }
+
 
     
 
@@ -3080,7 +3032,7 @@ export class ActionCenterComponent implements OnInit {
       case "Approve": {
         if (confirm("Are you sure you want to approve this application ? ")) {
           debugger;
-          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Approved",false,false,"Land Survey").subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Approved",false,false,"Land Survey",false).subscribe((data: any) => {
             if (data.responseCode == 1) {
               debugger;
               this.AddComment("Approved", this.subDPTforComment);
@@ -3099,7 +3051,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Reject": {
-        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Rejected",false,false,null,null).subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Rejected",false,false,"Land Survey",false).subscribe((data: any) => {
           if (data.responseCode == 1) {
             this.AddComment("Rejected", this.subDPTforComment);
           }
@@ -3116,7 +3068,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Clarify": {
-        this.subDepartmentForCommentService.updateCommentStatusToAwaitingClarity(this.subDPTforComment, "Awaiting Clarity",true).subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Awaiting Clarity",true,false,this.CurrentUser.appUserId,false).subscribe((data: any) => {
           if (data.responseCode == 1) {
             this.AddComment("Clarify", this.subDPTforComment);
           }
@@ -5150,7 +5102,7 @@ export class ActionCenterComponent implements OnInit {
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         console.log("Reviewer assignment information:", data.dateSet);
-
+        debugger;
         let current = data.dateSet[0];
         if (current.userAssaignedToComment !== "EndOfCommentProcess" && current.userAssaignedToComment !== "All users in Subdepartment FA" && current.userAssaignedToComment !== "Senior Reviewer to comment") {
 
@@ -5323,30 +5275,45 @@ export class ActionCenterComponent implements OnInit {
 
   appointmentText: string = '';
   asWhat: string;
-
+  
   actionCentreView(content: any) {
    
     debugger;
-    this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
-      if (data.responseCode == 1) {
-
-
-        console.log("User assignment information:", data.dateSet);
-        debugger;
-        let current = data.dateSet[0];
-
-        this.subDPTforComment = await current.subDepartmentForCommentID;
-        this.userAssignedText = await current.userAssaignedToComment;
-        this.commentState = await current.commentStatus;
-        this.openActionCenter(content);
+    if (this.CurrentUserProfile[0].subDepartmentName == "Land Survey") {
+      if (this.CurrentApplication.ApplicationStatus == "Awaiting Final Approval") {
+        this.canCommentFinalApprover = true;
       }
-      else {
-        alert(data.responseMessage);
 
+      if (this.CurrentApplication.ApplicationStatus == "PTW Pending") {
+        this.permit = true;
       }
-    }, error => {
-      console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
-    });
+      console.log("Permit", this.permit);
+      this.openActionCenter(content);
+    }
+    else {
+      this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+
+          console.log("User assignment information:", data.dateSet);
+          debugger;
+          let current = data.dateSet[0];
+
+          this.subDPTforComment = current.subDepartmentForCommentID;
+          this.userAssignedText = current.userAssaignedToComment;
+          this.commentState = current.commentStatus;
+          this.openActionCenter(content);
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+      }, error => {
+        console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
+        console.log("SubDepartmentForComment", this.subDPTforComment);
+      });
+    }
+    
 
 
 
@@ -5405,8 +5372,9 @@ export class ActionCenterComponent implements OnInit {
   }
   openActionCenter(content: any) {
     debugger;
-    if (this.commentState == null) {
+    if (this.commentState == null || this.commentState == '') {
       //This is so the Admin can assign
+     
       this.openXl(content);
     }
     else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" || this.commentState == "Approved(Conditional)")) {
@@ -5472,7 +5440,7 @@ export class ActionCenterComponent implements OnInit {
                 this.UpdateCommentStatusToFinalApproved(current.subDepartmentForCommentID);
                
               }
-              this.moveToMonitoring();
+              this.moveToPermitToWorkStage();
             }
             else {
               alert(data.reponseMessage);
@@ -6733,11 +6701,15 @@ export class ActionCenterComponent implements OnInit {
   functionalArea;
   AddComment(commentStatus: any, subDepartmentForCommentID: any) {
     debugger;
+
     this.commentsService.addUpdateComment(0, this.ApplicationID, subDepartmentForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName,this.leaveAComment,commentStatus, this.CurrentUser.appUserId, null, null, this.CurrentUser.fullName, this.applicationData.UserID).subscribe((data: any) => {
       debugger;
       if (data.responseCode == 1) {
         debugger;
-        this.onCheckApprovalCount();
+        if (this.CurrentApplication.ApplicationStatus == "Distrubuted") {
+          this.onCheckApprovalCount();
+        }
+        
         this.modalService.dismissAll();
       
       }
@@ -6789,7 +6761,7 @@ export class ActionCenterComponent implements OnInit {
   UpdateCommentStatusToFinalApproved(subDepForCommentID: number) {
     this.subDepartmentForCommentService.updateCommentStatus(subDepForCommentID, "Final Approved", false, null, null, true).subscribe((data: any) => {
       if (data.responseCode == 1) {
-
+        this.AddComment("Final Approve", null);
       }
       else {
         alert(data.responseMessage);
@@ -7078,6 +7050,129 @@ export class ActionCenterComponent implements OnInit {
         alert(data.responseMessage);
       }
     })
+  }
+
+  moveToPermitToWorkStage() {
+    this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, null, null, "PTW").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.onSaveToAuditTrail2("Application Moved To PTW Stage");
+        //Audit Traik Kyle 
+        alert("Application Moved To PTW");
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+  selectPaidDate: any;
+  moveApplicationToPaid() {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName,
+      this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, this.projectNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.newWayleaveDistrubution();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+  openPaidModal(paidDateModal: any) {
+    this.modalService.open(paidDateModal, { centered: true, size: 'xl' });
+  }
+
+  configID: number;
+  configNumberOfProject: number;
+  configMonthYear: number;
+  projectNumber: string;
+
+  generateProjectNumber() {
+    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.configID = current.configID;
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+
+        this.projectNumber = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+
+        this.UpdateConfig();
+      }
+      else {
+        alert(data.responseCode);
+      }
+    }, error => {
+      console.log(error);
+    })
+
+  }
+
+  UpdateConfig() {
+    this.configService.addUpdateConfig(this.configID, null, null, (Number(this.configNumberOfProject + 1)).toString(), null, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.moveApplicationToPaid();
+      }
+      else {
+
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  newWayleaveDistrubution() {
+    this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          if (current.departmentName != "Land Survey") {
+            this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.openSnackBar("Application moved to next stage");
+                this.router.navigate(["/home"]);
+              }
+              else {
+                alert(data.responseMessage);
+              }
+            }, error => {
+              console.log(error);
+            })
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+  permitStartDate: any;
+  minDate: any;
+  updateStartDateForPermit() {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,"PTW Pending", null, null, null, this.permitStartDate).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.openSnackBar("Permit Application Successfull");
+        this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  openPermitModal(permitModal: any) {
+    this.modalService.open(permitModal, { centered: true, size: 'xl' });
   }
 }
 
