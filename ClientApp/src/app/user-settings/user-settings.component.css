@@ -1,26 +1,29 @@
 h1 {
   font-family: 'Nunito', sans-serif;
   margin: 0 auto;
-  text-align: center;
+  /* text-align: center; */
   padding-top: 40px;
-  padding-bottom: 40px;
+  /* padding-bottom: 40px; */
   color: #343a40;
   font-size: 50px;
-  margin-top: 210px;
+  margin-top: 0px;
   font-weight: bold;
-  margin-bottom: 148px;
+  margin-bottom: 40px;
 }
 
 .mat-blue {
   margin: 5px;
-  background-color: #005870;
+  background-color: #4393d7;
   color: white;
   margin-top: 21px;
 }
 .mat-form-field{
     width:100%;
 }
-
+mat-dialog-container#mat-dialog-0 {
+  background: #ffffffba !important;
+  backdrop-filter: blur(15px) !important;
+}
 :host ::ng-deep .mat-tab-label-active {
   background-color: #ccdee2;
   color: #005870;
@@ -45,5 +48,8 @@ h1 {
   float: left;
 }
 
-
+.glass {
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+}
 

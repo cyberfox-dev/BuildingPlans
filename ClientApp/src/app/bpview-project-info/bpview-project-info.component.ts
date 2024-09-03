@@ -73,6 +73,10 @@ export interface CommentsList {
 
 export class BPViewProjectInfoComponent implements OnInit {
     ApplicationType: any;
+    ExpandPropertyOwnerDetails: boolean;
+    ExpandArchitectOwnerDetails: boolean;
+    ExpandTrackerInfo: boolean;
+    ExpandComments: boolean;
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -754,6 +758,63 @@ export class BPViewProjectInfoComponent implements OnInit {
         }
       });
     });
+  }
+
+  ExpandDocuments:boolean =  false;
+  openExpand(cardName: any, expand: any) {
+    debugger;
+    if (cardName == 'POD') {
+      this.ExpandPropertyOwnerDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'AD') {
+      this.ExpandArchitectOwnerDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Tracker') {
+      this.ExpandTrackerInfo = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Comments') {
+      this.ExpandComments = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Documents') {
+      this.ExpandDocuments = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+  }
+  closeExpanded(){
+    this.ExpandPropertyOwnerDetails = false;
+    this.ExpandComments = false;
+    this.ExpandDocuments = false;
+    this.ExpandTrackerInfo = false;
+    this.ExpandArchitectOwnerDetails = false;
   }
 }
 

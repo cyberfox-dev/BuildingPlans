@@ -747,6 +747,7 @@ h4 {
 .mat-expansion-panel {
   margin: 30px;
   height: 100%;
+  background: #ffffff7a !important;
 }
 
 

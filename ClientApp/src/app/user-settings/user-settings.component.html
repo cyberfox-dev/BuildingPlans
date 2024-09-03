@@ -4,194 +4,196 @@
 
 <div class="container-fluid">
 
-  <mat-tab-group>
-    <!-----------------------------------------------------------User Profile-------------------------------------------------------------->
+  <!--External User information-->
 
-    <mat-tab label="User Profile">
-      <div class="container-fluid">
-        <button mat-raised-button color="blue" (click)="openEditModal(userProfileEditModal)">Edit My Details</button>
-        <button mat-raised-button color="blue" (click)="openEditPasswordModal(passwordEditModal)">Edit My Password</button>
+  <div class="container-fluid glass" *ngIf="isInternal == false">
+    <button mat-raised-button color="blue" (click)="openEditModal(userProfileEditModal)">Edit My Details</button>
+    <button mat-raised-button color="blue" (click)="openEditPasswordModal(passwordEditModal)">Edit My Password</button>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="toa" placeholder="Type of Applicant" disabled>
+          <label for="toa">Type of applicant</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" readonly>
+          <label for="name">Name</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" readonly>
+          <label for="surname">Surname</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="toa" placeholder="Type of Applicant" disabled>
-              <label for="toa">Type of applicant</label>
+              <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>
+          <div class="col" *ngIf="telecomms">
+            <!--  icasadetails Sindiswa 10 January 2024 -->
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="externalApplicantICASANumber" placeholder="Enter ICASA License Number" disabled>
+              <label for="externalApplicantICASANumber">ICASA Number</label>
             </div>
           </div>
         </div>
-
-        <!--External User information-->
-
-
-
-        <div class="container-fluid" *ngIf="isInternal == false">
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" readonly>
-                <label for="name">Name</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" readonly>
-                <label for="surname">Surname</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
-                    <label for="bpNoApplicant">BP Number</label>
-                  </div>
-                </div>
-                <div class="col" *ngIf="telecomms"> <!--  icasadetails Sindiswa 10 January 2024 -->
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="externalApplicantICASANumber" placeholder="Enter ICASA License Number" disabled>
-                    <label for="externalApplicantICASANumber">ICASA Number</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" readonly>
-                <label for="address">Company Name</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3"> <!--icasadetails Sindiswa 10 January 2024-->
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" readonly>
-                <label for="address">Company Reg No.</label>
-              </div>
-            </div>
-              <div class="col-md-3">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
-                  <label for="extApplicantIDNumber">Vat Number</label>
-                </div>
-              </div>
-           
-            <div class="col-md-6">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" readonly>
-                <label for="applicantEmail">Company Type</label>
-              </div>
-            </div>
-          </div>
-
-
-
-          <div class="row">
-            <!--            <div class="col">
+      </div>
+      <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" readonly>
-          <label for="extApplicantIDNumber">ID Number</label>
+          <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" readonly>
+          <label for="address">Company Name</label>
         </div>
-  //for the emails
-                            <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" readonly>
-                  <label for="address">Company Name</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <!--icasadetails Sindiswa 10 January 2024-->
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" readonly>
+          <label for="address">Company Reg No.</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
+          <label for="extApplicantIDNumber">Vat Number</label>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" readonly>
+          <label for="applicantEmail">Company Type</label>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="row">
+      <!--            <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" readonly>
+            <label for="extApplicantIDNumber">ID Number</label>
+          </div>
+    //for the emails
+                              <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" readonly>
+                    <label for="address">Company Name</label>
+                  </div>
                 </div>
-              </div>
-      </div>-->
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" readonly>
-                <label for="applicantEmail">Email</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." readonly>
-                <label for="applicantTellNo">Cell No.</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="extApplicantEmailAlt" placeholder="Enter Alt. Email" readonly>
-                <label for="applicantEmail">Alternative Email</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]=" extApplicantTellNoAlt" placeholder="Enter Alt. Tell No." readonly>
-                <label for="applicantTellNo">Alternative Tel No.</label>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="row">
-            <!--<div class="col-lg-8">-->
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" readonly>
-                <label for="applicantTellNo">Physical Address</label>
-              </div>
-            </div>
-
-
-            <!--<div class="col-lg-4">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
-                <label for="extApplicantIDNumber">Vat Number</label>
-              </div>
-            </div>-->
-
-          </div>
-
-
-
+        </div>-->
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" readonly>
+          <label for="applicantEmail">Email</label>
         </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." readonly>
+          <label for="applicantTellNo">Cell No.</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="extApplicantEmailAlt" placeholder="Enter Alt. Email" readonly>
+          <label for="applicantEmail">Alternative Email</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]=" extApplicantTellNoAlt" placeholder="Enter Alt. Tell No." readonly>
+          <label for="applicantTellNo">Alternative Tel No.</label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <!--<div class="col-lg-8">-->
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" readonly>
+          <label for="applicantTellNo">Physical Address</label>
+        </div>
+      </div>
+
+
+      <!--<div class="col-lg-4">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
+        <label for="extApplicantIDNumber">Vat Number</label>
+      </div>
+    </div>-->
+
+    </div>
 
 
 
-        <!--Internal user information-->
-        <div class="container-fluid" *ngIf="isInternal == true">
+  </div>
 
 
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" readonly>
-                <label for="name">Name</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" readonly>
-                <label for="surname">Surname</label>
-              </div>
-            </div>
-          </div>
 
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
-                <label for="surname">Department</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" readonly>
-                <label for="Branch">Branch</label>
-              </div>
-            </div>
-          </div>
-          <!--<div class="row">
+  <!--Internal user information-->
+  <div class="container-fluid glass" *ngIf="isInternal == true">
+
+    <button mat-raised-button color="blue" (click)="openEditModal(userProfileEditModal)">Edit My Details</button>
+    <button mat-raised-button color="blue" (click)="openEditPasswordModal(passwordEditModal)">Edit My Password</button>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="toa" placeholder="Type of Applicant" disabled>
+          <label for="toa">Type of applicant</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" readonly>
+          <label for="name">Name</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" readonly>
+          <label for="surname">Surname</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+          <label for="surname">Department</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" readonly>
+          <label for="Branch">Branch</label>
+        </div>
+      </div>
+    </div>
+    <!--<div class="row">
     <div class="col">
       <div class="form-floating mb-3 mt-3">
         <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" readonly>
@@ -205,67 +207,72 @@
       </div>
     </div>
   </div>-->
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Contact Details: Email" disabled>
-                <label for="applicantEmail">Email</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Contact Details: Telephone" readonly>
-                <label for="applicantTellNo">Tel. Number</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantEmailAlt" placeholder="Contact Details: Alt. Email" readonly>
-                <label for="applicantEmail">Alternative Email</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNoAlt" placeholder="Contact Details: Alt. Telephone" readonly>
-                <label for="applicantTellNo">Alternative Tel. Number</label>
-              </div>
-            </div>
-          </div>
-
-
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Contact Details: Email" disabled>
+          <label for="applicantEmail">Email</label>
         </div>
       </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Contact Details: Telephone" readonly>
+          <label for="applicantTellNo">Tel. Number</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="internalApplicantEmailAlt" placeholder="Contact Details: Alt. Email" readonly>
+          <label for="applicantEmail">Alternative Email</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNoAlt" placeholder="Contact Details: Alt. Telephone" readonly>
+          <label for="applicantTellNo">Alternative Tel. Number</label>
+        </div>
+      </div>
+    </div>
 
-    </mat-tab>
 
-
-
-    <!-----------------------------------------------------------Engineers-------------------------------------------------------------->
-
-    <!--<mat-tab label="Engineers">
-      <app-edit-engineer></app-edit-engineer>
-    </mat-tab>-->
-
-    <!-----------------------------------------------------------Contractors-------------------------------------------------------------->
-
-    <!--<mat-tab label="Contractors">
-      <app-edit-contractor></app-edit-contractor>
-    </mat-tab>-->
-
-    <!------------Clients For Architect Users---------->
-    <!--<mat-tab label="Clients">
-      <app-edit-clients></app-edit-clients>
-    </mat-tab>-->
-
-    <!--------------------Architects FOr external Users -------------->
-    <!--<mat-tab label="Architects">
-     <app-edit-architects></app-edit-architects>
-    </mat-tab>-->
-
-  </mat-tab-group>
+  </div>
 </div>
+
+
+
+
+
+<!-- #region OLD USER PROFILE -->
+<!--<div class="container-fluid">
+
+  <mat-tab-group>-->
+<!-----------------------------------------------------------User Profile-------------------------------------------------------------->
+<!--<mat-tab label="User Profile">
+
+
+</mat-tab>-->
+<!-----------------------------------------------------------Engineers-------------------------------------------------------------->
+<!--<mat-tab label="Engineers">
+  <app-edit-engineer></app-edit-engineer>
+</mat-tab>-->
+<!-----------------------------------------------------------Contractors-------------------------------------------------------------->
+<!--<mat-tab label="Contractors">
+  <app-edit-contractor></app-edit-contractor>
+</mat-tab>-->
+<!------------Clients For Architect Users---------->
+<!--<mat-tab label="Clients">
+  <app-edit-clients></app-edit-clients>
+</mat-tab>-->
+<!--------------------Architects FOr external Users -------------->
+<!--<mat-tab label="Architects">
+ <app-edit-architects></app-edit-architects>
+</mat-tab>-->
+<!--</mat-tab-group>
+</div>-->
+<!-- #endregion -->
+
 
 
 <ng-template #userProfileEditModal let-modal>
@@ -334,12 +341,12 @@
 
       <div class="row">
         <!--<div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumberEdit" placeholder="Enter ID Number">
-        <label for="extApplicantIDNumber">ID Number</label>
-      </div>
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumberEdit" placeholder="Enter ID Number">
+            <label for="extApplicantIDNumber">ID Number</label>
+          </div>
 
-    </div>-->
+        </div>-->
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNoEdit" placeholder="Enter Tell No.">
@@ -445,12 +452,12 @@
         </div>
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="email" class="form-control" [(ngModel)]="internalApplicantEmailEdit" disabled> 
+            <input type="email" class="form-control" [(ngModel)]="internalApplicantEmailEdit" disabled>
             <label for="applicantEmail">Email</label>
           </div>
         </div>
       </div>
-        <div class="row">
+      <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="internalApplicantTellNoAltEdit" placeholder="Enter New Alt. Telephone">
@@ -484,7 +491,7 @@
     <mat-form-field>
       <mat-label>Enter your password</mat-label>
       <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="currentPassword">
-      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" >
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
     </mat-form-field>

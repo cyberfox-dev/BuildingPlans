@@ -14,9 +14,7 @@
   .fa-bars {
     color: white !important;
   }
-  .mat-stepper-horizontal[_ngcontent-ng-cli-universal-c416], .mat-stepper-vertical[_ngcontent-ng-cli-universal-c416] {
-    background: #323e4e !important;
-  }
+
   .example-sidenav {
     background-color: #2f3a49;
   }
@@ -99,13 +97,7 @@
     background: #323e4e !important
   }
 
-  .mat-horizontal-stepper-wrapper.ng-tns-c133-22.ng-star-inserted {
-    background: #323e4e !important;
-  }
 
-  :host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
-    background: #323e4e !important;
-  }
 
   .offcanvas {
     background: #323e4e !important
@@ -174,9 +166,6 @@
     white-space: nowrap;
     text-align: center;
   }
-  .mat-stepper-horizontal[_ngcontent-ng-cli-universal-c416], .mat-stepper-vertical[_ngcontent-ng-cli-universal-c416] {
-    background: white !important;
-  }
   .example-sidenav-content {
     background-color: rgb(255 255 255 / 0%) !important;
   }
@@ -231,6 +220,9 @@
 .mat-table {
   background: #ffffff00 !important;
   box-shadow: none !important;
+}
+input.form-control {
+  background: #ffffff3b !important;
 }
 
 .light {
@@ -292,7 +284,9 @@ body {
 }
 
 .mat-toolbar {
-  background: white !important;
+  background: #ffffff36 !important;
+  /* backdrop-filter: blur(10px); */
+  border-radius: 20px;
 }
 
 ::-webkit-scrollbar{
@@ -428,12 +422,7 @@ input {
 .modal-content {
   background: #323e4e !important
 }*/
-.mat-horizontal-stepper-wrapper.ng-tns-c133-22.ng-star-inserted {
-  background: #323e4e !important;
-}
-:host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
-  background: #323e4e !important;
-}
+
 
 /*.offcanvas {
   background: #323e4e !important
@@ -610,7 +599,7 @@ tr:hover {
     border-radius:.8rem;
 
 }
-  .sidebar ul li a:hover {
+  .sidebar ul li :hover {
     background-color: #899db8;
     color: white;
     cursor: pointer;

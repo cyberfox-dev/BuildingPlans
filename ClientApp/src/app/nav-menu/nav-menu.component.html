@@ -44,8 +44,8 @@
     <ul>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="goHome()">
-          <i class="fa fa-circle-o" matTooltip="Dashbaord"
+        <a>
+          <i class="fa fa-circle-o" matTooltip="Dashbaord" (click)="goHome()"
              matTooltipPosition="after"></i>
           <span class="nav-item">Dashbaord</span>
         </a>
@@ -53,8 +53,8 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="openFAQModal(FAQModal)">
-          <i class="fa fa-question" matTooltip="Frequently Asked Questions"
+        <a >
+          <i class="fa fa-question" matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"
              matTooltipPosition="after"></i>
           <span class="nav-item">FAQ</span>
         </a>
@@ -62,8 +62,8 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="goToCyberfoxCofig()">
-          <i class="fa fa-terminal" matTooltip="Dev Configs"
+        <a >
+          <i class="fa fa-terminal" matTooltip="Dev Configs" (click)="goToCyberfoxCofig()"
              matTooltipPosition="after"></i>
           <span class="nav-item">Dev Configs</span>
         </a>
@@ -71,8 +71,8 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="openRepositoryModal(repositoryModal)">
-          <i class="fa fa-files-o" matTooltip="Document Repository"
+        <a >
+          <i class="fa fa-files-o" matTooltip="Document Repository" (click)="openRepositoryModal(repositoryModal)"
              matTooltipPosition="after"></i>
           <span class="nav-item">Document Repository</span>
         </a>
@@ -80,8 +80,8 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="getAllCommentsByUserID(commentBuilder)">
-          <i class="fa fa-comment-o" matTooltip="Comment Builder"
+        <a >
+          <i class="fa fa-comment-o" matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"
              matTooltipPosition="after"></i>
           <span class="nav-item">Comment Builder</span>
         </a>
@@ -89,8 +89,8 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="goToConfig()">
-          <i class="fa fa-wrench" matTooltip="Configurations"
+        <a >
+          <i class="fa fa-wrench" matTooltip="Configurations" (click)="goToConfig()"
              matTooltipPosition="after"></i>
           <span class="nav-item">Configurations</span>
         </a>
@@ -98,18 +98,18 @@
       </li>
       <mat-divider></mat-divider>
       <li>
-        <a (click)="goToSettings()">
-          <i class="fa fa-cog" matTooltip="User Settings"
+        <a >
+          <i class="fa fa-cog" matTooltip="User Settings" (click)="goToSettings()"
              matTooltipPosition="after"></i>
           <span class="nav-item">User Settings</span>
         </a>
         <span class="tooltip">User Settings</span>
       </li>
-      <div class="spacer"></div>
+
       <mat-divider></mat-divider>
       <li class="logout-button">
-        <a (click)="LogoutUser()">
-          <i class="fa fa-sign-out" matTooltip="Log Out"
+        <a >
+          <i class="fa fa-sign-out" matTooltip="Log Out" (click)="LogoutUser()"
              matTooltipPosition="after"></i>
           <span class="nav-item"> Log Out</span>
         </a>
