@@ -137,6 +137,7 @@ h4 {
   height: 100%;
   max-height: 437px;
   overflow: auto;
+  min-height: 437px;
 }
 .Documents {
   border: 1px solid rgba(255, 255, 255, .25);
