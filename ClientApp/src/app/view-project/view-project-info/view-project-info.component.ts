@@ -718,7 +718,7 @@ export class ViewProjectInfoComponent implements OnInit {
   EngineerEmail: string;
   Coordinates: any;
   natureOfWork: string;
-
+  projectNumber: string;
   getCurrentApplicationInfo(){
     this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -726,8 +726,6 @@ export class ViewProjectInfoComponent implements OnInit {
         const current = data.dateSet[0];
         this.description = current.descriptionOfProject;
         this.applicantName = current.fullName;
-        this.expectedStartDate = current.expectedStartDate.substring(0, current.expectedStartDate.indexOf("T"));
-        this.expectedEndDate = current.expectedEndDate.substring(0, current.expectedEndDate.indexOf("T"));
         this.Coordinates = current.coordinates;
         this.physicalAddress = current.physicalAddressOfProject;
         this.applicantEmail = current.email;
@@ -737,8 +735,16 @@ export class ViewProjectInfoComponent implements OnInit {
         this.userID = current.userID;
         this.typeOfExcavation = current.excavationType;
         this.natureOfWork = current.natureOfWork;
-
-        
+        debugger;
+        if (current.projectNumber == null || current.projectNumber == '') {
+          this.projectNumber = this.ApplicationID.toString();
+        }
+        else {
+          this.projectNumber = current.projectNumber;
+;
+        }
+        this.expectedStartDate = current.expectedStartDate.substring(0, current.expectedStartDate.indexOf("T"));
+        this.expectedEndDate = current.expectedEndDate.substring(0, current.expectedEndDate.indexOf("T"));
       }
 
       else {

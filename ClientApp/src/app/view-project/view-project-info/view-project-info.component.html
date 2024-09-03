@@ -11,7 +11,7 @@
   <div class="headerViewProject ">
     <div class="leftSideHeader ">
       <div class="ProjectNumberCard">
-        <!--<h2>View Project Details : {{lsNumber}}</h2>-->
+        <h2>View Project Details : {{projectNumber}}</h2>
       </div>
      
       <div class="main">
@@ -111,12 +111,12 @@
               <td mat-cell *matCellDef="let element">
                 <div class="contIndication">
                   <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.commentStatus === 'Approved'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === 'Rejected'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.commentStatus == '' || element.commentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
                   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-                  <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
-                  <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
+                  <p class="blueThumbsUpText" *ngIf="element.commentStatus === 'Approved'">Approved</p>
+                  <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.commentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
                   <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
 
