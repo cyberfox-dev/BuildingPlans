@@ -565,7 +565,12 @@ export class ActionCenterComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      this.isInternalUser = true;
+    }
+    else {
+      this.isInternalUser = false;
+    }
     console.log("Action Center CurrentUser Profile : ", this.CurrentUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
