@@ -5287,13 +5287,19 @@ export class ActionCenterComponent implements OnInit {
     if (this.CurrentUserProfile[0].subDepartmentName == "Land Survey") {
       if (this.CurrentApplication.ApplicationStatus == "Awaiting Final Approval") {
         this.canCommentFinalApprover = true;
+        this.openActionCenter(content);
       }
 
       if (this.CurrentApplication.ApplicationStatus == "PTW Pending") {
         this.permit = true;
+        this.openActionCenter(content);
       }
+      else {
+        this.permit = false;
+      }
+     
       console.log("Permit", this.permit);
-      this.openActionCenter(content);
+      
     }
     else {
       this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, null).subscribe((data: any) => {
