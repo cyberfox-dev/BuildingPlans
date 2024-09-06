@@ -1,18 +1,10 @@
 <div class="cont5">
-  <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <div class="AssignedTo" *ngIf="">
-    <p>Application sitting with: </p>
-    </div>
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="ActionCenter == true && this.CurrentApplicationBeingViewed[0].currentStage != 'Closed'">Show My Actions</button>
-    <div class="applicantActions" *ngIf="ActionCenter == false">
-    <button mat-raised-button color="relaxationBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Relaxation Pending'" (click)="applyForRelaxation()" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Apply For Relaxation</button>
-    <button mat-raised-button color="relaxationBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'" (click)="applyForBuildingPLans()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
-    </div>
-
-
-
-
-
+  <button mat-raised-button color="infoBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/bolt.svg" class="icon"></button>
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Show My Actions</button>
+  <div class="applicantActions" *ngIf="ActionCenter == false">
+    <button mat-raised-button color="applicantBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Relaxation Pending'" (click)="applyForRelaxation()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Apply For Relaxation</button>
+    <button mat-raised-button color="applicantBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'" (click)="applyForBuildingPLans()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
+  </div>
 </div>
 
 
@@ -24,11 +16,17 @@
   <div class="modal-body">
 
     <!--    <div class="contCards">-->
+    <div class="assign" *ngIf="TPAdminRole || LSAdminRole">
+      <div class="AssignedTo">
+        <p *ngIf="AssignUserForComment == false"> This project is already assigned</p>
+      </div>
+      <div class="containerCard" >
+        <p class="cardHeader">Assign Reviewer</p>
+        <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
+        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
 
-    <div class="containerCard" *ngIf="TPAdminRole || LSAdminRole">
-      <p class="cardHeader">Assign Reviewer</p>
-      <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
-      <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
+
+      </div>
     </div>
     <!--</div>-->
 
@@ -42,22 +40,17 @@
 
     <!-- #region Land survey (Building plans) -->
     <div class="" *ngIf="CurrentApplicationBeingViewed[0].BPApplicationType == 'Land Survey'">
-      <mat-form-field class="example-full-width">
-        <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
-        <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
-        <div>{{ leaveAComment.length }}/250</div>
-      </mat-form-field>
+
 <!--       #region Land Survey Review Actions -->
 
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' || this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation'  && LSReviewerRole && this.CurrentApplicationBeingViewed[0].currentStatus !='Relaxation Pending'">
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && AssignUserForComment">
         <p>LS Reviewer</p>
 
-
-        <!--        <div class="containerCard">
-                  <p class="cardHeader">Assign Reviewer</p>
-                  <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
-                  <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
-                </div>-->
+              <mat-form-field class="example-full-width">
+          <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+          <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+          <div>{{ leaveAComment.length }}/250</div>
+        </mat-form-field>
         <div class="containerLS">
 
           <div class="containerLS">
@@ -67,7 +60,7 @@
             <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">    Clarify</button>
           </div>
         </div>
-       <!-- <mat-checkbox class="example-margin" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'">Add Relaxation Tarrif</mat-checkbox>-->
+        <!-- <mat-checkbox class="example-margin" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'">Add Relaxation Tarrif</mat-checkbox>-->
       </div>
 
       <!-- #endregion -->
