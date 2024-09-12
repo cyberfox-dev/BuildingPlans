@@ -5736,10 +5736,10 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          if (current.departmentName != "Land Survey") {
+          if (current.departmentName == "Land Survey") {
             this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
-
+                return;
               }
               else {
                 alert(data.responseMessage);
@@ -5849,7 +5849,7 @@ export class NewWayleaveComponent implements OnInit {
       this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, this.CurrentUserProfile[0].alternativeEmail, null, null, null,
         null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
         this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
-        "Distributed", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+        "Admin Review", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
           if (data.responseCode == 1) {
             this.SavedProjectSizeSelections();
 

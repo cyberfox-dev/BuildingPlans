@@ -51,5 +51,13 @@ export class BPAccessGroupsService {
     return this.httpClient.post(this.baseURL + "GetAllAccessGroupsAndUserLink", body);
   }
 
+  public getAllUsersForAccessGroup(departmentName: string | null, functionalArea: string | null, accessGroupName: string | null) {
+    const body = {
+      DepartmentName: departmentName,
+      FunctionalArea: functionalArea,
+      AccessGroupName: accessGroupName
+    }
 
+    return this.httpClient.post(this.baseURL + "GetAllUsersForAccessGroup", body);
+  }
 }

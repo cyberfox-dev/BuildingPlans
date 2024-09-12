@@ -36,7 +36,8 @@ import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumen
 import { SnackBarAlertsComponent } from '../../snack-bar-alerts/snack-bar-alerts.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
-
+import { ProfessionalsLinksService } from '../../service/ProfessionalsLinks/professionals-links.service';
+import { ProfessionalService } from '../../service/Professionals/professional.service';
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 import { ReviewerforcommentService } from '../../service/ReviewerForComment/reviewerforcomment.service';
@@ -536,6 +537,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //Audit Trail Kyle
     /*zxNumberUpdate Sindiswa 01 March 2024*/private departmentService: DepartmentsService,
     /*zxNumberUpdate Sindiswa 01 March 2024*/private zxNumberService: ZXNumberService,
+    private professionalsService: ProfessionalService
   ) { }
 
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
@@ -710,12 +712,7 @@ export class ViewProjectInfoComponent implements OnInit {
   applicantName: string;
   applicantCell: string;
   applicantEmail: string;
-  contractorName: string;
-  contractorCell: string;
-  contractorEmail: string;
-  EngineerName: string;
-  EngineerCell: string;
-  EngineerEmail: string;
+  
   Coordinates: any;
   natureOfWork: string;
   projectNumber: string;
@@ -852,9 +849,41 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("SubDepartment For Comment List Error", error);
     })
   }
+  contractorName: string;
+  contractorCell: string;
+  contractorEmail: string;
+  EngineerName: string;
+  EngineerCell: string;
+  EngineerEmail: string;
 
   getEngineerAndContractor() {
-    
+    this.professionalsService.getAllProfessionalsLinkByApplicationID(this.ApplicationID, "Engineer").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.EngineerName = current.fullName;
+        this.EngineerCell = current.phoneNumber;
+        this.EngineerEmail = current.email;
+      }
+      else {
+        console.log("Engineer Error", data.responseMessage);
+      }
+    }, error => {
+      console.log("Engineer Error", error);
+    })
+
+    this.professionalsService.getAllProfessionalsLinkByApplicationID(this.ApplicationID, "Contractor").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.contractorName = current.fullName;
+        this.contractorCell = current.phoneNumber;
+        this.contractorEmail = current.email;
+      }
+      else {
+        console.log("Contractor", data.responseMessage);
+      }
+    }, error => {
+      console.log("Contractor", error);
+    })
   }
  
 }
