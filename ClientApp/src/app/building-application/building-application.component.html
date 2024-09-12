@@ -140,9 +140,10 @@
       </div>
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="sGCode" name="sGCode" placeholder="SG Code">
+          <input type="text" class="form-control" [(ngModel)]="sGCode" name="sGCode" placeholder="SG Code" minlength="21" maxlength="21" required>
           <label for="sGCode">SG Code</label>
         </div>
+
       </div>
 
 

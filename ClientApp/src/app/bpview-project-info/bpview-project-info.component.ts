@@ -168,7 +168,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   panelOpenState: boolean = false;
   ngOnInit(): void {
-
+    this.isLoading = true;
 
     this.refreshService.enableRefreshNavigation('/home');
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -186,7 +186,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.getAllDepartmentsForCommentForBPApplication();
 
   
-
+    this.isLoading = false;
   }
 
   openViewReply(index: any) {
@@ -339,7 +339,20 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
 
 
+  currentStep = 0;
+  steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
 
+  nextStep() {
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
 
   loadBPDocumentsList() {
 
@@ -637,7 +650,7 @@ export class BPViewProjectInfoComponent implements OnInit {
       else {
 
       }
-      this.isLoading = false;
+
     }, error => {
       console.log(error);
     })
@@ -815,6 +828,29 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.ExpandDocuments = false;
     this.ExpandTrackerInfo = false;
     this.ExpandArchitectOwnerDetails = false;
+  }
+  leaveAComment: string;
+  saveNewInternalComment() {
+    this.bpCommentsService.addUpdateComment(0, this.applicationId, this.functionalArea, this.leaveAComment, "Internal Comment", this.CurrentUserProfile[0].subDepartmentID, null, null, this.CurrentUser.fullName, this.CurrentUserProfile[0].userID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll();
+
+     
+      }
+      else {
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: "An Error has occured"
+          }
+        });
+      }
+    })
+  }
+
+  openInternalComment(newInternalComment: any) {
+    this.modalService.open(newInternalComment, { centered: true, size: 'xl' });
   }
 }
 

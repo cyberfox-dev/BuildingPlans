@@ -1079,7 +1079,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid", "Submission Plan", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
