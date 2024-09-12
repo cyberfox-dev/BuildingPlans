@@ -213,6 +213,40 @@ namespace BuildingPlans.Controllers
             }
         }
 
-       
+        [HttpPost("GetAllUsersForAccessGroup")]
+        public async Task<object> GetAllUsersForAccessGroup([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                if (model.DepartmentName == null || model.FunctionalArea == null || model.AccessGroupName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var UserIDs = await (from auc in _context.BPAccessGroupsUserLinks
+                                         where auc.FunctionalArea == model.FunctionalArea && auc.DepartmentName == model.DepartmentName && auc.AccessGroupName == model.AccessGroupName && auc.isActive == true
+                                         select auc.UserProfileID).ToListAsync();
+
+                    var result = await( from users in _context.UserProfilesTable
+                                        where users.isActive == true && UserIDs.Contains(users.UserProfileID)
+                                        select new UserProfileDTO()
+                                        {
+                                            UserProfileID = users.UserProfileID,
+                                            UserID = users.UserID,
+                                            FullName = users.FullName,
+                                            Email = users.Email,
+                                            AlternativeEmail = users.AlternativeEmail
+                                        }).ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all user for access group", result));
+                                        
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
 }

@@ -766,6 +766,7 @@ export class NavMenuComponent implements OnInit {
       //})
       this.shared.setApplicationID(0);
     }
+    this.shared.setApplicationID(0);
     this.router.navigate(["/home"]);
   }
 
@@ -791,6 +792,7 @@ export class NavMenuComponent implements OnInit {
       //  console.log("Error", error);
       //})
     }
+    this.shared.setApplicationID(0);
     this.router.navigate(["/user-settings"]);
   }
 
@@ -845,7 +847,7 @@ export class NavMenuComponent implements OnInit {
     //    console.log("Error", error);
     //  })
     }
-   
+    this.shared.setApplicationID(0);
     this.router.navigate(["/configuration"]);
   }
 
@@ -871,6 +873,7 @@ export class NavMenuComponent implements OnInit {
       //  console.log("Error", error);
       //})
     }
+    this.shared.setApplicationID(0);
     this.router.navigate(["/cyberfox-config"]);
   }
 
