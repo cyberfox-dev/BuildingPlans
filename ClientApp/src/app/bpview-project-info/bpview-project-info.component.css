@@ -100,8 +100,8 @@ h4 {
 .leftSide {
   width: 63%;
 }
-.rightSide{
-
+.rightSide {
+  width: 36%;
 }
 .actionCenter {
   border: 2px solid;
@@ -283,6 +283,12 @@ h3 {
   /*  margin: 10px 0;*/
   width: 100%;
   height: auto;
+}
+
+.mat-column-indication {
+  width: 36%;
+  text-align: center;
+
 }
 
 .cont {

@@ -605,12 +605,12 @@ export class BpActionCenterComponent implements OnInit {
     this.getAllDepartmentsForLandSurvey();
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
-    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].DepartmentID;
-    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].DepartmentID;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.loggedInUserSubDepartmentName = this.CurrentUserProfile[0].departmentName;
 
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
-    this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.getAllUsersForLandSurveyReview();
     this.getLSReviewerForLink();
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
@@ -3589,7 +3589,7 @@ export class BpActionCenterComponent implements OnInit {
       }
     }
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
-    if (this.leaveAComment == "") {
+    if (this.leaveAComment == "" && interact != "ApproveLSAdmin") {
       const dialogRef = this.dialog.open(BpAlertModalComponent, {
         data: {
           message: "Please leave a comment in order to interact with the application"
@@ -3600,7 +3600,7 @@ export class BpActionCenterComponent implements OnInit {
       
       switch (interact) {
        
-        case "Approve": {
+        case "ApproveLSAdmin": {
 
 
           this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
@@ -3611,25 +3611,26 @@ export class BpActionCenterComponent implements OnInit {
 
               if (data.dateSet.length > 0) {
                 this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
-                this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "LS Reviewer Approved", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
-
+                this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "LS Admin Approved", false, null, true).subscribe((data: any) => {
+                  debugger;
                   if (data.responseCode == 1) {
+
                     this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
                       null, null, null, null, null, null, null,
                       null, null, null, null, null, null, null, null, null,
                       null, null, null, null, null, null, null,
-                      null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      null, null, null, null, null, null, "Reviewing", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
                         if (data.responseCode == 1) {
-
+                          this.AddComment("LS Approved", this.currentBPDepartmentforCommentID);
                         }
                         else {
-                          alert(data.responseMessage)
+                          alert(data.responseMessage);
                         }
                       }, error => {
                         console.log("BuildingApplicationError: ", error)
                       })
-                    this.AddComment("LS Reviewer Approved", this.currentBPDepartmentforCommentID);
+
 
                   }
                   else {
@@ -3683,53 +3684,154 @@ export class BpActionCenterComponent implements OnInit {
         }
 
         case "ApproveLSReviewer": {
-          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-            null, null, null, null, null, null, null,
-            null, null, null, null, null, null, null, null, null,
-            null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Approved(Pending)", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-
-              if (data.responseCode == 1) {
 
 
-                    this.AddComment("LS Approved", null);
-              }
-              else {
-                alert(data.responseMessage)
-              }
-            }, error => {
-              console.log("BuildingApplicationError: ", error)
-            })
+
+                this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+                  debugger;
+                  if (data.responseCode == 1) {
+
+
+
+                    if (data.dateSet.length > 0) {
+                      this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+                      this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "LS Reviewer Approved", false, null, false).subscribe((data: any) => {
+                        debugger;
+                        if (data.responseCode == 1) {
+                          alert(data.responseMessage);
+                          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, "Approved(Pending)", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+                              if (data.responseCode == 1) {
+                                this.AddComment("Relaxation Requested", this.currentBPDepartmentforCommentID);
+                              }
+                              else {
+                                alert(data.responseMessage);
+                              }
+                            }, error => {
+                              console.log("BuildingApplicationError: ", error)
+                            })
+
+
+                        }
+                        else {
+                          alert(data.responseMessage);
+                        }
+                      }, error => {
+                        console.log("BuildingApplicationError: ", error)
+                      })
+                    }
+                    else {
+                      alert("Error With Fetching getDepForCommentByID");
+                    }
+
+
+                  }
+                  else {
+                    alert("Doesnt exisit in DB");
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+
           break;
         }
 
-        case "Reject": {
+        case "LSRelaxationRequest": {
 
-          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-            null, null, null, null, null, null, null,
-            null, null, null, null, null, null, null, null, null,
-            null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation Pending", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-              if (data.responseCode == 1) {
-
-                /*            this.CreateNotification(this.CurrentUser.appUserId);
-                            this.CreateNotification(this.clientUserID);*/
-                /*  this.moveToFinalApprovalForDepartment();*/
-                //this.modalService.dismissAll();
-                //this.openSnackBar("Application Actioned");
-                //this.getAllServiceItemsForRelaxation();
-                this.AddComment("LS Relaxation",null);
-              }
-              else {
-                alert(data.responseMessage)
-              }
-            }, error => {
-              console.log("BuildingApplicationError: ", error)
-            })
+                this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+             
+                  if (data.responseCode == 1) {
 
 
+                    debugger;
+                    if (data.dateSet.length > 0) {
+                      this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+                      this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "LS Reviewer Requested Relaxation", false,null,false).subscribe((data: any) => {
+                        debugger;
+                        if (data.responseCode == 1) {
+                          alert(data.responseMessage);
+                          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, "Relaxation Pending", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+                              if (data.responseCode == 1) {
+                                this.AddComment("Relaxation Requested", this.currentBPDepartmentforCommentID);
+                              }
+                              else {
+                                alert(data.responseMessage);
+                              }
+                            }, error => {
+                              console.log("BuildingApplicationError: ", error)
+                            })
+
+
+                        }
+                        else {
+                          alert(data.responseMessage);
+                        }
+                      }, error => {
+                        console.log("BuildingApplicationError: ", error)
+                      })
+                    }
+                    else {
+                      alert("Error With Fetching getDepForCommentByID");
+                    }
+
+
+                  }
+                  else {
+                    alert("Doesnt exisit in DB");
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
 
           break;
+        }
+
+        case "LSDepartementReviewerApprove": {
+          this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+/*check approve count*/        console.log("BPDepartmentsForCommentList2", this.BPDepartmentsForCommentList);
+
+
+
+
+              /*Updating the department for comments table after getting the ID for the row*/
+
+              this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "Approved", false, null, true).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  this.AddComment("Approved", this.currentBPDepartmentforCommentID);
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+          break;
+
+         
         }
 
         case "Clarify": {
@@ -3946,7 +4048,7 @@ export class BpActionCenterComponent implements OnInit {
           }
         }
 
-        alert(`Number of approvals: ${this.countApproveBP}`);
+
 
         if (this.countApproveBP === this.BPDepartmentsForCommentList.length) {
           if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Town Planning") {
@@ -10068,7 +10170,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Town Planner", "Evaluation", 5, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+      null, null, null, null, null, null, "Evaluation", "Town Planner Review", 5, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.modalService.dismissAll();
           this.openSnackBar("Application Distributed");
