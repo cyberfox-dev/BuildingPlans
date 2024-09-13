@@ -443,6 +443,15 @@ namespace BuildingPlans.Controllers
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
                         BPApplicationType = buildingApplication.BPApplicationType,
+                        AgentCellNo = buildingApplication.AgentCellNo,
+                        AgentEmail = buildingApplication.AgentEmail,
+                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
+                        NameOfAgent = buildingApplication.NameOfAgent,
+                        ApplicationType = buildingApplication.ApplicationType,
+                        DescriptionOfProject = buildingApplication.DescriptionOfProject,
+                        isCombinedApplication = buildingApplication.isCombinedApplication,
+                        NameOfCompany = buildingApplication.NameOfCompany,
+                        RegNoOfCompany = buildingApplication.RegNoOfCompany,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
