@@ -218,6 +218,11 @@
       <!-- #region Town Planning Review for land survey application -->
 
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review' && showApprove == true ">
+        <mat-form-field class="example-full-width">
+          <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+          <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+          <div>{{ leaveAComment.length }}/250</div>
+        </mat-form-field>
         <p>TP Reviewer</p>
         <p *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><em> * Waiting For Applicant To Clarify </em></p>
         <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')" [disabled]="this.CurrentApplicationBeingViewed[0].currentStatus == 'Waiting Clarification'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
@@ -237,6 +242,11 @@
       <!-- #region Old town planning approve after neighbours consent uploaded * -->
 
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation'">
+        <mat-form-field class="example-full-width">
+          <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+          <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+          <div>{{ leaveAComment.length }}/250</div>
+        </mat-form-field>
         <p>TP Reviewer</p>
         <p *ngIf="moveTPToPaid == false"><em>* Waiting for all neighbour consent to be uploaded by applicant</em></p>
         <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')" [disabled]="moveTPToPaid == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
