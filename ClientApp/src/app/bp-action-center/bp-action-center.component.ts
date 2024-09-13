@@ -3902,7 +3902,7 @@ export class BpActionCenterComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   this.AddComment("Approved", this.currentBPDepartmentforCommentID);
-
+                  this.checkCountForApprovals();
                 }
                 else {
                   alert(data.responseMessage)
@@ -5124,7 +5124,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Planning approval authority", "Planning approval authority", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Planning approval authority", "Reviewing", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 

@@ -79,7 +79,21 @@
                 <p>Physical Address Of Project - {{ physicalAddress }}</p>
                 <p>Latitude - {{ latitude }}</p>
                 <p>Longitude - {{ longitude }}</p>
+                <p>OmnibusServitude - {{ OmnibusServitude }}</p>
+                <div *ngIf="ApplicationType == 'Town Planning'">
+                  <p>Agent Cell No - {{ AgentCellNo }}</p>
+                  <p>AgentPostalAddress - {{ AgentPostalAddress }}</p>
+                  <p>Description - {{ DescriptionOfProject }}</p>
+                  <p>Agent Name - {{ NameOfAgent }}</p>
+                  <p>Company Name - {{ NameOfCompany }}</p>
+                  <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
+                  <p>isCombined - {{ isCombinedApplication }}</p>
+                </div>
               </div>
+            </mat-tab>
+
+            <mat-tab label="Advert Pack" >
+
             </mat-tab>
           </mat-tab-group>
         </div>
