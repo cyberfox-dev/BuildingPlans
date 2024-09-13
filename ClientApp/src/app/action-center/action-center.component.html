@@ -139,7 +139,10 @@
       <button type="submit" class="btn btn-outline-success" (click)="  ConfirmUpload();getAllDocsForApplication();changeHasFile();GISCommentUpdate();modal.close('Close click')">Upload Documents</button>
     </div>
 
-
+    <div class="cont2" *ngIf="this.CurrentApplication.ApplicationStatus == 'Assigned' && userAssignedText == CurrentUser.appUserId">
+      <button mat-raised-button color="approveBTN" (click)="newWayleaveDistrubution()">Distribute Application To All Departments</button>
+      <button mat-raised-button color ="rejectBTN">Reject </button>
+    </div>
     <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId">
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
@@ -661,7 +664,7 @@
       </mat-tab>
 
       <!-- endof actionCenterReassignReviewer Sindiswa 16 January 2024-->
-      <mat-tab label="View Selected User(s) ">
+      <!--<mat-tab label="View Selected User(s) ">-->
 
         <!--<div class="form-floating mb-3 mt-3" *ngIf="showZone">
           <select class="form-select" aria-label="Default select example" formControlName="viewSelectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
@@ -671,7 +674,7 @@
 
         </div>-->
 
-        <table mat-table [dataSource]="dataSourceViewUserForComment" class="mat-elevation-z8">
+        <!--<table mat-table [dataSource]="dataSourceViewUserForComment" class="mat-elevation-z8">
 
 
 
@@ -682,7 +685,7 @@
           <ng-container matColumnDef="fullName">
             <th mat-header-cell *matHeaderCellDef> User Name </th>
             <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
-          </ng-container>
+          </ng-container>-->
 
 
           <!--<ng-container matColumnDef="actions">
@@ -692,17 +695,17 @@
           <!--</td>
           </ng-container>-->
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewlinkedUserForComment"></tr>
+          <!--<tr mat-header-row *matHeaderRowDef="displayedColumnsViewlinkedUserForComment"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumnsViewlinkedUserForComment;"></tr>
-        </table>
+        </table>-->
 
         <!-- ADD A CLARIFY!! NB: 17 January 2024-->
-      </mat-tab>
+      <!--</mat-tab>-->
     </mat-tab-group>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');textWithReviewerAssign();onManuallyAssignUser();" *ngIf="hasReviewerAssignment == false">Save</button>
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');openAssignToNewUser(adminNotes)" *ngIf="hasReviewerAssignment == true">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');textWithReviewerAssign();onManuallyAssignUser();">Save</button>
+ 
   </div>
 
 </ng-template>

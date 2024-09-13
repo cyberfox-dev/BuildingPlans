@@ -5288,7 +5288,7 @@ export class ActionCenterComponent implements OnInit {
   }
   openActionCenter(content: any) {
     debugger;
-    if (this.commentState == null || this.commentState == '') {
+    if (this.commentState == null || this.commentState == ''||  this.commentState == "Assigned") {
       //This is so the Admin can assign
      
       this.openXl(content);
@@ -6622,7 +6622,7 @@ export class ActionCenterComponent implements OnInit {
       debugger;
       if (data.responseCode == 1) {
         debugger;
-        if (this.CurrentApplication.ApplicationStatus == "Distributed") {
+        if (this.CurrentApplication.ApplicationStatus == "Department Distribution") {
           this.onCheckApprovalCount();
         }
         
@@ -6646,9 +6646,12 @@ export class ActionCenterComponent implements OnInit {
     if (data.responseCode == 1) {
       for (let i = 0; i < data.dateSet.length; i++) {
         const current = data.dateSet[i];
+        if (current.subDepartmentName != "Land Survey") {
 
-        if (current.commentStatus != null ) {
-          this.approvalCount++;
+
+          if (current.commentStatus != null) {
+            this.approvalCount++;
+          }
         }
       }
     }
@@ -6659,7 +6662,7 @@ export class ActionCenterComponent implements OnInit {
     let previousStage = this.StagesList[1].StageName;
     let currentStage = this.StagesList[2].StageName;
     let nextStage = this.StagesList[3].StageName;
-    if (this.approvalCount == data.dateSet.length) {
+    if (this.approvalCount ==(data.dateSet.length - 1)) {
       this.applicationsService.updateApplicationStage(this.ApplicationID, previousStage, 1, currentStage, 2, nextStage, 3, "Awaiting Final Approval").subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.router.navigate(["/home"]);
@@ -7047,31 +7050,53 @@ export class ActionCenterComponent implements OnInit {
   }
 
   newWayleaveDistrubution() {
-    this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+    if (confirm("Are you sure you want to distribute this application?")) {
+    this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, "Land Survey Review", null, null, null, "Department Distribution", null).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          if (current.departmentName != "Land Survey") {
-            this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
-              if (data.responseCode == 1) {
-                this.openSnackBar("Application moved to next stage");
-                this.router.navigate(["/home"]);
+        this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const current = data.dateSet[i];
+              if (current.departmentName != "Land Survey") {
+                this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    this.openSnackBar("Application moved to next stage");
+                    this.router.navigate(["/home"]);
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log(error);
+                })
               }
-              else {
-                alert(data.responseMessage);
-              }
-            }, error => {
-              console.log(error);
-            })
+            }
           }
-        }
+          else {
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log(error);
+        })
       }
       else {
-        alert(data.responseMessage);
+        alert(data.reponseMessage);
       }
     }, error => {
-      console.log(error);
+      console.log("Application Status Error", error);
     })
+
+      this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Distributed", null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("Comment Status Error", error);
+      })
+    }
   }
   permitStartDate: any;
   minDate: any;
