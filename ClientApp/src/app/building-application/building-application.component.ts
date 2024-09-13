@@ -1282,7 +1282,7 @@ export class BuildingApplicationComponent implements OnInit {
     this.bpNotificationService.addUpdateNotification(0, this.applicationID, "Land Survey", "Application Created", false, UserId, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.reponseCode == 1) {
         
-        alert("Notification Created");
+
       }
       else {
         alert(data.responseMessage)

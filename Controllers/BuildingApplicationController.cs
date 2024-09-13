@@ -101,6 +101,7 @@ namespace BuildingPlans.Controllers
                             Status = model.Status,
                             OmnibusServitude = model.OmnibusServitude,
                             BPApplicationID = model.BPApplicationID,
+
                            
 
                         };
@@ -370,6 +371,16 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        AgentCellNo = buildingApplication.AgentCellNo,
+                        AgentEmail = buildingApplication.AgentEmail,
+                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
+                        NameOfAgent = buildingApplication.NameOfAgent,
+                        ApplicationType = buildingApplication.ApplicationType,
+                        BPApplicationType = buildingApplication.BPApplicationType,
+                        DescriptionOfProject = buildingApplication.DescriptionOfProject,
+                        isCombinedApplication = buildingApplication.isCombinedApplication,
+                        NameOfCompany = buildingApplication.NameOfCompany,
+                        RegNoOfCompany = buildingApplication.RegNoOfCompany,
                     }
                     ).ToListAsync();
 

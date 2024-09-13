@@ -2684,13 +2684,13 @@ export class BpActionCenterComponent implements OnInit {
                     null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null,
-                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                    null, null, null, null, null, null, "Reviewing", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
                       if (data.responseCode == 1) {
 
                         /*            this.CreateNotification(this.CurrentUser.appUserId);
                                     this.CreateNotification(this.clientUserID);*/
                         /*  this.moveToFinalApprovalForDepartment();*/
-                        this.AddComment("LS Admin Assigned A Reviewer", null);
+                        this.AddComment("Reviewer Assigned", null);
 
                       }
                       else {
@@ -3637,7 +3637,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "TP Relaxation ", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               debugger;
               if (data.responseCode == 1) {
 
@@ -3794,7 +3794,7 @@ export class BpActionCenterComponent implements OnInit {
                             null, null, null, null, null, null, "Approved(Pending)", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
                               if (data.responseCode == 1) {
-                                this.AddComment("Relaxation Requested", this.currentBPDepartmentforCommentID);
+                                this.AddComment("LS Approved", this.currentBPDepartmentforCommentID);
                               }
                               else {
                                 alert(data.responseMessage);
@@ -5124,7 +5124,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Planning approval authority", "Reviewing", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Planning Approval Authority", "Reviewing", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
