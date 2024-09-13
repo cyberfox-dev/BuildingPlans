@@ -193,6 +193,13 @@ table {
   height: 46px;
   margin: 20px;
 }
+.mat-relaxationBTN2 {
+  background-color: #24a2bd;
+  color: #fff;
+  width: 100%;
+  height: 46px;
+
+}
 
 .mat-clarifyBTN {
   /* margin-bottom: 10px; */

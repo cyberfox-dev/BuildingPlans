@@ -2635,85 +2635,173 @@ export class BpActionCenterComponent implements OnInit {
   onManuallyAssignUser() {
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
       debugger;
-      this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
 
-        
+      if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Town Planning") {
+        this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+          debugger;
+          if (data.responseCode == 1) {
 
-          if (data.dateSet.length > 0) {
-            this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
-            this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
-                this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-                  null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-                    if (data.responseCode == 1) {
 
-                      this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
+            if (data.dateSet.length > 0) {
+              this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
 
-                    }
-                    else {
-                      alert(data.responseMessage)
-                    }
-                  }, error => {
-                    console.log("BuildingApplicationError: ", error)
-                  })
-            
+                if (data.responseCode == 1) {
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
 
-              }
-              else {
-                alert(data.responseMessage)
-              }
-            }, error => {
-              console.log("BuildingApplicationError: ", error)
-            })
+                        this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+            else {
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+                debugger;
+                if (data.responseCode == 1) {
+                  debugger;
+
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
+
+                        /*            this.CreateNotification(this.CurrentUser.appUserId);
+                                    this.CreateNotification(this.clientUserID);*/
+                        /*  this.moveToFinalApprovalForDepartment();*/
+                        this.AddComment("LS Admin Assigned A Reviewer", null);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+
           }
           else {
-            this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
-              debugger;
-              if (data.responseCode == 1) {
-                debugger;
-
-                this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-                  null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, null,
-                  null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
-                    if (data.responseCode == 1) {
-
-                      /*            this.CreateNotification(this.CurrentUser.appUserId);
-                                  this.CreateNotification(this.clientUserID);*/
-                      /*  this.moveToFinalApprovalForDepartment();*/
-                      this.AddComment("LS Admin Assigned A Reviewer", null);
-
-                    }
-                    else {
-                      alert(data.responseMessage)
-                    }
-                  }, error => {
-                    console.log("BuildingApplicationError: ", error)
-                  })
-
-              }
-              else {
-                alert(data.responseMessage)
-              }
-            }, error => {
-              console.log("BuildingApplicationError: ", error)
-            })
+            alert("Doesnt exisit in DB");
           }
+        }, error => {
+          console.log("BuildingApplicationError: ", error)
+        })
+      }
+      else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Land Survey" || this.CurrentApplicationBeingViewed[0].BPApplicationType == "Building Plan") {
+        this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+          debugger;
+          if (data.responseCode == 1) {
 
-        }
-        else {
-          alert("Doesnt exisit in DB");
-        }
-      }, error => {
-        console.log("BuildingApplicationError: ", error)
-      })
+
+
+            if (data.dateSet.length > 0) {
+              this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
+
+                        this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+            else {
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+                debugger;
+                if (data.responseCode == 1) {
+                  debugger;
+
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
+
+                        /*            this.CreateNotification(this.CurrentUser.appUserId);
+                                    this.CreateNotification(this.clientUserID);*/
+                        /*  this.moveToFinalApprovalForDepartment();*/
+                        this.AddComment("LS Admin Assigned A Reviewer", null);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+
+          }
+          else {
+            alert("Doesnt exisit in DB");
+          }
+        }, error => {
+          console.log("BuildingApplicationError: ", error)
+        })
+      }
+      else {
+
+      }
+     
     }
     else {
 
@@ -3381,7 +3469,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   onCommentTP(interact: any) {
-    if (this.leaveAComment == "") {
+    if (this.leaveAComment != "") {
       const dialogRef = this.dialog.open(BpAlertModalComponent, {
         data: {
           message: "Please leave a comment in order to interact with the application"
@@ -10436,14 +10524,14 @@ export class BpActionCenterComponent implements OnInit {
     });
   }
   openRelaxation(TPRelaxation: any) {
-    if (this.leaveAComment == null || this.leaveAComment == '') {
+/*    if (this.leaveAComment == null || this.leaveAComment == '') {
       alert("Please enter a comment before proceeding");
-    }
-    else {
+    }*/
+   /* else {*/
       this.getCoOrdinatesForAddress();
       this.modalService.dismissAll();
       this.modalService.open(TPRelaxation, { centered: true, size: 'xl' });
-    }
+   
    
   }
 
