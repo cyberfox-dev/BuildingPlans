@@ -87,6 +87,13 @@ export class BPViewProjectInfoComponent implements OnInit {
     ExpandArchitectOwnerDetails: boolean;
     ExpandTrackerInfo: boolean;
     ExpandComments: boolean;
+    AgentCellNo: any;
+    AgentPostalAddress: any;
+    DescriptionOfProject: any;
+    NameOfAgent: any;
+    NameOfCompany: any;
+    RegNoOfCompany: any;
+    isCombinedApplication: any;
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -267,6 +274,15 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
         this.ApplicationType = current.bpApplicationType;
+        this.AgentCellNo = current.agentCellNo;
+        this.AgentPostalAddress = current.agentPostalAddress;
+        this.DescriptionOfProject = current.descriptionOfProject;
+        this.NameOfAgent = current.nameOfAgent;
+        this.NameOfCompany = current.nameOfCompany;
+        this.RegNoOfCompany = current.regNoOfCompany;
+        this.isCombinedApplication = current.isCombinedApplication;
+
+
         this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
       else {
