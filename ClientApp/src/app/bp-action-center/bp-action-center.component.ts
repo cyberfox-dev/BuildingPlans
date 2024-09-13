@@ -3537,7 +3537,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "TP Relaxation ", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               debugger;
               if (data.responseCode == 1) {
 
