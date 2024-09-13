@@ -3469,7 +3469,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   onCommentTP(interact: any) {
-    if (this.leaveAComment != "") {
+    if (this.leaveAComment == "") {
       const dialogRef = this.dialog.open(BpAlertModalComponent, {
         data: {
           message: "Please leave a comment in order to interact with the application"
