@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component';
 import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
 import { ConfigService } from '../service/Config/config.service';
+import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -25,7 +26,16 @@ export interface DocumentsList {
   DateUpdated: any;
   DescriptionForRepoDoc: string;
 }
+export interface StageChecklistItems {
+  ChecklistItemId: number;
+  ChecklistItem: string;
+  StageID: number;
+  FunctionalAreaID: number;
+  DateCreated: any;
+  DateUpdated: any;
+  CreatedById: string;
 
+}
 
 export interface BPDepartmentsForCommentList {
   DepartmendForCommentaID: any;
@@ -83,6 +93,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private sharedService: SharedService,
     private refreshService: RefreshService,
     private router: Router,
+    private bpStageChecklistService: BPStagesChecklistsService,
     private documentUploadService: DocumentUploadService,
     private bpDocumentUploadService: BPDocumentsUploadsService,
     private modalService: NgbModal,
@@ -106,7 +117,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   BPDepartmentsForCommentList: BPDepartmentsForCommentList[] = [];
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
-
+  stageChecklist: StageChecklistItems[] = [];
   CommentsList: CommentsList[] = [];
 
 
@@ -164,10 +175,10 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectReg: string;
   architectEmail: string;
   architectCell: string;
-      isLoading = false;
+      isLoading = true;
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   panelOpenState: boolean = false;
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isLoading = true;
 
     this.refreshService.enableRefreshNavigation('/home');
@@ -179,13 +190,15 @@ export class BPViewProjectInfoComponent implements OnInit {
     if (this.CurrentUserProfile[0].isInternal == true) {
       this.ActionCenter = true;
     }
+
     this.applicationId = this.sharedService.getApplicationID();
-    this.getApplicationInfo();
-    this.GetAllCommentsForApplication();
 
-    this.getAllDepartmentsForCommentForBPApplication();
+    await Promise.all([
+      this.getApplicationInfo(),
+      this.GetAllCommentsForApplication(),
+      this.getAllDepartmentsForCommentForBPApplication()
+    ]);
 
-  
     this.isLoading = false;
   }
 
@@ -240,7 +253,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.longitude = current.longitude;
         this.sGCode = current.sgCode;
         this.physicalAddress = current.physicalAddress;
-        this.functionalArea = "Building Plan";
+        this.functionalArea = current.bpApplicationType;
         this.currentStage = current.stage;
         this.OmnibusServitude = current.omnibusServitude;
         //owner details
@@ -260,6 +273,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         alert(data.responseMessage);
       }
       this.getAllDocumentForApplication();
+      this.getAllMandatoryChecklistItemsForCurrentStage();
       console.log("responseKyle", data);
     }, error => {
       console.log("Error: ", error);
@@ -368,22 +382,8 @@ export class BPViewProjectInfoComponent implements OnInit {
     );
   }
   getBPDocumentsList(): Observable<LSMandatoryDocumentsList[]> {
-    let stageType: string;
-    debugger;
-    if (this.currentStage === 'LS Relaxation - Unpaid') {
-      stageType = 'Land Survey';
-    } else if (this.currentStage === 'TP Relaxation - Unpaid') {
-      stageType = 'Town Planning';
-    } else {
-      throw new Error('Unknown stage type');
-    }
-    debugger;
-    /*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
-          this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
-        );*/
 
-    debugger;
-    return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", stageType)
+    return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", this.currentStage)
       .pipe(
         map((data: any) => {
           if (data.responseCode === 1) {
@@ -413,7 +413,7 @@ export class BPViewProjectInfoComponent implements OnInit {
                 tempList.push(tempRequiredDocuments);
               }
             }
-            console.log("THIS IS THE LIST OF DOCS FROM", stageType, tempList, this.LSMandatoryDocumentsList);
+            console.log("THIS IS THE LIST OF DOCS FROM", tempList, this.LSMandatoryDocumentsList);
             return tempList;
           } else {
             throw new Error(data.responseMessage);
@@ -646,6 +646,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         }
 
         console.log("BPDepartmentsForCommentList", this.BPDepartmentsForCommentList);
+        this.getAllMandatoryChecklistItemsForCurrentStage();
       }
       else {
 
@@ -851,6 +852,38 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   openInternalComment(newInternalComment: any) {
     this.modalService.open(newInternalComment, { centered: true, size: 'xl' });
+  }
+
+  getAllMandatoryChecklistItemsForCurrentStage() {
+    debugger;
+    this.bpStageChecklistService.getAllChecklistItemsForStage(this.currentStage, this.ApplicationType).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempChecklist = {} as StageChecklistItems;
+          const current = data.dateSet[i];
+          debugger;
+          tempChecklist.ChecklistItemId = current.checkListItemID;
+          tempChecklist.ChecklistItem = current.checklistItem;
+          tempChecklist.CreatedById = current.createdById;
+          tempChecklist.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempChecklist.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+          tempChecklist.FunctionalAreaID = current.functionalAreaID;
+          tempChecklist.StageID = current.stageID;
+
+          this.stageChecklist.push(tempChecklist);
+        }
+        console.log("This is the checklist for this stage.", this.stageChecklist);
+      }
+      else {
+        alert(data.responseCode);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+
+    })
   }
 }
 

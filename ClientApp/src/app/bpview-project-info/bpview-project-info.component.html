@@ -102,17 +102,17 @@
                   <td mat-cell *matCellDef="let element">
                     <div class="contIndication">
                       <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'" >
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-                      <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
+                  
                       <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
                       <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
 
                       <!-- projectTracker Sindiswa 12 January 2024 -->
-                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
+                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'LS Admin Assigned A Reviewer'" />
                       <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
                       <!-- projectTracker Sindiswa 12 January 2024 -->
                     </div>
@@ -167,9 +167,9 @@
                 </div>
                 <div *ngFor="let comment of CommentsList ; let i = index">
                   <div *ngIf="comment.CommentStatus !='Internal Comment'">
-                    <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
+                    <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'|| comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'" [class.cardRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation'"[class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
-                      <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'">
+                      <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
                       </div>
 
@@ -177,7 +177,7 @@
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg" class="icon">
                       </div>
 
-                      <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'">
+                      <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'Relaxation Requested' || comment.CommentStatus == 'Relaxation'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
                       </div>
 
@@ -191,7 +191,7 @@
                       <div class="message-text-container">
 
                         <div class="messageHead">
-                          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'|| comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'|| comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'" [class.message-textRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
                           <p>{{comment.DateCreated}}</p>
                         </div>
                         <div class="messageFoot">

@@ -1,16 +1,21 @@
 h1 {
   font-family: 'Nunito', sans-serif;
   margin: 0 auto;
-  text-align: center;
   padding-top: 40px;
-  padding-bottom: 40px;
   color: #343a40;
-  font-size: 70px;
+  font-size: 50px;
+  margin-top: 0px;
   font-weight: bold;
-  margin-top: 152px;
-  padding-bottom: 237px;
+  margin-bottom: 40px;
 }
 
+.glass {
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  max-height: 80vh;
+  overflow: auto;
+}
 
 .mat-success {
   background-color: #2dd568;

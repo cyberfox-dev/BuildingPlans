@@ -1,6 +1,6 @@
 <div class="cont5">
   <button mat-raised-button color="infoBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/bolt.svg" class="icon"></button>
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Show My Actions</button>
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="ActionCenter == true">Show My Actions</button>
   <div class="applicantActions" *ngIf="ActionCenter == false">
     <button mat-raised-button color="applicantBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Relaxation Pending'" (click)="applyForRelaxation()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Apply For Relaxation</button>
     <button mat-raised-button color="applicantBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'" (click)="applyForBuildingPLans()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
@@ -20,13 +20,20 @@
       <div class="AssignedTo">
         <p *ngIf="AssignUserForComment == false"> This project is already assigned</p>
       </div>
-      <div class="containerCard" >
+      <div class="containerCard">
         <p class="cardHeader">Assign Reviewer</p>
         <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
         <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
 
 
       </div>
+      <div class="containerLS" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Approved(Pending)'">
+        <button mat-raised-button color="approveBTN" (click)="onComment('ApproveLSAdmin')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onComment('RejectLSAdmin')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+
+      </div>
+
+
     </div>
     <!--</div>-->
 
@@ -43,7 +50,7 @@
 
 <!--       #region Land Survey Review Actions -->
 
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && AssignUserForComment">
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && AssignUserForComment ||this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation' && AssignUserForComment  ">
         <p>LS Reviewer</p>
 
               <mat-form-field class="example-full-width">
@@ -55,7 +62,7 @@
 
           <div class="containerLS">
             <button mat-raised-button color="approveBTN" (click)="onComment('ApproveLSReviewer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-            <button mat-raised-button color="relaxationBTN" (click)="onComment('Reject')" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+            <button mat-raised-button color="relaxationBTN" (click)="onComment('LSRelaxationRequest')" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus != 'Distribution'"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
             <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
             <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">    Clarify</button>
           </div>
@@ -173,8 +180,13 @@
       <!-- #endregion ---->
       <!-- #region Land survey departments review -->
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Distribution' && !LSReviewerRole">
+        <mat-form-field class="example-full-width">
+          <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+          <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+          <div>{{ leaveAComment.length }}/250</div>
+        </mat-form-field>
         <p>Department Distribution</p>
-        <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="approveBTN" (click)="onComment('LSDepartementReviewerApprove')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve.</button>
         <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
       </div>
       <!-- #endregion -->
@@ -254,6 +266,11 @@
       <!-- #region department distributions actions -->
 
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
+        <mat-form-field class="example-full-width">
+          <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+          <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+          <div>{{ leaveAComment.length }}/250</div>
+        </mat-form-field>
         <p>Department Distribution</p>
         <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
         <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
@@ -305,7 +322,7 @@
       </mat-form-field>
 
       <!-- #region Town Planning applications department (step1) -->
-      <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToDistribution()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Submission Plan'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Distribution (TP Application)</button>
+      <button mat-raised-button color="relaxationBTN2" (click)="MoveApplicationToDistribution()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Invoice Generated'"> Move Application To Distribution</button>
       <!-- #endregion -->
       <!-- #region department distributions actions (step2) -->
 

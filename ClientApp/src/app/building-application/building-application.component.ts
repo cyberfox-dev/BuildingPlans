@@ -26,7 +26,9 @@ import { BPNotificationsService } from '../service/BPNotifications/bpnotificatio
 import { MatTable } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 export interface ApplicaitionList {
   ApplicationID: number;
   LSNumber: string;
@@ -238,7 +240,7 @@ export class BuildingApplicationComponent implements OnInit {
     private refreshService: RefreshService,
     private _snackBar: MatSnackBar,
     private bpNotificationService: BPNotificationsService,
-    private modalService: NgbModal
+    private modalService: NgbModal, private http: HttpClient,
   ) {
     
 }
@@ -994,7 +996,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "Submission Plan", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid", "TP Invoice Generated", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
@@ -1110,7 +1112,171 @@ export class BuildingApplicationComponent implements OnInit {
         
   }
 
+  generateNewApplicationInvoice() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
 
+    const img = new Image();
+    img.src = 'assets/Msunduzi_CoA.png';
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
+    doc.setFont('CustomFont', 'normal');
+    let currentPage = 1;
+    // Add logo
+    doc.addImage(img, 'png', 6, 10, 50, 40);
+
+    // Set font for header
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Msunduzi Municipality', 200, 17, { align: 'right' });
+    doc.text('341 Church Street', 200, 22, { align: 'right' });
+    doc.text('Pietermaritzburg 3201', 200, 27, { align: 'right' });
+
+    // Website and Portal links
+    doc.setFont('CustomFontBold', 'bold');
+
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('http://www.msunduzi.gov.za/site/home/index.html', 200, 35, { align: 'right' });
+
+    // Reference number
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: ' + this.lSNumber, 200, 50, { align: 'right' });
+
+    // Date and project description
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'normal');
+/*    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });*/
+    doc.text('BUILDING PLANS APPLICATION: ', 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    // Greeting
+    doc.text('Dear ' + this.ownerFullName, 10, 80, { align: 'left' });
+
+    // Application summary
+    doc.text('Please find below service items', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Status summary title
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+
+/*    const data = this.ServiceItemListBPRelaxationLS.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.totalVat]);
+    // Render the table in the PDF document
+    autoTable(doc, {
+      head: [['Service Item', 'Description', 'Total']], // Define table headers
+      body: data, // Populate table body with data
+      startY: 120, // Start position of the table on the Y axis
+      headStyles: { fillColor: '#005870' }, // Header styles
+      styles: {
+        fontSize: 8, // Font size for table content
+        halign: 'left', // Horizontal alignment for table content
+        valign: 'middle', // Vertical alignment for table content
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' }, // Style for the first column
+        1: { cellWidth: 50 }, // Style for the second column
+        2: { cellWidth: 30 }, // Style for the second column
+      },
+    });*/
+    // Rejection summary
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'italic');
+    doc.text("Disclaimer:\n This Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    // Signature
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('CITY OF PIETERMARITZBURG', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+
+    // Save PDF document
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Building Plans Land Survey Relaxation Invoice', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Building Plans Land Survey Relaxation Invoice" + ".pdf");
+    this.saveBP();
+
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  }
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
+  saveBP() {
+
+
+
+/*
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedBP(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }*/
+
+  }
+
+/*  uploadFinishedBP = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+    *//*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*//*
+    this.financialService.addUpdateFinancial(0, "Building Plans Land Survey Relaxation Invoice", "Generated Pack", documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.router.navigate(["/home"]);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    *//* this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, null, null, null, null, null, "System Generated", null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
+       if (data.responseCode == 1) {
+ 
+ 
+ 
+       }*//*
+    *//*
+        }, error => {
+          console.log("Error: ", error);
+        })*//*
+
+
+  }*/
   CreateNotification(UserId: string) {
     
     this.bpNotificationService.addUpdateNotification(0, this.applicationID, "Land Survey", "Application Created", false, UserId, this.CurrentUser.appUserId).subscribe((data: any) => {
