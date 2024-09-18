@@ -114,7 +114,7 @@
 
               <ng-container matColumnDef="lSNumber">
                 <th mat-header-cell *matHeaderCellDef> Application Number </th>
-                <td mat-cell *matCellDef="let element"> <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey', 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
+                <td mat-cell *matCellDef="let element"> <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey' , 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
               </ng-container>
 
               <ng-container matColumnDef="ERFNumber">
