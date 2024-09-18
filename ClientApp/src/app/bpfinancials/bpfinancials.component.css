@@ -1,10 +1,13 @@
 .mat-create {
- 
   color: white;
-  background-color: #005870;
+  background-color: #007090;
   margin: 10px;
 }
-
+.mat-blue {
+  color: white;
+  background-color: #007090;
+  margin: 10px;
+}
 .modal-title {
   color: black !important;
 }

@@ -101,8 +101,20 @@ namespace BuildingPlans.Controllers
                             Status = model.Status,
                             OmnibusServitude = model.OmnibusServitude,
                             BPApplicationID = model.BPApplicationID,
-
-                           
+                            BPApplicationType= model.BPApplicationType,
+                            ApplicationType= model.ApplicationType,
+                           isCombinedApplication = model.isCombinedApplication,
+                           NameOfCompany = model.NameOfCompany,
+                           NatureOfWorks = model.NatureOfWorks,
+                           TitleDeedNo = model.TitleDeedNo,
+                           ExtentOfProperty = model.ExtentOfProperty,
+                           DescriptionOfProject = model.DescriptionOfProject,
+                           RegNoOfCompany = model.RegNoOfCompany,
+                           RegisteredDescription = model.RegisteredDescription,
+                           SizeOfApplication = model.SizeOfApplication,
+                           TitleRestrictions = model.TitleRestrictions,
+                           TypeOfExcavation = model.TypeOfExcavation,
+                           ValueOfProperty = model.ValueOfProperty,
 
                         };
                         await _context.BuildingApplications.AddAsync(tempBuildingApplication);
@@ -281,29 +293,41 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.RegNoOfCompany = model.RegNoOfCompany;
                         }
-                        if (model.NameOfAgent != null)
+                        if (model.RegisteredDescription != null)
                         {
-                            tempBuildingApplication.NameOfAgent = model.NameOfAgent;
+                            tempBuildingApplication.RegisteredDescription = model.RegisteredDescription;
                         }
-                        if (model.AgentCellNo != null)
+                        if (model.TitleRestrictions != null)
                         {
-                            tempBuildingApplication.AgentCellNo = model.AgentCellNo;
+                            tempBuildingApplication.TitleRestrictions = model.TitleRestrictions;
                         }
-                        if (model.AgentEmail != null)
+                        if (model.ExtentOfProperty != null)
                         {
-                            tempBuildingApplication.AgentEmail = model.AgentEmail;
+                            tempBuildingApplication.ExtentOfProperty = model.ExtentOfProperty;
                         }
-                        if (model.AgentPostalAddress != null)
+                        if (model.TitleDeedNo != null)
                         {
-                            tempBuildingApplication.AgentPostalAddress = model.AgentPostalAddress;
+                            tempBuildingApplication.TitleDeedNo = model.TitleDeedNo;
                         }
                         if (model.DescriptionOfProject != null)
                         {
                             tempBuildingApplication.DescriptionOfProject = model.DescriptionOfProject;
                         }
-                        if (model.SupportingDocuments != null)
+                        if (model.ValueOfProperty != null)
                         {
-                            tempBuildingApplication.SupportingDocuments = model.SupportingDocuments;
+                            tempBuildingApplication.ValueOfProperty = model.ValueOfProperty;
+                        }
+                        if (model.SizeOfApplication != null)
+                        {
+                            tempBuildingApplication.SizeOfApplication = model.SizeOfApplication;
+                        }
+                        if (model.TypeOfExcavation != null)
+                        {
+                            tempBuildingApplication.TypeOfExcavation = model.TypeOfExcavation;
+                        }
+                        if (model.NatureOfWorks != null)
+                        {
+                            tempBuildingApplication.NatureOfWorks = model.NatureOfWorks;
                         }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
 
@@ -371,10 +395,10 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
-                        AgentCellNo = buildingApplication.AgentCellNo,
-                        AgentEmail = buildingApplication.AgentEmail,
-                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
-                        NameOfAgent = buildingApplication.NameOfAgent,
+                        TitleRestrictions = buildingApplication.TitleRestrictions,
+                        ExtentOfProperty = buildingApplication.ExtentOfProperty,
+                        TitleDeedNo = buildingApplication.TitleDeedNo,
+                        RegisteredDescription = buildingApplication.RegisteredDescription,
                         ApplicationType = buildingApplication.ApplicationType,
                         BPApplicationType = buildingApplication.BPApplicationType,
                         DescriptionOfProject = buildingApplication.DescriptionOfProject,
@@ -443,10 +467,10 @@ namespace BuildingPlans.Controllers
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
                         BPApplicationType = buildingApplication.BPApplicationType,
-                        AgentCellNo = buildingApplication.AgentCellNo,
-                        AgentEmail = buildingApplication.AgentEmail,
-                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
-                        NameOfAgent = buildingApplication.NameOfAgent,
+                        TitleRestrictions = buildingApplication.TitleRestrictions,
+                        ExtentOfProperty = buildingApplication.ExtentOfProperty,
+                        TitleDeedNo = buildingApplication.TitleDeedNo,
+                        RegisteredDescription = buildingApplication.RegisteredDescription,
                         ApplicationType = buildingApplication.ApplicationType,
                         DescriptionOfProject = buildingApplication.DescriptionOfProject,
                         isCombinedApplication = buildingApplication.isCombinedApplication,
@@ -865,10 +889,10 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
-                        AgentCellNo = buildingApplication.AgentCellNo,
-                        AgentEmail = buildingApplication.AgentEmail,
-                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
-                        NameOfAgent = buildingApplication.NameOfAgent,
+                        TitleRestrictions = buildingApplication.TitleRestrictions,
+                        ExtentOfProperty = buildingApplication.ExtentOfProperty,
+                        TitleDeedNo = buildingApplication.TitleDeedNo,
+                        RegisteredDescription = buildingApplication.RegisteredDescription,
                         ApplicationType = buildingApplication.ApplicationType,
                         BPApplicationType = buildingApplication.BPApplicationType,
                         DescriptionOfProject = buildingApplication.DescriptionOfProject,
@@ -998,7 +1022,18 @@ namespace BuildingPlans.Controllers
                         Status = buildingApplication.Status,
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
+
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        TitleRestrictions = buildingApplication.TitleRestrictions,
+                        ExtentOfProperty = buildingApplication.ExtentOfProperty,
+                        TitleDeedNo = buildingApplication.TitleDeedNo,
+                        RegisteredDescription = buildingApplication.RegisteredDescription,
+                        ApplicationType = buildingApplication.ApplicationType,
+                        BPApplicationType = buildingApplication.BPApplicationType,
+                        DescriptionOfProject = buildingApplication.DescriptionOfProject,
+                        isCombinedApplication = buildingApplication.isCombinedApplication,
+                        NameOfCompany = buildingApplication.NameOfCompany,
+                        RegNoOfCompany = buildingApplication.RegNoOfCompany,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));

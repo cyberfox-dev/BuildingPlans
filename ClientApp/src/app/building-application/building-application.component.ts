@@ -29,6 +29,7 @@ import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.co
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
 export interface ApplicaitionList {
   ApplicationID: number;
   LSNumber: string;
@@ -225,6 +226,9 @@ export class BuildingApplicationComponent implements OnInit {
   @ViewChild(MatTable) classificationTable: MatTable<OccupationClassifications> | undefined;
   displayedColumn:string[]=['OccupationName','Desription',"actions"]
   dataSource = this.occupationClassificationList;
+    TPTOA2: string;
+  indi: boolean = false;
+    company: boolean = false;
 
   constructor(
     private applicationService: BuildingApplicationsService,
@@ -239,6 +243,7 @@ export class BuildingApplicationComponent implements OnInit {
     private mapComponent: GoogleMapsComponentComponent,
     private refreshService: RefreshService,
     private _snackBar: MatSnackBar,
+    private financialService: BPFinancialService,
     private bpNotificationService: BPNotificationsService,
     private modalService: NgbModal, private http: HttpClient,
   ) {
@@ -996,11 +1001,11 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid", "TP Invoice Generated", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid", "TP Review(Pending)", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
-
-              this.CreateNotification(this.CurrentUser.appUserId);
-              
+              this.generateTPApplicationFeeInvoice();
+              this.modalService.dismissAll();
+              this.openSnackBar("Application Created");
               this.router.navigate(["/home"]);
             }
             else {
@@ -1028,7 +1033,7 @@ export class BuildingApplicationComponent implements OnInit {
                   this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
                     if (data.responseCode == 1) {
                       this.modalService.dismissAll();
-                      this.openSnackBar("Application Actioned");
+                      this.openSnackBar("Application Created");
                       this.router.navigate(["/home"]);
                     }
                     else {
@@ -1057,24 +1062,6 @@ export class BuildingApplicationComponent implements OnInit {
         }, error => {
           console.log("getConfigsByConfigNameError: ", error);
         })
-
-        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
-          this.clientEmail, this.clientCell, this.architectEmail, this.architectCell,  this.clientIDNo, this.propertyDescription, this.premisesName,
-          this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
-          this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, this.servitudeBox,null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
-            if (data.responseCode == 1) {
-
-              this.CreateNotification(this.CurrentUser.appUserId);
-
-              this.router.navigate(["/home"]);
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("BuildingApplicationError: ", error)
-          })
       }
       else if (this.applicationBeingCreatedType == "Land Survey") {
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
@@ -1083,9 +1070,8 @@ export class BuildingApplicationComponent implements OnInit {
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid", "Submission Plan", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
-
-              this.CreateNotification(this.CurrentUser.appUserId);
-
+              this.modalService.dismissAll();
+              this.openSnackBar("Application Created");
               this.router.navigate(["/home"]);
             }
             else {
@@ -1098,6 +1084,110 @@ export class BuildingApplicationComponent implements OnInit {
 
       }
   }
+
+  generateTPApplicationFeeInvoice() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Load the logo image (adjusted size)
+    const img = new Image();
+    img.src = 'assets/Msunduzi_CoA.png'; // Adjust this path to the correct location of your logo
+    doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
+
+    // Set font configuration
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+
+    // Add static header information
+    doc.text('Msunduzi Municipality', 200, 20, { align: 'right' });
+    doc.text('341 Church Street', 200, 26, { align: 'right' });
+    doc.text('Pietermaritzburg, 3201', 200, 32, { align: 'right' });
+    doc.text('Phone: (033) 392-3000', 200, 38, { align: 'right' });
+
+    // Add a static website link
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('https://www.msunduzi.gov.za', 200, 45, { align: 'right' });
+
+    // Add static reference number and date
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: TP:00/09/24', 200, 55, { align: 'right' });
+    doc.text('DATE: 15/09/2024', 10, 60, { align: 'left' });
+
+    // Add a project description
+    doc.text('INVOICE FOR TOWN PLANNING APPLICATION FEE', 10, 70, { align: 'left' });
+
+    // Greeting (static)
+    doc.text('Dear Applicant,', 10, 80, { align: 'left' });
+
+    // Invoice description
+    doc.text('Below are the details of the Town Planning Application fees:', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Add static table data (dummy services and costs)
+    const data = [
+      ['TP001', 'Rezoning Application Fee', 'R10 000.00'],
+      ['TP002', 'Site Development Plan Fee', 'R5 000.00'],
+      ['TP003', 'Environmental Impact Assessment', 'R5 000.00'],
+    ];
+
+    // Render the table in the PDF document
+    autoTable(doc, {
+      head: [['Item Code', 'Description', 'Amount']],
+      body: data,
+      startY: 100, // Adjusted position of the table
+      headStyles: { fillColor: '#005870' },
+      styles: {
+        fontSize: 10, // Adjusted font size for better readability
+        halign: 'left',
+        valign: 'middle',
+      },
+      columnStyles: {
+        0: { cellWidth: 40, fontStyle: 'bold' },
+        1: { cellWidth: 90 },
+        2: { cellWidth: 40, halign: 'right' }, // Align the amounts to the right
+      },
+    });
+
+    // Add a total section below the table
+    doc.text('TOTAL: R20 000.00', 200, 150, { align: 'right' });
+
+    // Disclaimer
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.text(
+      "Disclaimer: This invoice is for application fees and is due within 30 days. For any queries, please contact us at (033) 392-3000.",
+      10, 160, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' }
+    );
+
+    // Footer with company name
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Msunduzi Municipality', 10, 270, { align: 'left' });
+    doc.setFont('helvetica', 'italic');
+    doc.text('Thank you for your application!', 10, 280, { align: 'left' });
+
+    // Convert the PDF document to a blob object and prepare it for upload
+    const pdfData = doc.output('blob');
+    const file = new File([pdfData], 'Town_Planning_Application_Fee_Invoice.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data and push the file for temporary upload
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Town Planning Application Fee Invoice" + ".pdf");
+
+    this.saveBP(); // Call the save method for any additional operations
+
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  }
+
+
   typeOfApplicationOtherDes: boolean = false;
   TypeOfApplicationDropDown() {
     debugger;
@@ -1110,6 +1200,20 @@ export class BuildingApplicationComponent implements OnInit {
       this.typeOfApplicationOtherDes = false;
     }
         
+  }
+
+  TypeOfApplicationDropDown2() {
+    debugger;
+
+    if (this.TPTOA2 == "indi") {
+      this.company = false;
+      this.indi = true;
+    }
+    else if (this.TPTOA2 == "company") {
+      this.company = true;
+      this.indi = false;
+    }
+
   }
 
   generateNewApplicationInvoice() {
@@ -1214,7 +1318,7 @@ export class BuildingApplicationComponent implements OnInit {
 
 
 
-/*
+
     const filesForUpload = this.sharedService.pullFilesForUpload();
     for (var i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
@@ -1240,7 +1344,44 @@ export class BuildingApplicationComponent implements OnInit {
           },
           error: (err: HttpErrorResponse) => console.log(err)
         });
-    }*/
+    }
+
+  }
+
+  progress: number = 0;
+  message = '';
+  response: { dbPath: ''; } | undefined
+  uploadFinishedBP = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+    /*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
+    this.financialService.addUpdateFinancial(0, "Building Plans Land Survey Relaxation Invoice", "Generated Pack", documentName, this.response?.dbPath, this.applicationID, "System Generated Pack").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.router.navigate(["/home"]);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    /* this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, null, null, null, null, null, "System Generated", null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
+       if (data.responseCode == 1) {
+ 
+ 
+ 
+       }*/
+    /*
+        }, error => {
+          console.log("Error: ", error);
+        })*/
+
 
   }
 

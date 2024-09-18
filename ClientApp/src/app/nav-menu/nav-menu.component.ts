@@ -165,6 +165,7 @@ export class NavMenuComponent implements OnInit {
   selectedOptionText: string;
   lastUploadEvent: any;
     public InternalExternalUser: boolean = false;
+    dp: any;
 
   constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
 
@@ -248,7 +249,25 @@ export class NavMenuComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getUserProfileByUserID();
     this.getRolesLinkedToUser();
+    const fullName = this.CurrentUser.fullName;
 
+    // Find the index of the first space
+    const firstSpaceIndex = fullName.indexOf(' ');
+
+    // Get the first name using substring
+    const firstName = fullName.substring(0, firstSpaceIndex);
+
+    // Find the index of the last space
+    const lastSpaceIndex = fullName.lastIndexOf(' ');
+
+    // Get the last name using substring
+    const lastName = fullName.substring(lastSpaceIndex + 1);
+
+    // Get initials
+    const initials = firstName.charAt(0) + lastName.charAt(0);
+
+    // Store initials in variable dp
+    this.dp = initials.toUpperCase(); // Optionally convert to uppercase
     //Audit Trail Kyle
     this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);

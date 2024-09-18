@@ -45,6 +45,14 @@ h2 {
 .POD{
 
 }
+.podInfo {
+  position: absolute;
+  width: 100%;
+  margin-top: 41px;
+}
+.image{
+
+}
 .ExpandIcon {
   height: 159px;
   margin: 10px auto;
@@ -118,6 +126,7 @@ h4 {
 }
 .applicationDeatails {
   padding: 18px;
+  overflow:auto !important;
 }
 :host ::ng-deep .mat-tab-label {
   height: 30px !important;
@@ -125,9 +134,107 @@ h4 {
 
   :host ::ng-deep .mat-tab-label.mat-tab-label-active {
     height: 33px !important;
-    background: #4393d7;
+    background: #007090;
   }
+.mat-tab-group {
+  height: 100%;
+}
+.noDep {
+  color: #8080806b;
+  text-align: center;
+  font-size: 19px !important;
+  margin: 64px 0px;
+  font-style: italic !important;
+  padding: 0 !important;
+}
+.mat-horizontal-stepper-header-container mat-stepper-vertical {
+  top: 0 !important;
+  position: sticky !important;
+  /* background: #ffffff45; */
+  backdrop-filter: blur(9px) !important;
+}
 
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background: #ffffff17;
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 7px 4px #0000003b;
+  border-radius: 10px;
+  height: 10vh !important;
+  /* overflow: auto; */
+}
+
+.mat-horizontal-stepper .mat-step mat-horizontal-stepper mat-step #stepper {
+  background: #ffffff30 !important;
+  backdrop-filter: blur(15px) !important;
+  border-radius: 10px !important;
+  box-shadow: 0px 0px 12px 2px #00000038 !important;
+  max-height: 593px !important;
+  overflow: auto !important;
+}
+
+.container {
+  width: 100%;
+  margin: 47px auto;
+}
+
+.progress {
+  width: 100%;
+  height: 10px;
+  background-color: #cccccc2b;
+  border-radius: 5px;
+  position: relative;
+}
+
+.percent {
+  height: 100%;
+  background-color: #4393d7;
+  backdrop-filter: blur(19px);
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -26px;
+}
+
+.step {
+  position: relative;
+  width: 14%;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  BACKGROUND: #d6d6d6;
+}
+.projectTimeLine{
+    font-size:20px;
+    font-style:italic;
+    opacity:12%;
+    text-align:center;
+}
+
+.step.active {
+  background-color: #4393d7;
+  color: white;
+}
+
+  .step.completed {
+    background-color: #4393d7; /* Completed step color */
+    color: white;
+  }
+.mat-stepper-horizontal-header .mat-stepper-vertical-header {
+  top: 0 !important;
+  position: sticky !important;
+  /* background: #ffffff45; */
+  backdrop-filter: blur(9px);
+  pointer-events: none !important;
+}
 .Map {
   border: 1px solid rgba(255, 255, 255, .25);
   border-radius: 9px;
@@ -137,7 +244,7 @@ h4 {
   width: 100%;
   /* padding: 0px 0px 0px 8px; */
   height: 234px;
-  overflow: auto;
+  overflow: auto !important;
 }
 .MiddleView {
   display: flex;
@@ -318,6 +425,7 @@ h3 {
 }
 .mat-stepper {
   animation-duration: 0s;
+  background:green !important;
 }
 .mat-action {
 
@@ -326,12 +434,17 @@ h3 {
   margin-bottom: 153px;
   margin-top: 50px;
 }
-
+.icon5 {
+  width: 15px;
+  margin-right: 5px;
+  filter: invert(1);
+}
 .mat-blue {
-  margin: 5px;
-  background-color: #9FA8DA;
+  margin: 7px 5px;
+  background-color: #1b9416;
   width: auto;
-
+  font-weight: 500;
+  color:white;
 }
 
 .mat-orange {
@@ -448,7 +561,6 @@ table {
 .cardApprove {
   height: 80px;
   border-radius: 50px;
-  /* border: 2px solid; */
   border-color: #bcbcbc;
   box-sizing: border-box;
   padding: 10px 15px;
@@ -461,9 +573,41 @@ table {
   flex-direction: row;
   margin-top: 10px;
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
 }
 
-
+.cardNote {
+  height: 80px;
+  border-radius: 9px;
+  border-color: #bcbcbc00;
+  box-sizing: border-box;
+  margin: 5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  background: #ffffff42;
+  margin-bottom: 10px;
+}
+.date {
+  color: #60606045 !important;
+}
+.noteHead {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: #95959524;
+  margin-bottom: 8px;
+  flex-direction: row;
+  align-items: baseline;
+}
 
 .waveApprove {
   position: absolute;

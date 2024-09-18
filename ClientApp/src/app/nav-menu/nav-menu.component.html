@@ -33,15 +33,18 @@
   </div>
 
   <div class="user">
-    <mat-divider></mat-divider>
-    <img alt="me" class="user-img" src="assets/download.jpeg" />
+    <div alt="me" class="userIMG2">
+      <p class="dp">{{dp}}</p>
+    </div>
     <div>
-      <p class="bold">UserName</p>
+      <p class="bold">{{this.CurrentUser.fullName}}</p>
       <p>Admin</p>
     </div>
   </div>
   <div class="toolbar">
+    <div class="topNav">
     <ul>
+
       <mat-divider></mat-divider>
       <li>
         <a>
@@ -106,8 +109,9 @@
         <span class="tooltip">User Settings</span>
       </li>
 
+
       <mat-divider></mat-divider>
-      <li class="logout-button">
+      <li class="logout-button bottom">
         <a >
           <i class="fa fa-sign-out" matTooltip="Log Out" (click)="LogoutUser()"
              matTooltipPosition="after"></i>
