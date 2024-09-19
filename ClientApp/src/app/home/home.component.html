@@ -76,16 +76,17 @@
           </button>
           <mat-menu #menu3="matMenu" xPosition="after">
             <mat-selection-list [(ngModel)]="selectedTabIndex" (selectionChange)="onChangeDataSource($event)" [multiple]="false">
-              <mat-list-option [value]="0">Pre-Submission Applications</mat-list-option>
-              <mat-list-option [value]="1">Town Planning Applications</mat-list-option>
-              <mat-list-option [value]="2">Building Plan Applications</mat-list-option>
-              <mat-list-option [value]="3">Demolition Application</mat-list-option>
-              <mat-list-option [value]="4">Sinage Application</mat-list-option>
-              <mat-list-option [value]="5">Banner/Poster Application</mat-list-option>
-              <mat-list-option [value]="6">Flag/Pole/Headline Application</mat-list-option>
-              <mat-list-option [value]="7">Archive Application</mat-list-option>
+              <mat-list-option [value]="0"><p class="LSlabel">.</p>Pre-Submission Applications</mat-list-option>
+              <mat-list-option [value]="1"><p class="TPlabel">.</p>Town Planning Applications</mat-list-option>
+              <!--              <mat-list-option [value]="2">Building Plan Applications</mat-list-option>-->
+              <!--              <mat-list-option [value]="3">Demolition Application</mat-list-option>
+                <mat-list-option [value]="4">Sinage Application</mat-list-option>
+                <mat-list-option [value]="5">Banner/Poster Application</mat-list-option>
+                <mat-list-option [value]="6">Flag/Pole/Headline Application</mat-list-option>
+                <mat-list-option [value]="7">Archive Application</mat-list-option>-->
+              <mat-list-option [value]="9"> <p class="WLlable">.</p>Wayleave</mat-list-option>
               <mat-list-option [value]="8">All Applications</mat-list-option>
-              <mat-list-option [value]="9">Wayleave</mat-list-option>
+
             </mat-selection-list>
 
           </mat-menu>
@@ -113,7 +114,7 @@
 
               <ng-container matColumnDef="lSNumber">
                 <th mat-header-cell *matHeaderCellDef> Application Number </th>
-                <td mat-cell *matCellDef="let element"> {{element.ProjectNumber}}</td>
+                <td mat-cell *matCellDef="let element"> <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey' , 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
               </ng-container>
 
               <ng-container matColumnDef="ERFNumber">
@@ -680,7 +681,7 @@
 
               <ng-container matColumnDef="lSNumber">
                 <th mat-header-cell *matHeaderCellDef> Application Number </th>
-                <td mat-cell *matCellDef="let element"> {{element.ProjectNumber}}</td>
+                <td mat-cell *matCellDef="let element" > <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey', 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
               </ng-container>
 
               <ng-container matColumnDef="ERFNumber">

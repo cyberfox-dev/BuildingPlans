@@ -2,15 +2,12 @@
 h2 {
   color: #343a40;
   margin-top: 17px;
-  /* margin-bottom: 29px; */
-  /* text-align: center; */
   font-family: 'Nunito';
-  font-size: 39px;
+  font-size: 33px;
   font-weight: 450;
   background: #4393d7;
   padding: 12px 20px;
   border-radius: 20px;
-  /* box-shadow: 0 0 4px 2px #00000059; */
   color: white;
   box-shadow: 0 0 10px 1px rgb(0 0 0 / 41%);
 }
@@ -49,7 +46,7 @@ h3 span {
 }
 .card {
   box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
-  background-color: #0f8187;
+  background-color: #a7cced;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -30,16 +30,17 @@
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
           <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
           <div class="bottom-0">
-            <button mat-raised-button color="expand2" (click)="openExpand('POD',expand)" matTooltip="Expand"><img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            <button mat-raised-button color="expand2" (click)="openExpand('POD',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
         <div class="PropertyOwnerDetails">
-          <h3>Architect Details</h3>
+          <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
+          <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
           <p class="Name">{{architectName}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
           <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
           <div class="bottom-0">
-            <button mat-raised-button color="expand2" (click)="openExpand('AD',expand)" matTooltip="Expand"><img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            <button mat-raised-button color="expand2" (click)="openExpand('AD',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
         </div>
@@ -48,7 +49,7 @@
           <mat-tab-group *ngIf="showMap" dynamicHeight>
 
             <mat-tab label="Map Details">
-              <google-map height="200px"
+              <google-map height="230px"
                           width="100%"
                           [center]="center"
                           [options]="mapOptions">
@@ -69,30 +70,35 @@
                 <p>Number Of Units - {{ noOfUnits }}</p>
                 <p>Unit Number - {{ unitNumber }}</p>
                 <p>Property Value - {{ propertyValue }}</p>
-                <p>Erf Number - {{ erfNumber }}</p>
+                <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
                 <p>Portion Number - {{ portionNumber }}</p>
                 <p>Premises Name - {{ premisesName }}</p>
                 <p>Property Description - {{ propertyDescription }}</p>
-                <p>Occupation Classification - {{ occupationClassification }}</p>
+                <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
                 <p>Building Plan For - {{ buildingPlanFor }}</p>
-                <p>SG Code - {{ sGCode }}</p>
+                <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
                 <p>Physical Address Of Project - {{ physicalAddress }}</p>
                 <p>Latitude - {{ latitude }}</p>
                 <p>Longitude - {{ longitude }}</p>
-                <p>OmnibusServitude - {{ OmnibusServitude }}</p>
-                <div *ngIf="ApplicationType == 'Town Planning'">
-                  <p>Agent Cell No - {{ AgentCellNo }}</p>
-                  <p>AgentPostalAddress - {{ AgentPostalAddress }}</p>
-                  <p>Description - {{ DescriptionOfProject }}</p>
-                  <p>Agent Name - {{ NameOfAgent }}</p>
+                <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
+                <div *ngIf="bpApplicationType == 'Town Planning'">
+                  <p>Title Restrictions - {{ TitleRestrictions }}</p>
+                  <p>Extent Of Property - {{ ExtentOfProperty }}</p>
+                  <p>TitleDeedNo - {{ TitleDeedNo }}</p>
+                  <p>Registered Description - {{ RegisteredDescription }}</p>
                   <p>Company Name - {{ NameOfCompany }}</p>
                   <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
                   <p>isCombined - {{ isCombinedApplication }}</p>
+                  <p>Description Of Project - {{ DescriptionOfProject }}</p>
+                  <p>Application Type - {{ bpApplicationType }}</p>
                 </div>
               </div>
             </mat-tab>
 
-            <mat-tab label="Advert Pack" >
+            <mat-tab label="Advert Pack" *ngIf="bpApplicationType == 'Town Planning'">
+
+            </mat-tab>
+            <mat-tab label="Objections" *ngIf="bpApplicationType == 'Town Planning'">
 
             </mat-tab>
           </mat-tab-group>
@@ -101,7 +107,10 @@
 
           <mat-tab-group>
             <mat-tab label="Tracker">
-              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+              <div *ngIf="dataSource.length === 0">
+                <h5 class="noDep">No Departments have been linked to review</h5>
+              </div>
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="dataSource.length != 0">
 
                 <!-- Position Column -->
                 <ng-container matColumnDef="DepartmentName" class="approve">
@@ -116,11 +125,11 @@
                   <td mat-cell *matCellDef="let element">
                     <div class="contIndication">
                       <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'" >
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'">
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
                       <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-                  
+
                       <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
                       <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
@@ -147,15 +156,21 @@
               </table>
             </mat-tab>
             <mat-tab label="Flow">
+              <p class="">This {{bpApplicationType}} application is Currently at a {{currentStage}} stage.</p>
+              <div class="container">
+                <div class="progress">
+                  <div class="percent" [style.width]="(currentStageNumber / totalStages) * 100 + '%'"></div>
+                </div>
+                <div class="steps">
+                  <div *ngFor="let stage of StagesForApplication; let i = index"
+                       class="step"
+                       [class.active]="i < currentStageNumber"
+                       [class.completed]="i < currentStageNumber">
+                    {{ stage.StageName }}
+                  </div>
+                </div>
+              </div>
 
-              <mat-horizontal-stepper [selectedIndex]="currentStep" linear>
-                <mat-step *ngFor="let step of steps; let i = index" [completed]="i < currentStep">
-                  <ng-template matStepLabel>{{ step }}</ng-template>
-                </mat-step>
-              </mat-horizontal-stepper>
-
-              <button mat-button (click)="nextStep()">Next</button>
-              <button mat-button (click)="previousStep()">Previous</button>
 
             </mat-tab>
           </mat-tab-group>
@@ -163,7 +178,7 @@
 
 
           <div class="bottom-0">
-            <button mat-raised-button color="expand" (click)="openExpand('Tracker',expand)" matTooltip="Expand"><img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            <button mat-raised-button color="expand" (click)="openExpand('Tracker',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
           
@@ -176,15 +191,20 @@
 
             <mat-tab label=" General Comments">
               <div class="generalcomments">
-                <div *ngIf="CommentsList.length === 0">
-                  <h5>No comments have been made yet.</h5>
-                </div>
+
                 <div *ngFor="let comment of CommentsList ; let i = index">
-                  <div *ngIf="comment.CommentStatus !='Internal Comment'">
-                    <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'|| comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'" [class.cardRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'"[class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
+                  <div *ngIf="comment.CommentStatus !='Internal Comment' && comment.CommentStatus !='Note'">
+                    <div *ngIf="CommentsList.length === 0">
+                      <h5>No comments have been made yet.</h5>
+                    </div>
+                    <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'|| comment.CommentStatus == 'Reviewer Assigned' || comment.CommentStatus =='New Reviewer Assigned'" [class.cardRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
                       <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+                      </div>
+
+                      <div class="icon-containerApprove" *ngIf="comment.CommentStatus == 'Reviewer Assigned'">
+                        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/.svg" class="icon">
                       </div>
 
                       <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Internal Comment'">
@@ -194,7 +214,7 @@
                       <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'TP Relaxation'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
                       </div>
-                      
+
                       <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
                       </div>
@@ -205,7 +225,7 @@
                       <div class="message-text-container">
 
                         <div class="messageHead">
-                          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'|| comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'" [class.message-textRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation'|| comment.CommentStatus == 'TP Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'|| comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'Reviewer Assigned' || comment.CommentStatus =='Town Planner Approved'" [class.message-textRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation'|| comment.CommentStatus == 'TP Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
                           <p>{{comment.DateCreated}}</p>
                         </div>
                         <div class="messageFoot">
@@ -221,20 +241,19 @@
 
                 </div>
             </mat-tab>
-            <mat-tab label="Internal Comments">
-              <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details">Create New Internal Comment</button>
+            <mat-tab label="Internal Comments" *ngIf="this.CurrentUserProfile[0].isInternal == true">
+              <div *ngIf="CommentsList.length === 0">
+                <h5>No internal comments have been made yet.</h5>
+              </div>
+              <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> Create New Internal Comment</button>
               <div *ngFor="let comment of CommentsList ; let i = index">
                 <div *ngIf="comment.CommentStatus =='Internal Comment'">
-                  <div [class.cardApprove]=" comment.CommentStatus == 'Internal Comment'">
-
-                    <div class="icon-containerApprove" *ngIf="comment.CommentStatus == 'Internal Comment'">
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
-                    </div>
+                  <div [class.cardNote]=" comment.CommentStatus == 'Internal Comment'">
 
                     <div class="message-text-container">
 
-                      <div class="messageHead">
-                        <h1 [class.message-textApprove]="comment.CommentStatus == 'Internal Comment'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                      <div class="noteHead">
+                        <h1 [class.message-textApprove]="comment.CommentStatus == 'Internal Comment'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
                         <p>{{comment.DateCreated}}</p>
                       </div>
                       <div class="messageFoot">
@@ -247,11 +266,37 @@
               </div>
             </mat-tab>
             <mat-tab label="Notes">
+              <button mat-raised-button color="blue" (click)="openNote(newNote)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/regular/note-sticky.svg"> Create New Note</button>
+              <div *ngIf="CommentsList.length === 0">
+
+                <h5>No notes have been made yet.</h5>
+
+              </div>
+              <div *ngFor="let comment of CommentsList ; let i = index">
+                <div *ngIf="comment.CommentStatus =='Note'">
+                  <div [class.cardNote]=" comment.CommentStatus == 'Note'">
+
+ 
+
+                    <div class="message-text-container">
+
+                      <div class="noteHead">
+                        <h1 [class.message-textApprove]="comment.CommentStatus == 'Note'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/regular/note-sticky.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                        <p class="date">{{comment.DateCreated}}</p>
+                      </div>
+                      <div class="messageFoot">
+                        <p class="sub-text">{{comment.Comment}}</p>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </mat-tab>
           </mat-tab-group>
 
           <div class="bottom-0">
-            <button mat-raised-button color="expand" (click)="openExpand('Comments',expand)" matTooltip="Expand"><img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            <button mat-raised-button color="expand" (click)="openExpand('Comments',expand)" matTooltip="Expand"><img  class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
 
@@ -264,12 +309,12 @@
             <mat-tab label="Financial Documents">
               <app-bpfinancials></app-bpfinancials>
             </mat-tab>
-            <mat-tab label="Stage Checklist">
+            <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
 
             </mat-tab>
           </mat-tab-group>
           <div class="bottom-0">
-            <button mat-raised-button color="expand" (click)="openExpand('Documents',expand)" matTooltip="Expand"><img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            <button mat-raised-button color="expand" (click)="openExpand('Documents',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
       </div>
@@ -535,10 +580,14 @@
 
 
     <div class="POD">
+      <div class="podInfo">
       <p class="Name">{{firstName}} {{surname}}</p>
       <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
       <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
+        </div>
+      <div class="image">
       <img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/user.svg" class="ExpandIcon">
+        </div>
     </div>
   </div>
 
@@ -552,10 +601,17 @@
       <button type="button" class="btn-close" aria-label="Close" (click)="closeExpanded();modal.dismiss('Cross click')"></button>
     </div>
 
-    <img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/user.svg" class="ExpandIcon">
-    <p class="Name">{{architectName}}</p>
-    <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
-    <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
+
+    <div class="POD">
+      <div class="podInfo">
+        <p class="Name">{{architectName}}</p>
+        <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
+        <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
+      </div>
+      <div class="image">
+        <img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/user.svg" class="ExpandIcon">
+      </div>
+    </div>
 
   </div>
 
@@ -569,51 +625,106 @@
       <h4>Tracker</h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="closeExpanded();modal.dismiss('Cross click')"></button>
     </div>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-      <!-- Position Column -->
-      <ng-container matColumnDef="DepartmentName" class="approve">
-        <th mat-header-cell *matHeaderCellDef>Department</th>
-        <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
+    <mat-tab-group>
 
-      </ng-container>
-
-      <!-- Indication Column -->
-      <ng-container matColumnDef="indication">
-        <th mat-header-cell *matHeaderCellDef>Indication</th>
-        <td mat-cell *matCellDef="let element">
-          <div class="contIndication">
-            <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
-            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
-            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
-            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-            <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
-            <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
-
-            <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
-
-            <!-- projectTracker Sindiswa 12 January 2024 -->
-            <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
-            <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
-            <!-- projectTracker Sindiswa 12 January 2024 -->
+      <mat-tab label=" General Comments">
+        <div class="generalcomments">
+          <div *ngIf="CommentsList.length === 0">
+            <h4>No comments have been made yet.</h4>
           </div>
-        </td>
-      </ng-container>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-      <!-- projectTracker Sindiswa 12 January 2024 -->
-      <ng-container matColumnDef="zoneUser" class="approve">
-        <th mat-header-cell *matHeaderCellDef>User</th>
-        <td mat-cell *matCellDef="let element">{{element.zoneUser}}</td>
-      </ng-container>
+            <!-- Position Column -->
+            <ng-container matColumnDef="DepartmentName" class="approve">
+              <th mat-header-cell *matHeaderCellDef>Department</th>
+              <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
 
-      <!-- end of projectTracker Sindiswa 12 January 2024 -->
+            </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+            <!-- Indication Column -->
+            <ng-container matColumnDef="indication">
+              <th mat-header-cell *matHeaderCellDef>Indication</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="contIndication">
+                  <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
+                  <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
+                  <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
-    </table>
+                  <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
 
+                  <!-- projectTracker Sindiswa 12 January 2024 -->
+                  <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
+                  <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
+                  <!-- projectTracker Sindiswa 12 January 2024 -->
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- projectTracker Sindiswa 12 January 2024 -->
+            <ng-container matColumnDef="zoneUser" class="approve">
+              <th mat-header-cell *matHeaderCellDef>User</th>
+              <td mat-cell *matCellDef="let element">{{element.zoneUser}}</td>
+            </ng-container>
+
+            <!-- end of projectTracker Sindiswa 12 January 2024 -->
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+
+        </div>
+      </mat-tab>
+      <mat-tab label="Tracker">
+        <div class="container">
+          <div class="progress">
+            <div class="percent" [style.width]="(currentStageNumber / totalStages) * 100 + '%'"></div>
+          </div>
+          <div class="steps">
+            <div *ngFor="let stage of StagesForApplication; let i = index"
+                 class="step"
+                 [class.active]="i < currentStageNumber"
+                 [class.completed]="i < currentStageNumber">
+              {{ stage.StageName }}
+            </div>
+          </div>
+        </div>
+
+        <p class="projectTimeLine">Project TimeLine</p>
+        <div class="generalcomments">
+
+          <div *ngFor="let comment of CommentsList ; let i = index">
+            <div >
+              <div *ngIf="CommentsList.length === 0">
+                <h5>No comments have been made yet.</h5>
+              </div>
+              <div class="cardNote">
+
+                <div class="message-text-container">
+
+                  <div class="noteHead">
+                    <h1 class="message-textApprove">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                    <p>{{comment.DateCreated}}</p>
+                  </div>
+                  <div class="messageFoot">
+                    <p class="sub-text">{{comment.Comment}}</p>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </mat-tab>
+    </mat-tab-group>
   </div>
 
   <!-- #endregion -->
@@ -667,7 +778,7 @@
 
         </div>
       </mat-tab>
-      <mat-tab label="Internal Comments">
+      <mat-tab label="Internal Comments"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
       </mat-tab>
       <mat-tab label="Notes">
       </mat-tab>
@@ -722,7 +833,7 @@
       <mat-tab label="Financial Documents">
         <app-bpfinancials></app-bpfinancials>
       </mat-tab>
-      <mat-tab label="Stage Checklist">
+      <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
 
       </mat-tab>
     </mat-tab-group>
@@ -1243,5 +1354,25 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="saveNewInternalComment();GetAllCommentsForApplication()">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #newNote let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Create New Note</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p *ngIf="ActionCenter == false">NB: A Note is linked to this application, all reviewers and other internal workers will be able to see this note.</p>
+    <p *ngIf="ActionCenter">NB: A Note is linked to this application, applicants will not be able to see your Notes.</p>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Type new Note</mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250"></textarea>
+
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="saveNewNote();GetAllCommentsForApplication()">Save</button>
   </div>
 </ng-template>

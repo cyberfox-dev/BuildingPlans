@@ -18,6 +18,7 @@ import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.componen
 import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
 import { ConfigService } from '../service/Config/config.service';
 import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
+import { BPStagesService } from '../service/BPStages/bpstages.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -35,6 +36,11 @@ export interface StageChecklistItems {
   DateUpdated: any;
   CreatedById: string;
 
+}
+export interface StagesForApplication {
+  StageID: number;
+  StageName: string;
+  StageNummber: number;
 }
 
 export interface BPDepartmentsForCommentList {
@@ -94,6 +100,11 @@ export class BPViewProjectInfoComponent implements OnInit {
     NameOfCompany: any;
     RegNoOfCompany: any;
     isCombinedApplication: any;
+    TitleDeedNo: any;
+    ExtentOfProperty: any;
+    TitleRestrictions: any;
+    RegisteredDescription: any;
+    bpApplicationType: any;
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -113,6 +124,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private applicationService: BuildingApplicationsService,
     private BpDepartmentForCommentService: BpDepartmentForCommentService,
     private cdRef: ChangeDetectorRef,
+    private BPStagesService: BPStagesService,
   ) { }
 
   // Properties
@@ -125,6 +137,7 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
   stageChecklist: StageChecklistItems[] = [];
+  StagesForApplication: StagesForApplication[] = [];
   CommentsList: CommentsList[] = [];
 
 
@@ -163,6 +176,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   OmnibusServitude: boolean = false;
   functionalArea: string;
   currentStage: string;
+  currentStageNumber: number;
   ActionCenter: boolean = false;
 
   //Owner Details
@@ -174,6 +188,8 @@ export class BPViewProjectInfoComponent implements OnInit {
   altEmail: string;
   address: string;
   idNumber: string;
+
+  
 
   //Architect Detail
   architectName: string;
@@ -262,6 +278,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.physicalAddress = current.physicalAddress;
         this.functionalArea = current.bpApplicationType;
         this.currentStage = current.stage;
+        this.currentStageNumber = Number(current.stageNumber);
         this.OmnibusServitude = current.omnibusServitude;
         //owner details
         this.firstName = current.firstName;
@@ -273,7 +290,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.idNumber = current.idNumber;
         this.architectName = current.architectName;
         this.BPApplicationProjectNumber = current.bpApplicationID;
-        this.ApplicationType = current.bpApplicationType;
+        this.bpApplicationType = current.bpApplicationType;
         this.AgentCellNo = current.agentCellNo;
         this.AgentPostalAddress = current.agentPostalAddress;
         this.DescriptionOfProject = current.descriptionOfProject;
@@ -281,7 +298,13 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.NameOfCompany = current.nameOfCompany;
         this.RegNoOfCompany = current.regNoOfCompany;
         this.isCombinedApplication = current.isCombinedApplication;
-
+        this.DescriptionOfProject = current.DescriptionOfProject;
+        this.ApplicationType = current.ApplicationType;
+        this.TitleDeedNo = current.TitleDeedNo;
+        this.ExtentOfProperty = current.ExtentOfProperty;
+        this.TitleRestrictions = current.TitleRestrictions;
+        this.RegisteredDescription = current.RegisteredDescription;
+        
 
         this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
@@ -290,6 +313,7 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
       this.getAllDocumentForApplication();
       this.getAllMandatoryChecklistItemsForCurrentStage();
+      this.getAllBPStages();
       console.log("responseKyle", data);
     }, error => {
       console.log("Error: ", error);
@@ -737,8 +761,109 @@ export class BPViewProjectInfoComponent implements OnInit {
     mapTypeControl: true,
     zoomControl: true,
     scrollwheel: false,
-
-    
+    mapTypeId: 'satellite',
+    styles: [
+      {
+        "elementType": "geometry",
+        "stylers": [{ "color": "#212121" }]
+      },
+      {
+        "elementType": "labels.icon",
+        "stylers": [{ "visibility": "off" }]
+      },
+      {
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "elementType": "labels.text.stroke",
+        "stylers": [{ "color": "#212121" }]
+      },
+      {
+        "featureType": "administrative",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "administrative.country",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#9e9e9e" }]
+      },
+      {
+        "featureType": "administrative.land_parcel",
+        "stylers": [{ "visibility": "off" }]
+      },
+      {
+        "featureType": "administrative.locality",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#bdbdbd" }]
+      },
+      {
+        "featureType": "poi",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#181818" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#616161" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.stroke",
+        "stylers": [{ "color": "#1b1b1b" }]
+      },
+      {
+        "featureType": "road",
+        "elementType": "geometry.fill",
+        "stylers": [{ "color": "#2c2c2c" }]
+      },
+      {
+        "featureType": "road",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#8a8a8a" }]
+      },
+      {
+        "featureType": "road.arterial",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#373737" }]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#3c3c3c" }]
+      },
+      {
+        "featureType": "road.highway.controlled_access",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#4e4e4e" }]
+      },
+      {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#616161" }]
+      },
+      {
+        "featureType": "transit",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "water",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#000000" }]
+      },
+      {
+        "featureType": "water",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#3d3d3d" }]
+      }
+    ]
   };
   async updateCenter(newLat: number, newLng: number) {
     debugger;
@@ -865,11 +990,31 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
     })
   }
+  saveNewNote() {
+    this.bpCommentsService.addUpdateComment(0, this.applicationId, this.functionalArea, this.leaveAComment, "Note", this.CurrentUserProfile[0].subDepartmentID, null, null, this.CurrentUser.fullName, this.CurrentUserProfile[0].userID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll();
+
+
+      }
+      else {
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: "An Error has occured"
+          }
+        });
+      }
+    })
+  }
   openInternalComment(newInternalComment: any) {
     this.modalService.open(newInternalComment, { centered: true, size: 'xl' });
   }
 
+  openNote(newNote: any) {
+    this.modalService.open(newNote, { centered: true, size: 'xl' });
+  }
   getAllMandatoryChecklistItemsForCurrentStage() {
     debugger;
     this.bpStageChecklistService.getAllChecklistItemsForStage(this.currentStage, this.ApplicationType).subscribe((data: any) => {
@@ -898,6 +1043,38 @@ export class BPViewProjectInfoComponent implements OnInit {
 
     }, error => {
       console.log("Error: ", error);
+
+    })
+  }
+  totalStages: number = 0;
+  getAllBPStages() {
+
+    this.StagesForApplication.splice(0, this.StagesForApplication.length);
+    debugger;
+    this.BPStagesService.getAllStagesForFunctionalArea(this.functionalArea).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempStage = {} as StagesForApplication;
+          debugger;
+          tempStage.StageID = current.stageID;
+          tempStage.StageName = current.stageName;
+          tempStage.StageNummber = current.stageOrder;
+
+          this.StagesForApplication.push(tempStage);
+
+          
+        }
+        this.totalStages = this.StagesForApplication.length;
+        console.log("SKJFSKDJFHJKSDF", this.StagesForApplication);
+  
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
 
     })
   }

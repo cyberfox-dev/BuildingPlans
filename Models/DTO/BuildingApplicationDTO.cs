@@ -47,16 +47,24 @@ namespace BuildingPlans.Models.DTO
         public bool? OmnibusServitude { get; set; }
         public string? BPApplicationID { get; set; }
         public string? BPApplicationType { get; set; }
+
+        // For Town Planning Application
         public string? ApplicationType { get; set; }
         public bool? isCombinedApplication { get; set; }
         public string? NameOfCompany { get; set; }
         public string? RegNoOfCompany { get; set; }
-        public string? NameOfAgent { get; set; }
-        public string? AgentCellNo { get; set; }
-        public string? AgentEmail { get; set; }
-        public string? AgentPostalAddress { get; set; }
+        public string? RegisteredDescription { get; set; }
+        public string? TitleRestrictions { get; set; }
+        public string? ExtentOfProperty { get; set; }
+        public string? TitleDeedNo { get; set; }
         public string? DescriptionOfProject { get; set; }
-        public string? SupportingDocuments { get; set; }
-        
+        public string? ValueOfProperty { get; set; }
+
+
+        //For Wayleave
+        public string? SizeOfApplication { get; set; }
+        public string? TypeOfExcavation { get; set; }
+        public string? NatureOfWorks { get; set; }
+
     }
 }

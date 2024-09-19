@@ -213,8 +213,8 @@
     color:black !important;
   }
   .mat-tab-labels {
-/*   general comments, Notes, Internal Comments*/
-
+    /*   general comments, Notes, Internal Comments*/
+ 
   }
 }
 .mat-table {
@@ -506,7 +506,11 @@ tr:hover {
   height: 50px;
   border-radius: 100%;
   margin-top: 15px;
+  /* Hide by default */
 }
+
+
+
 .sidebar {
   position: fixed;
   top: 15px;
@@ -580,6 +584,20 @@ tr:hover {
     .sidebar p{
        opacity: 0;
     }
+    .sidebar .dp{
+        opacity:1;
+    }
+.sidebar.active .dp {
+  opacity: 1;
+  margin-top: 15px !important;
+  font-weight: 900;
+  font-size: 21px;
+  padding: 0 !important;
+  margin-left: 10px !important;
+  scale: 1;
+  margin: 0 auto;
+  width: 28px;
+}
 .sidebar.active p {
   opacity: 1;
   margin: 0 18px;
@@ -705,3 +723,6 @@ li .tooltip{
 .backgroundBac{
 
 }
+
+
+

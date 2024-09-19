@@ -260,6 +260,7 @@ export interface ArchitectsList {
 }
 
 export interface ApplicationsListBP {
+  bpApplicationType: any;
   applicationID: number;
   ProjectNumber: string;
   erfNumber: string;
@@ -499,6 +500,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   details: string;
   applicationTypeName: string;
   selectedFunctionalArea: string;
+    bpApplicationType: any;
 
   constructor(
     private router: Router,
@@ -7121,7 +7123,7 @@ this.subscriptions.push(subscription);
             const timeDiff = currentDate.getTime() - dateCreated.getTime();
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplication.planAge = daysDiff;
-
+            tempApplication.bpApplicationType = current.bpApplicationType;
             /*cal stage age*/
             const stageDateCreated = new Date(tempApplication.dateCreated);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
@@ -7187,7 +7189,7 @@ this.subscriptions.push(subscription);
             const timeDiff = currentDate.getTime() - dateCreated.getTime();
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplication.planAge = daysDiff;
-
+          tempApplication.bpApplicationType = current.bpApplicationType;
             /*cal stage age*/
             const stageDateCreated = new Date(tempApplication.dateCreated);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
@@ -7261,7 +7263,8 @@ this.subscriptions.push(subscription);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
             tempApplication.stageAge = stageDateDiff;
-            tempApplication.status = current.status;
+          tempApplication.status = current.status;
+          tempApplication.bpApplicationType = current.bpApplicationType;
           tempApplication.justForFilteringByDate = current.dateCreated;
           this.AllTownPlanningApplications.push(tempApplication);
           }
@@ -7326,7 +7329,7 @@ this.subscriptions.push(subscription);
             const timeDiff = currentDate.getTime() - dateCreated2.getTime();
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplication.planAge = daysDiff;
-
+          tempApplication.bpApplicationType = current.bpApplicationType;
             /*cal stage age*/
             const stageDateCreated = new Date(tempApplication.dateCreated);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
