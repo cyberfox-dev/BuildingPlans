@@ -1679,6 +1679,7 @@ export class ActionCenterComponent implements OnInit {
       console.log("Reviewers Error", error);
     })
   }
+  isLSDepartmentManager: boolean;
 
   setRoles() {
 
@@ -1689,7 +1690,11 @@ export class ActionCenterComponent implements OnInit {
     else {
       this.AssignUserForComment = false;
     }
-
+    debugger;
+    if (this.CurrentUserRoles.some(x => x.roleName == "Department Manager") && this.loggedInUserSubDepartmentName == "Land Survey") {
+      this.isLSDepartmentManager = true;
+    }
+    console.log("LSDepartmentManager", this.isLSDepartmentManager);
   }
 
   //setRoles() {
@@ -2953,7 +2958,7 @@ export class ActionCenterComponent implements OnInit {
       case "ReviewerApprove": {
         if (confirm("Are you sure you want to approve this application ? ")) {
           debugger;
-          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Approved",false,false,"Admin",false).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Approved",false,false,this.CurrentUser.appUserId,false).subscribe((data: any) => {
             if (data.responseCode == 1) {
               debugger;
               this.AddComment("Approved", this.subDPTforComment);
@@ -2972,7 +2977,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "ReviewerReject": {
-        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Rejected",false,false,"Admin",false).subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Rejected", false, false, this.CurrentUser.appUserId,false).subscribe((data: any) => {
           if (data.responseCode == 1) {
             this.AddComment("Rejected", this.subDPTforComment);
           }
@@ -3001,9 +3006,138 @@ export class ActionCenterComponent implements OnInit {
         })
         break;
       }
-     
 
 
+      case "LSApprove" : {
+        if (confirm("Are you sure you want to approve this application ? ")) {
+          debugger;
+          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Approved", false, false, "Admin", true).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              debugger;
+              this.AddComment(" LS Approved", this.subDPTforComment);
+            }
+            else {
+
+            }
+          }, error => {
+            console.log(error);
+          })
+
+          this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, this.StagesList[2].StageName, null, null, null, "LS Approved").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.openSnackBar("Application Actioned")
+              this.router.navigate(["/home"]);
+            }
+            else {
+
+            }
+          }, error => {
+            console.log("Application Status Error", error);
+          })
+          
+          }
+          break;
+      }
+
+      case "LSReject": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Reject", false, false, "Admin", false).subscribe((data: any) => {
+          if (data.reponseCode == 1) {
+            this.AddComment("LS Rejected", this.subDPTforComment);
+          }
+          else {
+
+          }
+        }, error => {
+          console.log("Error", error);
+        })
+
+        this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, this.StagesList[2].StageName, null, null, null, "LS Rejected").subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.openSnackBar("Application Actioned")
+            this.router.navigate(["/home"]);
+          }
+          else {
+
+          }
+        }, error => {
+          console.log("Application Status Error", error);
+        })
+        break;
+      }
+
+      case "LSClarify": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Clarify", true, false, this.CurrentUser.appUserId, false).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.AddComment("LS Clarify", this.subDPTforComment);
+          }
+          else {
+
+          }
+        }, error => {
+          console.log(error);
+        })
+        break;
+      }
+      case "LSManagerApprove": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Manager Approve", false, false, null, true).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, null, null, "Approval Pack Generation").subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.AddComment("Manager Approved", this.subDPTforComment);
+                this.openSnackBar("ApplicationAction");
+                this.router.navigate(["/home"]);
+              }
+              else {
+                alert(data.responseMessage);
+              }
+            }, error => {
+              console.log("Application Status Error", error);
+            })
+          }
+          else {
+
+          }
+        }, error => {
+          console.log("SubDepartmentForComment Error ", error);
+        })
+        break;
+      }
+
+      case "LSManagerReject": {
+        this, this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Manager Reject", false, false, null, false).subscribe((data: any) => {
+          if (data.reposnseCode == 1) {
+            this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, this.StagesList[2].StageName, null, null, null, "Manager Rejected").subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.AddComment("Manager Rejected", this.subDPTforComment);
+                this.openSnackBar("Application Actioned");
+                this.router.navigate(["/home"]);
+              }
+            })
+          }
+          else {
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log("Comment Status Error", error);
+        })
+        break;
+      }
+
+      case "LSManagerClarify": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Manager Clarify", true, false, this.CurrentUser.appUserId).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.AddComment("Manager Clarify", this.subDPTforComment);
+            this.openSnackBar("Application Actions");
+            this.router.navigate(["/home"]);
+          }
+          else {
+
+          }
+        })
+
+        break;
+      }
       default: {
 
         break;
@@ -5184,17 +5318,33 @@ export class ActionCenterComponent implements OnInit {
    
     debugger;
     if (this.CurrentUserProfile[0].subDepartmentName == "Land Survey") {
-      if (this.CurrentApplication.ApplicationStatus == "Awaiting Final Approval") {
-        this.canCommentFinalApprover = true;
-        this.openActionCenter(content);
-      }
-
       if (this.CurrentApplication.ApplicationStatus == "PTW Pending") {
         this.permit = true;
         this.openActionCenter(content);
       }
-      else if (this.CurrentApplication.ApplicationStatus == "Admin Review") {
+      else if (this.CurrentApplication.ApplicationStatus == "Admin Review" || this.CurrentApplication.ApplicationStatus == "LS Review" || this.CurrentApplication.ApplicationStatus == "LS Approved") {
         this.permit = false;
+        this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+
+            console.log("User assignment information:", data.dateSet);
+            debugger;
+            let current = data.dateSet[0];
+
+            this.subDPTforComment = current.subDepartmentForCommentID;
+            this.userAssignedText = current.userAssaignedToComment;
+            this.commentState = current.commentStatus;
+            this.openActionCenter(content);
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+        }, error => {
+          console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
+          console.log("SubDepartmentForComment", this.subDPTforComment);
+        });
         this.openActionCenter(content);
       }
       else {
@@ -5348,21 +5498,8 @@ export class ActionCenterComponent implements OnInit {
     else {
       switch (interact) {
         case "Approve": {
-          this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              for (let i = 0; i < data.dateSet.length; i++) {
-                const current = data.dateSet[i];
-
-                this.UpdateCommentStatusToFinalApproved(current.subDepartmentForCommentID);
-               
-              }
-              this.moveToPermitToWorkStage();
-            }
-            else {
-              alert(data.reponseMessage);
-            }
-          })
-
+          this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment,"Approved",false,false,"Admin",true)
+          //Not in use atm , using the onComment method
           break;
         }
 
@@ -6663,7 +6800,7 @@ export class ActionCenterComponent implements OnInit {
     let currentStage = this.StagesList[2].StageName;
     let nextStage = this.StagesList[3].StageName;
     if (this.approvalCount ==(data.dateSet.length - 1)) {
-      this.applicationsService.updateApplicationStage(this.ApplicationID, previousStage, 1, currentStage, 2, nextStage, 3, "Awaiting Final Approval").subscribe((data: any) => {
+      this.applicationsService.updateApplicationStage(this.ApplicationID, previousStage, 2, currentStage, 3, nextStage, 4, "LS Review").subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.router.navigate(["/home"]);
           this.openSnackBar("Application Moved To Next Stage");
@@ -7120,7 +7257,32 @@ export class ActionCenterComponent implements OnInit {
     this.modalService.open(permitModal, { centered: true, size: 'xl' });
   }
 
- 
+  getAllSubDepartmentsForComment() {
+    this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+      if (data.reponseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const current = data.dateSet[i];
+          const tempSubDepartment = {} as SubDepartmentListForComment;
+
+          tempSubDepartment.subdepartmentForCommentID = current.subDepartmentForCommentID;
+          tempSubDepartment.subDepartmentName = current.subDepartmentName;
+          tempSubDepartment.commentStatus = current.commentStatus;
+
+          this.LinkedSubDepartmentsList.push(tempSubDepartment);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+    }, error => {
+      console.log("SubDepartment List Error", error);
+    })
+  }
 }
 
 

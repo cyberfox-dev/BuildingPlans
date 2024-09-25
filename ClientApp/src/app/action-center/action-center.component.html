@@ -15,49 +15,49 @@
   <div class="modal-body" *ngIf="CurrentApplication.isPlanning != true">
 
     <div class="contCards">
-    <!--<button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>
+      <!--<button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>
     <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>-->
-     <!--actionCentreEdits Sindiswa 16 January 2024--> 
-    <div class="containerCard" *ngIf="AssignUserForComment == true ">
-    <p class="cardHeader">Assign Reviewer</p>
-    <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
-    <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
-  </div>
-  <!--<div class="containerCard" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false">
-    <p class="cardHeader">Assign GIS Reviewer</p>
-    <p class="cardDescription">This will assign a user to this project to allow them to upload documents regarding the application</p>
-    <button mat-raised-button color="assign" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>
-  </div>-->
-  <!--<div class="containerCard" *ngIf="AssignUserForComment == true ">
-    <p class="cardHeader">Assign New Reviewer</p>
-    <p class="cardDescription">This will assign another user to review this application</p>
-    <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
-     <button mat-raised-button color="assign" *ngIf="AssignUserForComment == true " (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>
+      <!--actionCentreEdits Sindiswa 16 January 2024-->
+      <div class="containerCard" *ngIf="AssignUserForComment == true ">
+        <p class="cardHeader">Assign Reviewer</p>
+        <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
+        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
+      </div>
+      <!--<div class="containerCard" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false">
+      <p class="cardHeader">Assign GIS Reviewer</p>
+      <p class="cardDescription">This will assign a user to this project to allow them to upload documents regarding the application</p>
+      <button mat-raised-button color="assign" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>
     </div>-->
-  <!--<div class="containerCard" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText !==CurrentUser.appUserId">
-    <p class="cardHeader">Take this application</p>
-    <p class="cardDescription">Take Application As A Final Approver</p>
-    <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button>-->
-    <!--Final Approver && Senior Approver Kyle 01/02/24-->
-    <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-    <!--</div>
-  <div class="containerCard" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText !==CurrentUser.appUserId">
-    <p class="cardHeader">Take this application</p>
-    <p class="cardDescription">Take Application As A Senior Reviewer</p>
-    <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button>-->
-    <!--Final Approver && Senior Approver Kyle 01/02/24-->
-    <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-    <!--</div>
-  <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true">-->
-    <!--JJS 13-03-24-->
-    <!--<p class="cardHeader">Assign Permit Issuer</p>
-  <p class="cardDescription">Assign a Permit Issuer to application</p>
-  <button mat-raised-button color="assign" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button>-->
-    <!--Final Approver && Senior Approver Kyle 01/02/24-->
-    <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-    <!--</div>-->
-    <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
-    <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
+      <!--<div class="containerCard" *ngIf="AssignUserForComment == true ">
+      <p class="cardHeader">Assign New Reviewer</p>
+      <p class="cardDescription">This will assign another user to review this application</p>
+      <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+       <button mat-raised-button color="assign" *ngIf="AssignUserForComment == true " (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>
+      </div>-->
+      <!--<div class="containerCard" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText !==CurrentUser.appUserId">
+      <p class="cardHeader">Take this application</p>
+      <p class="cardDescription">Take Application As A Final Approver</p>
+      <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button>-->
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+      <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
+      <!--</div>
+    <div class="containerCard" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText !==CurrentUser.appUserId">
+      <p class="cardHeader">Take this application</p>
+      <p class="cardDescription">Take Application As A Senior Reviewer</p>
+      <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button>-->
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+      <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
+      <!--</div>
+    <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true">-->
+      <!--JJS 13-03-24-->
+      <!--<p class="cardHeader">Assign Permit Issuer</p>
+    <p class="cardDescription">Assign a Permit Issuer to application</p>
+    <button mat-raised-button color="assign" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button>-->
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+      <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
+      <!--</div>-->
+      <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
+      <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
 
     <p class="cardDescription"></p>
@@ -98,9 +98,10 @@
 
 
     <div class="cont2" *ngIf="canComment">
-      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
-      <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <p>Reviewer</p>
+      <button mat-raised-button color="approveBTN" (click)="onComment('ReviewerApprove')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('ReviewerReject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onComment('ReviewerClarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <!--<button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>-->
 
     </div>
@@ -141,11 +142,12 @@
 
     <div class="cont2" *ngIf="this.CurrentApplication.ApplicationStatus == 'Assigned' && userAssignedText == CurrentUser.appUserId">
       <button mat-raised-button color="approveBTN" (click)="newWayleaveDistrubution()">Distribute Application To All Departments</button>
-      <button mat-raised-button color ="rejectBTN">Reject </button>
+      <button mat-raised-button color="rejectBTN">Reject </button>
+
     </div>
     <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId">
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
-
+      <p>Senior Reviewer</p>
       <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
@@ -154,26 +156,26 @@
 
     </div>
 
-    <div class="cont 2" *ngIf="userAssignedText == 'Admin' && isAdmin == true" >
-      <button mat-raised-button color="approveBTN">Approve</button>
-      <button mat-raised-button color="rejectBTN">Reject</button>
-      <button mat-raised-button color="clarifyBTN">Clarify</button>
-    </div>
-    <div class="cont2" *ngIf="canCommentFinalApprover == true">
+    <div class="cont 2" *ngIf="this.CurrentApplication.ApplicationStatus === 'LS Approved' && isLSDepartmentManager == true" >
+      <p>LS Manager</p>
+    <button mat-raised-button color="approveBTN">Approve</button>
+    <button mat-raised-button color="rejectBTN">Reject</button>
+    <button mat-raised-button color="clarifyBTN">Clarify</button>
+  </div>
+    <div class="cont2" *ngIf="canCommentFinalApprover == true && CurrentApplication.ApplicationStatus == 'LS Review'">
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
-
-      <button mat-raised-button color="approveBTN" (click)="onCommentFA('Approve')" [disabled]="hasDeposit == true && depositPaid ==false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onCommentFA('Reject')" [disabled]="hasDeposit == true && depositPaid ==false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
+      <!--<p>Final Approver</p>-->
+      <button mat-raised-button color="approveBTN" (click)="onComment('LSApprove')" [disabled]="hasDeposit == true && depositPaid ==false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('LSReject')" [disabled]="hasDeposit == true && depositPaid ==false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
 
       <button mat-raised-button color="clarifyBTN" [matMenuTriggerFor]="menu" [disabled]="hasDeposit == true && depositPaid ==false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
-      <!--<button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-    <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer  </button>-->
+     
 
       <mat-menu #menu="matMenu" yPosition="above" width="100%">
-        <ng-container >
-          <button mat-menu-item *ngFor=" let subDepartment of SubDepartmentList" (click)="onCommentFA('Clarify')">{{subDepartment.subDepartmentName}}</button>
-         
+        <ng-container>
+          <button mat-menu-item *ngFor=" let subDepartment of SubDepartmentList" (click)="onCommentFA('LSClarify')">{{subDepartment.subDepartmentName}}</button>
+
         </ng-container>
       </mat-menu>
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
@@ -231,7 +233,7 @@
     checked: boolean = false;
     DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
-      <div class="row" *ngIf="canCommentFinalApprover">
+      <div class="row" *ngIf="canCommentFinalApprover  && CurrentApplication.ApplicationStatus === 'LS Review'">
         <div class="col">
           <mat-checkbox class="example-margin" [(ngModel)]="DepositCheck" *ngIf="hasDeposit !== true" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
         </div>
@@ -273,8 +275,8 @@
     </div>
 
     <div class="cont6" *ngIf="permit == true">
-      <button mat-raised-button color="approveBTN"  (click)="PermitIssue('Approve')">Approve Permit</button>
-      
+      <button mat-raised-button color="approveBTN" (click)="PermitIssue('Approve')">Approve Permit</button>
+
       <button mat-raised-button color="rejectBTN" (click)="PermitIssue('Reject')">Reject Permit</button>
     </div>
     <!-- Permit Kyle 13-02 - 24-->
