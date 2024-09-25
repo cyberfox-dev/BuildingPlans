@@ -221,8 +221,8 @@ export class BPViewProjectInfoComponent implements OnInit {
       this.GetAllCommentsForApplication(),
       this.getAllDepartmentsForCommentForBPApplication()
     ]);
-
     this.isLoading = false;
+
   }
 
   openViewReply(index: any) {
@@ -1035,6 +1035,7 @@ export class BPViewProjectInfoComponent implements OnInit {
           this.stageChecklist.push(tempChecklist);
         }
         console.log("This is the checklist for this stage.", this.stageChecklist);
+       
       }
       else {
         alert(data.responseCode);

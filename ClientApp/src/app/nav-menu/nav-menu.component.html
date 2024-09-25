@@ -22,7 +22,7 @@
 
 </div>-->
 
-<div class="sidebar">
+<div class="sidebar animationFadeInRightToLeft">
   <div class="top">
     <div class="logo">
 
@@ -38,7 +38,6 @@
     </div>
     <div>
       <p class="bold">{{this.CurrentUser.fullName}}</p>
-      <p>Admin</p>
     </div>
   </div>
   <div class="toolbar">
@@ -63,8 +62,8 @@
         </a>
         <span class="tooltip">Frequently Asked Questions</span>
       </li>
-      <mat-divider></mat-divider>
-      <li>
+      <mat-divider *ngIf="devConfig"></mat-divider>
+      <li *ngIf="devConfig">
         <a >
           <i class="fa fa-terminal" matTooltip="Dev Configs" (click)="goToCyberfoxCofig()"
              matTooltipPosition="after"></i>
@@ -73,7 +72,7 @@
         <span class="tooltip">Dev Configs</span>
       </li>
       <mat-divider></mat-divider>
-      <li>
+      <li >
         <a >
           <i class="fa fa-files-o" matTooltip="Document Repository" (click)="openRepositoryModal(repositoryModal)"
              matTooltipPosition="after"></i>
@@ -90,8 +89,8 @@
         </a>
         <span class="tooltip">Comment Builder</span>
       </li>
-      <mat-divider></mat-divider>
-      <li>
+      <mat-divider *ngIf="Config"></mat-divider>
+      <li *ngIf="Config">
         <a >
           <i class="fa fa-wrench" matTooltip="Configurations" (click)="goToConfig()"
              matTooltipPosition="after"></i>

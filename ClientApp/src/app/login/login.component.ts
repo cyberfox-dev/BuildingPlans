@@ -102,6 +102,7 @@ export class LoginComponent implements OnInit {
   //Gets all configuration data
   AllConfig: ConfigList[] = [];
   public ServerType: string;
+    otpValid: boolean = false;
 
   constructor(
     private router: Router,
@@ -779,7 +780,7 @@ this.userService.login(email, password).pipe(
           this.sharedService.clientUserID = data.dateSet.appUserId;
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.sharedService.newUserProfileBp = BpNo;
-          this.router.navigate(["/new-profile"]);
+        this.otpValid = true;
         } else {
           this.sharedService.errorForRegister = true;
           alert(data.responseMessage);
@@ -1343,6 +1344,48 @@ this.userService.login(email, password).pipe(
 
   openForgotPassModal(forgotPasswordModal: any) {
     this.modalService.open(forgotPasswordModal, { centered: true, size: 'lg', backdrop: 'static' });
+  }
+
+  /*External*/
+  extApplicantBpNoApplicant = '';
+  extApplicantCompanyName = '';
+  extApplicantCompanyRegNo = '';
+  extApplicantCompanyType = '';
+  extApplicantName = '';
+  extApplicantSurname = '';
+  extApplicantTellNo = '';
+  extApplicantEmail = '';
+  extApplicantPhyscialAddress = '';
+  extApplicantIDNumber = '';
+  extApplicantIDUpload: any;
+  extApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
+
+  showTelecommsPrompt = true; //icasadetails Sindiswa 10 January 2023
+  isRepresentingTelecommsCompany = false; //icasadetails Sindiswa 10 January 2023
+
+
+  /*Internal*/
+  internalApplicantName = '';
+  internalApplicantSurname = '';
+  internalApplicantDirectorate = '';
+  internalApplicantDepartment = '';
+  internalApplicantTellNo = '';
+  internalApplicantEmail = ''; //BPRegister Sindiswa 20062024
+  internalApplicantAlternativeEmail = ''; //BPRegister Sindiswa 20062024
+  internalApplicantBranch = '';
+  internalApplicantCostCenterNo = '';
+  internalApplicantCostCenterOwner = '';
+  selectedZone = '';
+  extApplicantVatNumber = '';
+  internalApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
+
+
+
+  subDepartmentID: any;
+  departmentID: any;
+
+  openNewUser(newUser: any) {
+    this.modalService.open(newUser, { centered: true, size: 'xl', backdrop: 'static' });
   }
 
   sendOTPForPasswordReset() {

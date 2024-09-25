@@ -1,5 +1,6 @@
-<!-- Stepper JavaScript -->
-<div class="nav">
+<button class="button2 OTP" (click)="openNewUser(newUser)">Open</button>
+<!-- #region old code -->
+<!--<div class="nav">
   <div class="nav-header">
     <div class="nav-title">
       <img src="assets/engage_dev_logo.png" class="logo">
@@ -28,326 +29,603 @@
       <div class="container-fluid ">
 
         <!--External Applicant-->
-        <div class="external" *ngIf="showExternal">
-          <h5>Please enter your details as an External Applicant</h5>
-          <div class="row">
-            <!--/BPRegister Sindiswa 20062024 removed BP number-->
-            <!--<div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
-                <label for="bpNoApplicant">BP Number</label>
-              </div>
-            </div>-->
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
-                <label for="address">Company Name</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
-                <label for="address">Company Reg No.</label>
-              </div>
-            </div>
-            <div class="col">
+<!--<div class="external" *ngIf="showExternal">
+  <h5>Please enter your details as an External Applicant</h5>
+  <div class="row">-->
+<!--/BPRegister Sindiswa 20062024 removed BP number-->
+<!--<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+    <label for="bpNoApplicant">BP Number</label>
+  </div>
+</div>-->
+<!--<div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
+      <label for="address">Company Name</label>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
+      <label for="address">Company Reg No.</label>
+    </div>
+  </div>
+  <div class="col">
 
-              <mat-form-field>
-                <mat-label>Company Type</mat-label>
-                <mat-select [(ngModel)]="extApplicantCompanyType">
-                  <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
-                  <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
-                  <mat-option value="Unlimited Company">Unlimited Company</mat-option>
-                  <mat-option value="One Person Company (OPC)">One Person Company (OPC)</mat-option>
-                  <mat-option value="Private Company">Private Company</mat-option>
-                  <mat-option value="Public Company">Public Company</mat-option>
-                  <mat-option value="Holding and Subsidiary Company">Holding and Subsidiary Company</mat-option>
-                  <mat-option value="Associate Company">Associate Company</mat-option>
-                  <mat-option value="Company in terms of Access to Capital">Company in terms of Access to Capital</mat-option>
-                  <mat-option value="Government Company">Government Company</mat-option>
-                  <mat-option value="Foreign Company">Foreign Company</mat-option>
-                  <mat-option value="Charitable Company">Charitable Company</mat-option>
-                  <mat-option value="Dormant Company">Dormant Company</mat-option>
-                  <mat-option value="Nidhi Company">Nidhi Company</mat-option>
-                  <mat-option value="Public Financial Institutions">Public Financial Institutions</mat-option>
-                  <mat-option value="Close Corporation(CC)">Close Corporation(CC)</mat-option>
-                </mat-select>
-              </mat-form-field>
+    <mat-form-field>
+      <mat-label>Company Type</mat-label>
+      <mat-select [(ngModel)]="extApplicantCompanyType">
+        <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
+        <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
+        <mat-option value="Unlimited Company">Unlimited Company</mat-option>
+        <mat-option value="One Person Company (OPC)">One Person Company (OPC)</mat-option>
+        <mat-option value="Private Company">Private Company</mat-option>
+        <mat-option value="Public Company">Public Company</mat-option>
+        <mat-option value="Holding and Subsidiary Company">Holding and Subsidiary Company</mat-option>
+        <mat-option value="Associate Company">Associate Company</mat-option>
+        <mat-option value="Company in terms of Access to Capital">Company in terms of Access to Capital</mat-option>
+        <mat-option value="Government Company">Government Company</mat-option>
+        <mat-option value="Foreign Company">Foreign Company</mat-option>
+        <mat-option value="Charitable Company">Charitable Company</mat-option>
+        <mat-option value="Dormant Company">Dormant Company</mat-option>
+        <mat-option value="Nidhi Company">Nidhi Company</mat-option>
+        <mat-option value="Public Financial Institutions">Public Financial Institutions</mat-option>
+        <mat-option value="Close Corporation(CC)">Close Corporation(CC)</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-            </div>
-          </div>
-
-          <!--icasadetails Sindiswa 10 January 2024-->
-
-
-          <div class="row" *ngIf="showTelecommsPrompt">
-            <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
-          </div>
-          <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
-            <!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
-                <label for="extApplicantICASANumber">ICASA Number *</label>
-              </div>
-            </div>
-
-            <!--<div class="col-1 d-flex align-items-center">
-               <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
-             </div>-->
-            <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
-          </div>
-          <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
-            <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
-          </div>-->
-          <!--end of icasadetails Sindiswa 10 January 2024-->
-          <!--  <div class="form-floating mb-3 mt-3">
-            <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
-              <option selected value="0">Select a SubDepartment</option>
-              <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
-            </select>
-          </div>-->
-
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
-                <label for="name">Name *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
-                <label for="surname">Surname *</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No.">
-                <label for="applicantTellNo">Cell No. *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
-                <label for="applicantEmail">Email *</label>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-                <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
-                <label for="applicantTellNo">Physical Address *</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number">
-              <label for="extApplicantIDNumber">Vat Number </label>
-            </div>
-          </div>
-        </div>
-        <!--END-->
-        <!--Internal Applicant-->
-        <div class="internal" *ngIf="showInternal">
-          <h5>Please enter your details as an Internal Applicant</h5>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
-                <label for="name">Name *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
-                <label for="surname">Surname *</label>
-              </div>
-            </div>
-          </div>
-          <!--start of: BPRegister Sindiswa 20062024 added more textboxes-->
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Enter Email" disabled>
-                <label for="applicantEmail">Email *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantAlternativeEmail" name="internalApplicantAlternativeEmail" placeholder="Enter Email" #altEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-                <label for="applicantEmail">Alternative Email *</label>
-                <div *ngIf="altEmail.invalid && (altEmail.dirty || altEmail.touched)" class="text-danger">
-                  <div *ngIf="altEmail.errors?.pattern">
-                    Please enter a valid email address.
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." pattern="^\d{10}$" #telNo="ngModel">
-                <label for="applicantTellNo">Tell No *</label>
-                <div *ngIf="telNo.invalid && (telNo.dirty || telNo.touched)" class="text-danger">
-                  <div *ngIf="telNo.errors?.pattern">
-                    Tell No must be exactly 10 digits.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--end of: BPRegister Sindiswa 20062024 added more textboxes-->
-          <div class="row">
-            <!--start of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone" (change)="onSelectToPopulateDepartment($event)">
-                  <option selected value="0">Select a functional area *</option>
-                  <option *ngFor="let fa of FunctionalAreaDropdown" value="{{fa}}">{{fa}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment">
-                  <option selected value="0">Select a department *</option>
-                  <option *ngFor="let department of DepartmentsDropdown" value="{{department.zoneID}}">{{department.zoneName}}</option>
-                </select>
-              </div>
-            </div>
-            <!--end of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
-            <!--<div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
-                  <option selected value="0">Select a subdepartment *</option>
-                  <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
-                  <option selected value="0">Select a zone *</option>
-                  <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
-                </select>
-              </div>
-            </div>-->
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch">
-                <label for="Branch">Branch *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
-                <label for="applicantTellNo">Cost Center Owner *</label>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
-                <label for="CostCenterNumber">Cost Center Number *</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <!--Why is the PhoneNumberHidden?-->
-              <!--Why is the PhoneNumberHidden?-->
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
-                <label for="applicantTellNo" hidden>Tell No *</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--END-->
-
-      </div>
-      <div class="cont2">
-        <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
-        <div class="cont5">
-          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable">
-          <!-- icasadetails Sindiswa 10 January 2024 - the button enable/disable conditions were added to account for the telecomms company thing-->
-          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantTellNo  || !extApplicantPhyscialAddress ||
-          (isRepresentingTelecommsCompany && !extApplicantICASANumber)">
-            Next
-          </button>
-          <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
-
-        </div>
-      </div>
-    </mat-step>
-    <!--<mat-step label="Engineer Information">
-
-      <div class="container-fluid div">
-        <app-new-egineer></app-new-egineer>-->
-    <!--  <app-view-engineers-table></app-view-engineers-table>-->
-    <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <strong>You have added</strong> "name of engineer"
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>-->
-    <!--</div>
-      <div class="cont2">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
-      </div>
-    </mat-step>
-    <mat-step label="Contractor Information">
-
-      <div class="container-fluid div">
-
-        <app-new-contractor></app-new-contractor>-->
-    <!-- <app-view-contractors-table></app-view-contractors-table>-->
-    <!--</div>
-      <div class="cont2">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
-      </div>
-    </mat-step>-->
-    <mat-step label="Finalize">
-
-      <div class="container-fluid div">
-
-        <h5>All of my details are correct</h5>
-        <div class="row">
-          <button class="save" (click)="onNewProfileCreate()">Save and create new user</button>
-        </div>
-      </div>
-      <div class="cont2">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext disabled>Next</button>
-      </div>
-    </mat-step>
-
-
-
-  </mat-horizontal-stepper>
-
-  <!--Personal Information-->
-  <!--Engineer-->
-  <!--Contractor-->
-  <!--Final-->
-
-
-
-
-
+  </div>
+</div>-->
+<!--icasadetails Sindiswa 10 January 2024-->
+<!--<div class="row" *ngIf="showTelecommsPrompt">
+  <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
+</div>
+<div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">-->
+<!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+<!--<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
+    <label for="extApplicantICASANumber">ICASA Number *</label>
+  </div>
+</div>-->
+<!--<div class="col-1 d-flex align-items-center">
+   <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+ </div>-->
+<!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
+<!--</div>-->
+<!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
+  <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+</div>-->
+<!--end of icasadetails Sindiswa 10 January 2024-->
+<!--  <div class="form-floating mb-3 mt-3">
+  <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+    <option selected value="0">Select a SubDepartment</option>
+    <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+  </select>
+</div>-->
+<!--<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+      <label for="name">Name *</label>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+      <label for="surname">Surname *</label>
+    </div>
+  </div>
 </div>
 
+<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No.">
+      <label for="applicantTellNo">Cell No. *</label>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+      <label for="applicantEmail">Email *</label>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">-->
+<!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+<!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
+        <label for="applicantTellNo">Physical Address *</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number">
+      <label for="extApplicantIDNumber">Vat Number </label>
+    </div>
+  </div>
+</div>-->
+<!--END-->
+<!--Internal Applicant-->
+<!--<div class="internal" *ngIf="showInternal">
+  <h5>Please enter your details as an Internal Applicant</h5>
+  <div class="row">
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+        <label for="name">Name *</label>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+        <label for="surname">Surname *</label>
+      </div>
+    </div>
+  </div>-->
+<!--start of: BPRegister Sindiswa 20062024 added more textboxes-->
+<!--<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Enter Email" disabled>
+      <label for="applicantEmail">Email *</label>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="email" class="form-control" [(ngModel)]="internalApplicantAlternativeEmail" name="internalApplicantAlternativeEmail" placeholder="Enter Email" #altEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+      <label for="applicantEmail">Alternative Email *</label>
+      <div *ngIf="altEmail.invalid && (altEmail.dirty || altEmail.touched)" class="text-danger">
+        <div *ngIf="altEmail.errors?.pattern">
+          Please enter a valid email address.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." pattern="^\d{10}$" #telNo="ngModel">
+      <label for="applicantTellNo">Tell No *</label>
+      <div *ngIf="telNo.invalid && (telNo.dirty || telNo.touched)" class="text-danger">
+        <div *ngIf="telNo.errors?.pattern">
+          Tell No must be exactly 10 digits.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+<!--end of: BPRegister Sindiswa 20062024 added more textboxes-->
+<!--<div class="row">-->
+<!--start of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+<!--<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone" (change)="onSelectToPopulateDepartment($event)">
+      <option selected value="0">Select a functional area *</option>
+      <option *ngFor="let fa of FunctionalAreaDropdown" value="{{fa}}">{{fa}}</option>
+    </select>
+  </div>
+</div>
+<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment">
+      <option selected value="0">Select a department *</option>
+      <option *ngFor="let department of DepartmentsDropdown" value="{{department.zoneID}}">{{department.zoneName}}</option>
+    </select>
+  </div>
+</div>-->
+<!--end of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+<!--<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
+      <option selected value="0">Select a subdepartment *</option>
+      <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
+    </select>
+  </div>
+</div>
+<div class="col">
+  <div class="form-floating mb-3 mt-3">
+    <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
+      <option selected value="0">Select a zone *</option>
+      <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+    </select>
+  </div>
+</div>-->
+<!--</div>
+<div class="row">
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch">
+      <label for="Branch">Branch *</label>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
+      <label for="applicantTellNo">Cost Center Owner *</label>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
+      <label for="CostCenterNumber">Cost Center Number *</label>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">-->
+<!--Why is the PhoneNumberHidden?-->
+<!--Why is the PhoneNumberHidden?-->
+<!--<div class="form-floating mb-3 mt-3">
+        <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
+        <label for="applicantTellNo" hidden>Tell No *</label>
+      </div>
+    </div>
+  </div>
+</div>-->
+<!--END-->
+<!--</div>
+<div class="cont2">
+  <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
+  <div class="cont5">
+    <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable">-->
+<!-- icasadetails Sindiswa 10 January 2024 - the button enable/disable conditions were added to account for the telecomms company thing-->
+<!--<button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantTellNo  || !extApplicantPhyscialAddress ||
+          (isRepresentingTelecommsCompany && !extApplicantICASANumber)">
+      Next
+    </button>
+    <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
+
+  </div>
+</div>
+    </mat-step>-->
+<!--<mat-step label="Engineer Information">
+
+  <div class="container-fluid div">
+    <app-new-egineer></app-new-egineer>-->
+<!--  <app-view-engineers-table></app-view-engineers-table>-->
+<!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>You have added</strong> "name of engineer"
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>-->
+<!--</div>
+  <div class="cont2">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+    <button mat-raised-button color="primary" matStepperNext>Next</button>
+  </div>
+</mat-step>
+<mat-step label="Contractor Information">
+
+  <div class="container-fluid div">
+
+    <app-new-contractor></app-new-contractor>-->
+<!-- <app-view-contractors-table></app-view-contractors-table>-->
+<!--</div>
+  <div class="cont2">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+    <button mat-raised-button color="primary" matStepperNext>Next</button>
+  </div>
+</mat-step>-->
+<!--<mat-step label="Finalize">
+
+  <div class="container-fluid div">
+
+    <h5>All of my details are correct</h5>
+    <div class="row">
+      <button class="save" (click)="onNewProfileCreate()">Save and create new user</button>
+    </div>
+  </div>
+  <div class="cont2">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+    <button mat-raised-button color="primary" matStepperNext disabled>Next</button>
+  </div>
+</mat-step>
+
+
+
+  </mat-horizontal-stepper>-->
+<!--Personal Information-->
+<!--Engineer-->
+<!--Contractor-->
+<!--Final-->
+<!--</div>
+-->
+-->
+<!-- #endregion -->
+
+<ng-template #newUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Completing Your New User Profile</h4>
+    <button mat-raised-button color="warn" (click)="modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/x.svg" class="icon4 white"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="container-fluid ">
+      <div class="cont50">
+        <div class="user">
+          <div alt="me" class="userIMG2">
+            <p class="dp">{{dp}}</p>
+          </div>
+        </div>
+      </div>
+      <h5 *ngIf="showExternal">Please complete your profile {{extApplicantName}} (External User)</h5>
+      <h5 *ngIf="showInternal">Please complete your profile {{internalApplicantName}} (Internal User)</h5>
+      <!--External Applicant-->
+      <div class="external" *ngIf="showExternal">
+
+
+        <div class="row">
+
+
+
+          <div class="col">
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No.">
+              <label for="applicantTellNo">Cell No. *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email *</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+              <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
+              <label for="applicantTellNo">Physical Address *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number">
+            <label for="extApplicantIDNumber">Vat Number </label>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+          <!--/BPRegister Sindiswa 20062024 removed BP number-->
+          <!--<div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+        <label for="bpNoApplicant">BP Number</label>
+      </div>
+    </div>-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
+              <label for="address">Company Name</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
+              <label for="address">Company Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+
+            <mat-form-field>
+              <mat-label>Company Type</mat-label>
+              <mat-select [(ngModel)]="extApplicantCompanyType">
+                <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
+                <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
+                <mat-option value="Unlimited Company">Unlimited Company</mat-option>
+                <mat-option value="One Person Company (OPC)">One Person Company (OPC)</mat-option>
+                <mat-option value="Private Company">Private Company</mat-option>
+                <mat-option value="Public Company">Public Company</mat-option>
+                <mat-option value="Holding and Subsidiary Company">Holding and Subsidiary Company</mat-option>
+                <mat-option value="Associate Company">Associate Company</mat-option>
+                <mat-option value="Company in terms of Access to Capital">Company in terms of Access to Capital</mat-option>
+                <mat-option value="Government Company">Government Company</mat-option>
+                <mat-option value="Foreign Company">Foreign Company</mat-option>
+                <mat-option value="Charitable Company">Charitable Company</mat-option>
+                <mat-option value="Dormant Company">Dormant Company</mat-option>
+                <mat-option value="Nidhi Company">Nidhi Company</mat-option>
+                <mat-option value="Public Financial Institutions">Public Financial Institutions</mat-option>
+                <mat-option value="Close Corporation(CC)">Close Corporation(CC)</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+        </div>
+
+        <!--icasadetails Sindiswa 10 January 2024-->
+
+
+        <div class="row" *ngIf="showTelecommsPrompt">
+          <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
+        </div>
+        <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
+          <!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
+              <label for="extApplicantICASANumber">ICASA Number *</label>
+            </div>
+          </div>
+
+          <!--<div class="col-1 d-flex align-items-center">
+      <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+    </div>-->
+          <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
+        </div>
+        <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
+    <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+  </div>-->
+        <!--end of icasadetails Sindiswa 10 January 2024-->
+        <!--  <div class="form-floating mb-3 mt-3">
+    <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+      <option selected value="0">Select a SubDepartment</option>
+      <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+    </select>
+  </div>-->
+
+      </div>
+      <!--END-->
+      <!--Internal Applicant-->
+      <div class="internal" *ngIf="showInternal">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname *</label>
+            </div>
+          </div>
+        </div>
+        <!--start of: BPRegister Sindiswa 20062024 added more textboxes-->
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="internalApplicantAlternativeEmail" name="internalApplicantAlternativeEmail" placeholder="Enter Email" #altEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+              <label for="applicantEmail">Alternative Email *</label>
+              <div *ngIf="altEmail.invalid && (altEmail.dirty || altEmail.touched)" class="text-danger">
+                <div *ngIf="altEmail.errors?.pattern">
+                  Please enter a valid email address.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." pattern="^\d{10}$" #telNo="ngModel">
+              <label for="applicantTellNo">Tell No *</label>
+              <div *ngIf="telNo.invalid && (telNo.dirty || telNo.touched)" class="text-danger">
+                <div *ngIf="telNo.errors?.pattern">
+                  Tell No must be exactly 10 digits.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end of: BPRegister Sindiswa 20062024 added more textboxes-->
+        <div class="row">
+          <!--start of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone" (change)="onSelectToPopulateDepartment($event)">
+                <option selected value="0">Select a functional area *</option>
+                <option *ngFor="let fa of FunctionalAreaDropdown" value="{{fa}}">{{fa}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment">
+                <option selected value="0">Select a department *</option>
+                <option *ngFor="let department of DepartmentsDropdown" value="{{department.zoneID}}">{{department.zoneName}}</option>
+              </select>
+            </div>
+          </div>
+          <!--end of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+          <!--<div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
+            <option selected value="0">Select a subdepartment *</option>
+            <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
+            <option selected value="0">Select a zone *</option>
+            <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+          </select>
+        </div>
+      </div>-->
+        </div>
+        >
+
+        iv
+        <div class="row">
+          la
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch">
+              <label for="Branch">Branch *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
+              <label for="applicantTellNo">Cost Center Owner *</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
+              <label for="CostCenterNumber">Cost Center Number *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <!--Why is the PhoneNumberHidden?-->
+            <!--Why is the PhoneNumberHidden?-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
+              <label for="applicantTellNo" hidden>Tell No *</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--END-->
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success"  (click)="onNewProfileCreate()">Save</button>
+  </div>
+</ng-template>
 

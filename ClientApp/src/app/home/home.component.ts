@@ -567,15 +567,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   readonly northeast = { lat: -29.469492, lng: 30.602760 };
   readonly northwest = { lat: -29.469492, lng: 30.169144 };
 
-  readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object
-  options = {
+ /* readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object*/
+/*  options = {
     types: [],
     componentRestrictions: {
       country: 'ZA',
     },
     disableDoubleClickZoom: true,
     bounds: this.bounds, // Set the bounds property - doesn't seem to be working
-  } as unknown as Options;
+  } as unknown as Options;*/
 
   openAddArchitect(addArchitect: any) {
     this.modalService.open(addArchitect, {
@@ -724,6 +724,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (this.routerSubscription) {
         this.routerSubscription.unsubscribe();
       }*/
+    this.isLoading = true;
     this.selectedTabIndex = 8;
       this.sharedService.setShowFormerApps(true);
       this.sharedService.setFromReApplyArchive(false);
@@ -7093,7 +7094,7 @@ this.subscriptions.push(subscription);
   GetAllPreInvoiceScrutinyApplications() {
     
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
-    this.bpApplicationService.getAllPreInvoiceScrutinyApplications().subscribe((data: any) => {
+    this.bpApplicationService.getAllLSApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
         
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -7147,8 +7148,8 @@ this.subscriptions.push(subscription);
       else {
         alert(data.responseMessage);
       }
-      console.log("Building Applications", this.dataSourceBP);
-      console.log("Building Applications", data);
+      console.log("Pre-scrutiny Applications", this.dataSourceBP);
+      console.log("Pre-scrutiny Applications", data);
     }, error => {
       console.log("Error: ", error);
     })
@@ -7343,7 +7344,7 @@ this.subscriptions.push(subscription);
         this.dataSourceBP = this.AllApplications;
         this.dataSourceSA = this.AllApplications;
 
-       
+        this.isLoading = false;
         
        
       }

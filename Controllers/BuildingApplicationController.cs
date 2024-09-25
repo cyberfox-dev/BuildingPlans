@@ -828,6 +828,7 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        BPApplicationType = buildingApplication.BPApplicationType,
                     }
                     ).ToListAsync();
 

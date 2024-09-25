@@ -69,6 +69,45 @@ h3 {
   color: white;
   animation: card-fade 2s ease 1 normal;
 }
+.dp {
+  margin-top: 15px !important;
+  font-weight: bolder;
+  font-size: 25px;
+  margin-left: 12px !important;
+  width: 28px;
+  font-family: 'Nunito';
+  color: #3e3e3e;
+}
+.userIMG2 {
+
+  -webkit-backdrop-filter: blur(1px);
+
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+
+  margin-bottom: -11px;
+  background: #4393d78a;
+
+  scale: 1.6;
+  box-shadow: inset 0px 0px 3px 1px #00000026;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  margin: 0 auto;
+}
+.white{
+    filter:invert(1);
+}
+h4 {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: bolder;
+  font-display: swap;
+  font-size: 30px;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 
 h5 {
   margin-top: 50px;

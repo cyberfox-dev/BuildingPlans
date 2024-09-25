@@ -167,6 +167,7 @@ export class NewProfileComponent implements OnInit {
   selection = new SelectionModel<UserZoneList>(true, []);
     subDepartmentID: any;
     departmentID: any;
+    dp="";
 
   constructor(private modalService: NgbModal,
     private shared: SharedService,
@@ -215,7 +216,25 @@ export class NewProfileComponent implements OnInit {
    
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    
+    const fullName = this.CurrentUser.fullName;
+
+    // Find the index of the first space
+    const firstSpaceIndex = fullName.indexOf(' ');
+
+    // Get the first name using substring
+    const firstName = fullName.substring(0, firstSpaceIndex);
+
+    // Find the index of the last space
+    const lastSpaceIndex = fullName.lastIndexOf(' ');
+
+    // Get the last name using substring
+    const lastName = fullName.substring(lastSpaceIndex + 1);
+
+    // Get initials
+    const initials = firstName.charAt(0) + lastName.charAt(0);
+
+    // Store initials in variable dp
+    this.dp = initials.toUpperCase(); // Optionally convert to uppercase
     const fullname = this.CurrentUser.fullName;
     this.internalApplicantDepartment = "0";
     this.selectedZone = "0";
@@ -975,5 +994,10 @@ export class NewProfileComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
- 
+
+
+  openNewUser(newUser: any) {
+    this.modalService.open(newUser, { centered: true, size: 'xl', backdrop: 'static' });
+  }
+
 }

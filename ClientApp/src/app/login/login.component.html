@@ -14,8 +14,8 @@
 
   <div class="splash flex" id="splashlogo">
     <div class="container2">
-      <img src="assets/building plans dark mode.png" class="logo">
-      <h3>Welcome to the Engage Development Services System</h3>
+      <img src="assets/building plans dark mode2.png" class="logo">
+      <h3>Engage Development Services System</h3>
 
     </div>
   </div>
@@ -42,11 +42,14 @@
             </div>-->
 
             <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+  
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
-            <!--Be sure to remove this paragraph when the app is finalized!!-->
-            <p>{{otp}}</p>
-          </form>
+            <app-new-profile *ngIf="otpValid"></app-new-profile>
+
+              <!--Be sure to remove this paragraph when the app is finalized!!-->
+              <p>{{otp}}</p>
+</form>
         </div>
         <div class="form-container sign-in-container">
           <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
@@ -126,6 +129,155 @@
 </ng-template>
 
 
+<ng-template #newUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating Your New User Profile</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismissAll();modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid ">
+
+      <!--External Applicant-->
+      <div class="external" >
+        <h5>Please enter your details as an External Applicant</h5>
+        <div class="row">
+          <!--/BPRegister Sindiswa 20062024 removed BP number-->
+          <!--<div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+            <label for="bpNoApplicant">BP Number</label>
+          </div>
+        </div>-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
+              <label for="address">Company Name</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
+              <label for="address">Company Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+
+            <mat-form-field>
+              <mat-label>Company Type</mat-label>
+              <mat-select [(ngModel)]="extApplicantCompanyType">
+                <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
+                <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
+                <mat-option value="Unlimited Company">Unlimited Company</mat-option>
+                <mat-option value="One Person Company (OPC)">One Person Company (OPC)</mat-option>
+                <mat-option value="Private Company">Private Company</mat-option>
+                <mat-option value="Public Company">Public Company</mat-option>
+                <mat-option value="Holding and Subsidiary Company">Holding and Subsidiary Company</mat-option>
+                <mat-option value="Associate Company">Associate Company</mat-option>
+                <mat-option value="Company in terms of Access to Capital">Company in terms of Access to Capital</mat-option>
+                <mat-option value="Government Company">Government Company</mat-option>
+                <mat-option value="Foreign Company">Foreign Company</mat-option>
+                <mat-option value="Charitable Company">Charitable Company</mat-option>
+                <mat-option value="Dormant Company">Dormant Company</mat-option>
+                <mat-option value="Nidhi Company">Nidhi Company</mat-option>
+                <mat-option value="Public Financial Institutions">Public Financial Institutions</mat-option>
+                <mat-option value="Close Corporation(CC)">Close Corporation(CC)</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+        </div>
+
+        <!--icasadetails Sindiswa 10 January 2024-->
+
+
+        <div class="row" *ngIf="showTelecommsPrompt">
+          <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
+        </div>
+        <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
+          <!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
+              <label for="extApplicantICASANumber">ICASA Number *</label>
+            </div>
+          </div>
+
+          <!--<div class="col-1 d-flex align-items-center">
+           <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+         </div>-->
+          <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
+        </div>
+        <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
+        <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+      </div>-->
+        <!--end of icasadetails Sindiswa 10 January 2024-->
+        <!--  <div class="form-floating mb-3 mt-3">
+        <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+          <option selected value="0">Select a SubDepartment</option>
+          <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+        </select>
+      </div>-->
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No.">
+              <label for="applicantTellNo">Cell No. *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email *</label>
+            </div>
+          </div>
+        </div>
+
+
+        <!--<div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">-->
+              <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+              <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
+              <label for="applicantTellNo">Physical Address *</label>
+            </div>
+          </div>
+        </div>-->
+        <div class="row">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number">
+            <label for="extApplicantIDNumber">Vat Number </label>
+          </div>
+        </div>
+      </div>
+      <!--END-->
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="changePassword()">Save</button>
+  </div>
+</ng-template>
+
 
 <ng-template #newPasswordModal let-modal>
   <div class="modal-header">
@@ -160,11 +312,32 @@
 <!--<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
   <img src="assets/Loading.png" alt="" class="logo2">
 </div>-->
-<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen" [class.dafeOu]="!isLoading">
   <!--<img src="assets/Loading.png" alt="" class="logo2">
   Need to have an BP relevant loading shandis-->
-  <div class="shapes-5"></div>
-
+  <div class="loader">
+    <div class="box box-1">
+      <div class="side-left"></div>
+      <div class="side-right"></div>
+      <div class="side-top"></div>
+    </div>
+    <div class="box box-2">
+      <div class="side-left"></div>
+      <div class="side-right"></div>
+      <div class="side-top"></div>
+    </div>
+    <div class="box box-3">
+      <div class="side-left"></div>
+      <div class="side-right"></div>
+      <div class="side-top"></div>
+    </div>
+    <div class="box box-4">
+      <div class="side-left"></div>
+      <div class="side-right"></div>
+      <div class="side-top"></div>
+    </div>
+  </div>
+  <h4>Loading.</h4>
 </div>
 
 <div class="loading2" id="maintenanceMode" *ngIf="isMaintenanceMode">
