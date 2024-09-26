@@ -807,7 +807,7 @@ h4 {
   animation: fade-in-top 0.5s ease-out;
 }
 .animationFadeInRightToLeft {
-  animation: fade-in-rightToLeft 1s ease-out;
+  animation: fade-in-rightToLeft 0.7s ease-out;
 }
 
 @keyframes fade-in-bottom {
@@ -845,13 +845,8 @@ h4 {
 
 @keyframes fade-in-rightToLeft {
   0% {
-    opacity: 1;
-    transform: translateX(20px); /* Optional: Add a slide-up effect */
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateX(-5px);
+    opacity: 0;
+    transform: translateX(-40px); /* Optional: Add a slide-up effect */
   }
   100% {
     opacity: 1;

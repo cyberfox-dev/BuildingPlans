@@ -340,11 +340,11 @@ body {
   min-width: 240px !important;
   /* padding: 0; */
   min-height: 3px !important;
-  position: absolute;
+
   background: #cee2cc00;
   color: #137000;
   box-shadow: none;
-  right: 31px;
+
 }
 
 .red-snackbar {
@@ -726,3 +726,18 @@ li .tooltip{
 
 
 
+.dafeOu {
+  animation: fade-in-rightToLeft 3s ease-out;
+}
+
+@keyframes fade-in-rightToLeft {
+  0% {
+    opacity: 1;
+    
+  }
+
+  100% {
+    opacity: 0;
+
+  }
+}

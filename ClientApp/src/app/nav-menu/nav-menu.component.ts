@@ -166,6 +166,8 @@ export class NavMenuComponent implements OnInit {
   lastUploadEvent: any;
     public InternalExternalUser: boolean = false;
     dp: any;
+    devConfig: boolean = false;
+    Config: boolean = false;
 
   constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
 
@@ -1350,6 +1352,12 @@ export class NavMenuComponent implements OnInit {
       const roleName = this.AllCurrentUserRoles[i].roleName;
       if (roleName === "Audit Trail") {
         this.Reports = true;
+      }
+      if (roleName === 'Dev') {
+        this.devConfig = true;
+      }
+      if (roleName === 'Admin') {
+        this.Config = true;
       }
     }
   }

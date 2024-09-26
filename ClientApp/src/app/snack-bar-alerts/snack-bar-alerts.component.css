@@ -32,9 +32,9 @@
 .container {
   display: flex;
   width:100%;
-  justify-content: end;
-  align-items: end;
-  right:0;
+  justify-content: center;
+  align-items: center;
+
   position:static;
 }
 
@@ -49,8 +49,8 @@
   border-radius: 50%;
   opacity: 0;
   overflow: hidden;
-  background: #cee2cc;
-  color: #137000;
+  background: #a0ea98;
+  color: black;
   animation: scale-in .3s ease-out forwards, expand .35s .25s ease-out forwards;
 }
 .BadCase {
@@ -65,7 +65,7 @@
   opacity: 0;
   overflow: hidden;
   background: #e2cccc;
-  color: #700000;
+  color: black;
   animation: scale-in .3s ease-out forwards, expand .35s .25s ease-out forwards;
 }
 

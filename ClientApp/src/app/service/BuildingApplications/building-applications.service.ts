@@ -127,6 +127,9 @@ export class BuildingApplicationsService {
   public getAllApplications() {
     return this.httpClient.get(this.baseURL + "GetAllApplications");
   }
+  public getAllLSApplications() {
+    return this.httpClient.get(this.baseURL + "GetAllLSApplications");
+  }
   public getAllPreInvoiceScrutinyApplications() {
     return this.httpClient.get(this.baseURL + "GetAllPreInvoiceScrutinyApplications");
   }

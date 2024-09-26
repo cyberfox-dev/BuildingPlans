@@ -11,10 +11,10 @@
 
     <mat-step>
       <form>
-        <ng-template matStepLabel>Owner Details</ng-template>
+        <ng-template matStepLabel>Architect Details</ng-template>
         <div class="detials">
           <div class="card">
-            <h3><span>Property Owner details</span></h3>
+            <h3><span>Architect details</span></h3>
           </div>
         </div>
 
@@ -22,13 +22,13 @@
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientName" name="name" placeholder="Owner First Name">
-              <label for="name">Owner First Name *</label>
+              <label for="name">First Name</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientSurname" name="surname" placeholder="Owner Surname">
-              <label for="surname">Owner Surname *</label>
+              <label for="surname">Surname</label>
             </div>
           </div>
         </div>
@@ -36,13 +36,13 @@
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientEmail" name="emailAddress" placeholder="Enter Email Address">
-              <label for="emailAddress">Email Address * </label>
+              <label for="emailAddress">Email Address</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientCell" name="cellNumber" placeholder="Enter Cell Number">
-              <label for="cellNumber">Cell Number *</label>
+              <label for="cellNumber">Cell Number</label>
             </div>
           </div>
         </div>
@@ -51,22 +51,30 @@
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientAltEmail" name="altEmail" placeholder="Enter alternate email address">
-              <label for="=altEmail"> Alternate Email Address  </label>
+              <label for="=altEmail">Alternate Email Address</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientAltCell" name="clientAltCell" placeholder="Enter alternate Cell Number">
-              <label for="altCellNo"> Alternate Cell Number </label>
+              <label for="altCellNo">Alternate Cell Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="regNo" name=" regNo" placeholder="Reg Number">
+              <label for="regNo"> Architect Registration Number</label>
             </div>
           </div>
         </div>
         <!--        <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
-                <label for="=iDNumber"> ID Number *  </label>
-              </div>
-            </div>-->
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
+          <label for="=iDNumber"> ID Number *  </label>
+        </div>
+      </div>-->
 
 
 
@@ -164,19 +172,19 @@
     </mat-step>
 
     <!----------------------------------------------Architect Details ------------------------------------------------->
-    <mat-step label="Architect Details">
+    <mat-step label="Client Details">
 
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]=" architectName" name=" architectName" placeholder=" Architect Name">
-            <label for=" architectName"> Architect Full Name</label>
+            <label for=" architectName"> Full Name</label>
           </div>
         </div>
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email">
-            <label for="architectEmail">Architect Email Address</label>
+            <label for="architectEmail">Email Address</label>
           </div>
         </div>
       </div>
@@ -185,25 +193,18 @@
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="architectCell" name=" architectCell" placeholder=" Architect Cell">
-            <label for=" architectCell"> Architect Cellphone Number</label>
+            <label for=" architectCell"> Cellphone Number</label>
           </div>
         </div>
-        <div class="col">
+<!--        <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="architectID" name="architectID" placeholder="Architect ID">
-            <label for="architectID">Architect ID Number</label>
+            <label for="architectID">ID Number</label>
           </div>
-        </div>
+        </div>-->
       </div>
 
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="regNo" name=" regNo" placeholder="Reg Number">
-            <label for="regNo"> Architect Registration Number</label>
-          </div>
-        </div>
-      </div>
+
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>

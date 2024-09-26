@@ -46,7 +46,7 @@
         </div>
         <div class="down">
         <div class="Map ">
-          <mat-tab-group *ngIf="showMap" dynamicHeight>
+          <mat-tab-group *ngIf="showMap" >
 
             <mat-tab label="Map Details">
               <google-map height="230px"
@@ -135,8 +135,8 @@
                       <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
 
                       <!-- projectTracker Sindiswa 12 January 2024 -->
-                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'LS Admin Assigned A Reviewer'" />
-                      <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
+                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'" />
+                      <p class="" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'">Under Review</p>
                       <!-- projectTracker Sindiswa 12 January 2024 -->
                     </div>
                   </td>
@@ -156,7 +156,7 @@
               </table>
             </mat-tab>
             <mat-tab label="Flow">
-              <p class="">This {{bpApplicationType}} application is Currently at a {{currentStage}} stage.</p>
+
               <div class="container">
                 <div class="progress">
                   <div class="percent" [style.width]="(currentStageNumber / totalStages) * 100 + '%'"></div>
@@ -171,7 +171,7 @@
                 </div>
               </div>
 
-
+              <p class="currentStageText">This {{bpApplicationType}} application is Currently at a {{currentStage}} stage.</p>
             </mat-tab>
           </mat-tab-group>
 
@@ -193,39 +193,17 @@
               <div class="generalcomments">
 
                 <div *ngFor="let comment of CommentsList ; let i = index">
-                  <div *ngIf="comment.CommentStatus !='Internal Comment' && comment.CommentStatus !='Note'">
+                  <div *ngIf="comment.CommentStatus === 'Clarify'">
                     <div *ngIf="CommentsList.length === 0">
                       <h5>No comments have been made yet.</h5>
                     </div>
-                    <div [class.cardApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer'|| comment.CommentStatus == 'Reviewer Assigned' || comment.CommentStatus =='New Reviewer Assigned'" [class.cardRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation' || comment.CommentStatus == 'TP Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
-
-                      <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Approved' || comment.CommentStatus == 'LS Approved' || comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'LS Admin Assigned A Reviewer' || comment.CommentStatus =='Town Planner Approved'">
-                        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
-                      </div>
-
-                      <div class="icon-containerApprove" *ngIf="comment.CommentStatus == 'Reviewer Assigned'">
-                        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/.svg" class="icon">
-                      </div>
-
-                      <div class="icon-containerApprove " *ngIf="comment.CommentStatus == 'Internal Comment'">
-                        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg" class="icon">
-                      </div>
-
-                      <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'TP Relaxation'">
-                        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
-                      </div>
-
+                    <div  [class.cardClarify]="comment.CommentStatus === 'Clarify'">
                       <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
                       </div>
-
-                      <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
-                        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
-                      </div>
                       <div class="message-text-container">
-
                         <div class="messageHead">
-                          <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved' || comment.CommentStatus == 'LS Approved'|| comment.CommentStatus == 'TP Approved' || comment.CommentStatus == 'Assigned To A New Reviewer' || comment.CommentStatus == 'Reviewer Assigned' || comment.CommentStatus =='Town Planner Approved'" [class.message-textRelaxation]="comment.CommentStatus == 'Relaxation Requested' || comment.CommentStatus == 'Relaxation' || comment.CommentStatus == 'LS Relaxation'|| comment.CommentStatus == 'TP Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                          <h1  [class.message-textClarify]="comment.CommentStatus === 'Clarify'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
                           <p>{{comment.DateCreated}}</p>
                         </div>
                         <div class="messageFoot">
@@ -301,7 +279,7 @@
         </div>
 
         <div class="Documents ">
-          <mat-tab-group dynamicHeight>
+          <mat-tab-group >
 
             <mat-tab label="Documents">
               <app-documents-component></app-documents-component>
@@ -561,10 +539,34 @@
 
 
 
-<div class="loading-screen" *ngIf="isLoading" id="loadingScreen" [class.fade-out]="!isLoading">
-  <!--<img src="assets/Loading.png" alt="" class="logo2">
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen" [class.dafeOu]="!isLoading">
+
+    <!--<img src="assets/Loading.png" alt="" class="logo2">
   Need to have an BP relevant loading shandis-->
-  <div class="shapes-5"></div>
+    <div class="loader">
+      <div class="box box-1">
+        <div class="side-left"></div>
+        <div class="side-right"></div>
+        <div class="side-top"></div>
+      </div>
+      <div class="box box-2">
+        <div class="side-left"></div>
+        <div class="side-right"></div>
+        <div class="side-top"></div>
+      </div>
+      <div class="box box-3">
+        <div class="side-left"></div>
+        <div class="side-right"></div>
+        <div class="side-top"></div>
+      </div>
+      <div class="box box-4">
+        <div class="side-left"></div>
+        <div class="side-right"></div>
+        <div class="side-top"></div>
+      </div>
+    </div>
+    <h4>Loading.</h4>
+  
 
 </div>
 
