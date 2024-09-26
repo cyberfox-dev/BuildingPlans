@@ -567,15 +567,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   readonly northeast = { lat: -29.469492, lng: 30.602760 };
   readonly northwest = { lat: -29.469492, lng: 30.169144 };
 
-  readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object
-  options = {
-    types: [],
-    componentRestrictions: {
-      country: 'ZA',
-    },
-    disableDoubleClickZoom: true,
-    bounds: this.bounds, // Set the bounds property - doesn't seem to be working
-  } as unknown as Options;
+  options: any;
+  //readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object
+  //options = {
+  //  types: [],
+  //  componentRestrictions: {
+  //    country: 'ZA',
+  //  },
+  //  disableDoubleClickZoom: true,
+  //  bounds: this.bounds, // Set the bounds property - doesn't seem to be working
+  //} as unknown as Options;
 
   openAddArchitect(addArchitect: any) {
     this.modalService.open(addArchitect, {

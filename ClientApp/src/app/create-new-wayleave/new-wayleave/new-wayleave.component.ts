@@ -5880,7 +5880,7 @@ export class NewWayleaveComponent implements OnInit {
     else if (this.client && this.option == "client") {
       //internal creating for external
       debugger;
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientAlternativeEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.physicalAddressOfProject, this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, this.clientUserID, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientAlternativeEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.physicalAddressOfProject, this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           this.SavedProjectSizeSelections();

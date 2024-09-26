@@ -13,16 +13,16 @@ mat-sidenav-content {
 mat-form-field {
   width: 100%;
 }
-.applicantActions{
-    display:flex;
-}
-.mat-applicantBTN {
-  background-color: #ff6e40;
+.applicantActions{ background-color: #ff6e40;
   color: #fff;
   width: 100%;
   height: 60px;
   /* margin: 20px; */
   border-radius: 10px;
+    display:flex;
+}
+.mat-applicantBTN {
+ 
 }
 .mat-saveDoc {
   background-color: #446414;

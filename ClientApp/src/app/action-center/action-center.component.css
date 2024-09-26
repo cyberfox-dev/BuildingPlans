@@ -67,13 +67,11 @@ table {
   justify-content: space-around;
 }
 .mat-createWayleave {
-  margin-top: 34px;
-  margin-bottom: 80px;
-  background: #d57d38;
-  color: #ccdee2;
+  background: #ff6e40;
   width: 188px;
   height: 60px;
-  margin-left: 91px;
+  border-radius: 10px;
+  color: white;
 }
 
   .mat-createWayleave:hover {
@@ -534,9 +532,10 @@ mat-column-zoneName {
   cursor:pointer;
 }
 .mat-relaxationBTN {
-  background-color: #24a2bd;
+  background-color: #ff6e40;
   color: #fff;
   width: 100%;
-  height: 40px;
-  margin: 20px;
+  height: 60px;
+  /* margin: 20px; */
+  border-radius: 10px;
 }

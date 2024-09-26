@@ -50,6 +50,7 @@ import { AuditTrailService } from '../../service/AuditTrail/audit-trail.service'
 import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 01 March 2024
 import { ZXNumberService } from '../../service/ZXNumber/zxnumber.service';
 import { BpDepartmentsService } from '../../service/BPDepartments/bp-departments.service';
+import { BPCommentsService } from '../../service/BPComments/bpcomments.service';
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -370,7 +371,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   applicationDataForView: ApplicationList[] = [];
-  StagesList: StagesList[] = [];
+  StagesForApplication: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
   SubDepCommentsForSpecialConditions: SubDepCommentsForSpecialConditions[] = [];
@@ -537,7 +538,8 @@ export class ViewProjectInfoComponent implements OnInit {
     //Audit Trail Kyle
     /*zxNumberUpdate Sindiswa 01 March 2024*/private departmentService: DepartmentsService,
     /*zxNumberUpdate Sindiswa 01 March 2024*/private zxNumberService: ZXNumberService,
-    private professionalsService: ProfessionalService
+    private professionalsService: ProfessionalService,
+    private bpCommentsService: BPCommentsService,
   ) { }
 
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
@@ -649,6 +651,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllFinancials();
     this.getAllSubDepartmentForComments();
     this.getCurrentApplicationInfo();
+    this.getAllStages();
+    this.getEngineerAndContractorInfo();
     //#endregion
   }
   // #region reapply Sindiswa 26 January 2024
@@ -674,7 +678,7 @@ export class ViewProjectInfoComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i ++ ) {
           const current = data.dateSet[i];
           const tempComment = {} as CommentsList;
-
+          
           tempComment.CommentID = current.commentID;
           tempComment.CommentStatus = current.commentStatus;
           tempComment.Comment = current.comment;
@@ -716,6 +720,12 @@ export class ViewProjectInfoComponent implements OnInit {
   Coordinates: any;
   natureOfWork: string;
   projectNumber: string;
+  currentStage: string;
+  currentStageNumber: number;
+  totalStages: number = 1;
+  leaveAComment = '';
+  ActionCenter: boolean;
+
   getCurrentApplicationInfo(){
     this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -732,6 +742,8 @@ export class ViewProjectInfoComponent implements OnInit {
         this.userID = current.userID;
         this.typeOfExcavation = current.excavationType;
         this.natureOfWork = current.natureOfWork;
+        this.currentStage = current.stage;
+        this.currentStageNumber = current.stageNumber;
         debugger;
         if (current.projectNumber == null || current.projectNumber == '') {
           this.projectNumber = this.ApplicationID.toString();
@@ -774,21 +786,53 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getEngineerAndContractorInfo() {
-    
-  }
+    this.professionalsService.getAllProfessionalsLinkByApplicationID(this.ApplicationID,"Engineer").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
 
+        this.EngineerName = current.fullName;
+        this.EngineerEmail = current.email;
+        this.EngineerCell = current.phoneNumber;
+      }
+      else {
+        console.log("Contractor Error", data.responseMessage);
+      }
+    }, error => {
+      console.log("Contractor Error", error);
+    })
+
+    this.professionalsService.getAllProfessionalsLinkByApplicationID(this.ApplicationID, "Contractor").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.contractorName = current.fullName;
+        this.contractorEmail = current.email;
+        this.contractorCell = current.phoneNumber;
+      }
+    })
+  }
+  documentPacks: DocumentsList[] = [];
   getAllDocuments() {
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempDoc = {} as DocumentsList;
+          if (current.createdById != "System Generated Pack") {
+            tempDoc.DocumentID = current.documentID;
+            tempDoc.DocumentName = current.documentName;
+            tempDoc.DocumentLocalPath = current.documentLocalPath;
 
-          tempDoc.DocumentID = current.documentID;
-          tempDoc.DocumentName = current.documentName;
-          tempDoc.DocumentLocalPath = current.documentLocalPath;
+            this.DocumentsList.push(tempDoc);
+          }
+          else {
+            tempDoc.DocumentID = current.documentID;
+            tempDoc.DocumentName = current.documentName;
+            tempDoc.DocumentLocalPath = current.documentLocalPath;
 
-          this.DocumentsList.push(tempDoc);
+            this.documentPacks.push(tempDoc);
+          }
+        
         }
       }
       else {
@@ -884,6 +928,153 @@ export class ViewProjectInfoComponent implements OnInit {
     }, error => {
       console.log("Contractor", error);
     })
+  }
+
+  ExpandDocuments: boolean = false;
+  ExpandPropertyOwnerDetails: boolean = false;
+  ExpandContractorDetails: boolean = false;
+  ExpandEngineerDetails: boolean = false;
+  ExpandTrackerInfo: boolean = false;
+  ExpandComments: boolean = false;
+  showMap: boolean = true;
+  isLoading: boolean;
+  isSystemPacks: boolean = true;
+
+  openExpand(cardName: any, expand: any) {
+    debugger;
+    if (cardName == 'POD') {
+      this.ExpandPropertyOwnerDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Engineer') {
+      this.ExpandEngineerDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Contractor') {
+      this.ExpandContractorDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Tracker') {
+      this.ExpandTrackerInfo = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Comments') {
+      this.ExpandComments = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else if (cardName == 'Documents') {
+      this.ExpandDocuments = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+  }
+  closeExpanded() {
+    this.ExpandPropertyOwnerDetails = false;
+    this.ExpandComments = false;
+    this.ExpandDocuments = false;
+    this.ExpandTrackerInfo = false;
+    this.ExpandContractorDetails = false;
+    this.ExpandEngineerDetails = false;
+  }
+
+  getAllStages() {
+    this.StagesForApplication.splice(0, this.StagesForApplication.length);
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempStage = {} as StagesList;
+
+          tempStage.StageID = current.stageID;
+          tempStage.StageName = current.stageName;
+          tempStage.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesForApplication.push(tempStage);
+        }
+      }
+      else {
+        console.log("StageList Error", data.responseMessage);
+      }
+    }, error => {
+      console.log("StageList Error", error);
+    })
+  }
+
+  openInternalComment(newInternalComment: any) {
+    this.modalService.open(newInternalComment, { centered: true, size: 'xl' });
+  }
+  openNote(newNote: any) {
+    this.modalService.open(newNote, { centered: true, size: 'xl' });
+  }
+  functionalArea = "Wayleave";
+  saveNewNote() {
+    this.commentsService.addUpdateComment(0, this.ApplicationID, null, null, null, this.leaveAComment, "Note", this.CurrentUser.appUserId, null, null, this.CurrentUser.fullName, null,null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll();
+
+
+      }
+      else {
+        console.log("Save A Note Error", data.responseMessage);
+      }
+    }, error => {
+      console.log("Save A Note Error", error);
+    })
+  }
+
+  saveNewInternalComment() {
+    this.commentsService.addUpdateComment(0, this.ApplicationID,null,null,null, this.leaveAComment, "Internal Comment", this.CurrentUser.appUserId,null,null,this.CurrentUser.fullName,null,null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll();
+
+
+      }
+      else {
+        console.log("Save Internal Comment Error", data.responseMessage);
+        //const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        //  data: {
+        //    message: "An Error has occured"
+        //  }
+        //});
+      }
+    }, error => {
+      console.log("Save Internal Comment Error", error);
+    })
+
+   
   }
  
 }
