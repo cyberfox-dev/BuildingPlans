@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <div class="row">
+<!--        <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientAltEmail" name="altEmail" placeholder="Enter alternate email address">
@@ -68,7 +68,7 @@
               <label for="regNo"> Architect Registration Number</label>
             </div>
           </div>
-        </div>
+        </div>-->
         <!--        <div class="col">
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
@@ -318,17 +318,12 @@
       <div class="container04">
         <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
 
-
-
-
         <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
           Create Application
-
         </button>
 
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
         <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
-
 
       </div>
 

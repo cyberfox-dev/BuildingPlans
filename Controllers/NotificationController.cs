@@ -46,7 +46,6 @@ namespace BuildingPlans.Controllers
             }
         }
 
-
         [HttpPost("GetNotificationByID")]
         public async Task<object> GetNotificationByID([FromBody] int? appliactionID)
         {

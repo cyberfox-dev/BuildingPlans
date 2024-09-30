@@ -24,7 +24,7 @@
       <div class="main">
 
 
-        <div class="PropertyOwnerDetails ">
+        <div class="PropertyOwnerDetails animationSlideUp">
           <h3>Property Owner Details</h3>
           <p class="Name">{{firstName}} {{surname}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
@@ -33,7 +33,7 @@
             <button mat-raised-button color="expand2" (click)="openExpand('POD',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
           </div>
         </div>
-        <div class="PropertyOwnerDetails">
+        <div class="PropertyOwnerDetails animationSlideUp">
           <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
           <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
           <p class="Name">{{architectName}}</p>
@@ -45,8 +45,8 @@
         </div>
         </div>
         <div class="down">
-        <div class="Map ">
-          <mat-tab-group *ngIf="showMap" >
+        <div class="Map animationSlideDown">
+          <mat-tab-group>
 
             <mat-tab label="Map Details">
               <google-map height="230px"
@@ -103,7 +103,7 @@
             </mat-tab>
           </mat-tab-group>
         </div>
-        <div class="tracker">
+        <div class="tracker animationSlideDown">
 
           <mat-tab-group>
             <mat-tab label="Tracker">
@@ -184,9 +184,9 @@
           
       </div>
     </div>
-      <div class="rightSide">
+      <div class="rightSide ">
 
-        <div class="Comments ">
+        <div class="Comments animationSlideLeft">
           <mat-tab-group>
 
             <mat-tab label=" General Comments">
@@ -278,7 +278,7 @@
           </div>
         </div>
 
-        <div class="Documents ">
+        <div class="Documents animationSlideLeft">
           <mat-tab-group >
 
             <mat-tab label="Documents">
@@ -650,18 +650,18 @@
               <td mat-cell *matCellDef="let element">
                 <div class="contIndication">
                   <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved'">
+                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'">
                   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
                   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
                   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-                  <p class="blueThumbsUpText" *ngIf="element.CommentStatus === 'Approved'">Approved</p>
+
                   <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
                   <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
 
                   <!-- projectTracker Sindiswa 12 January 2024 -->
-                  <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null" />
-                  <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.CommentStatus === null">Assigned</p>
+                  <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'" />
+                  <p class="" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'">Under Review</p>
                   <!-- projectTracker Sindiswa 12 January 2024 -->
                 </div>
               </td>
@@ -697,13 +697,13 @@
           </div>
         </div>
 
-        <p class="projectTimeLine">Project TimeLine</p>
-        <div class="generalcomments">
+        <p class="projectTimeLine" *ngIf="this.CurrentUserProfile[0].isInternal == true">Project TimeLine</p>
+        <div class="generalcomments" *ngIf="this.CurrentUserProfile[0].isInternal == true">
 
           <div *ngFor="let comment of CommentsList ; let i = index">
             <div >
               <div *ngIf="CommentsList.length === 0">
-                <h5>No comments have been made yet.</h5>
+                <h5>Nothing new happened here</h5>
               </div>
               <div class="cardNote">
 
