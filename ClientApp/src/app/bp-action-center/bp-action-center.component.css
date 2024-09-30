@@ -32,6 +32,10 @@ h1 {
   height: 60px;
   /* margin: 20px; */
   border-radius: 10px;
+    display:flex;
+}
+.mat-applicantBTN {
+ 
 }
 .mat-saveDoc {
   background-color: #446414;

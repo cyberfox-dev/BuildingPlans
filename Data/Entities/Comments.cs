@@ -32,7 +32,7 @@ namespace BuildingPlans.Data.Entities
         public string? CanReplyUserID { get; set; }
         //Clarify Alert Kyle 
 
-
+        
         //The CreatedBy is the user who created the comment
         // public string? UserCommentedID { get; set; }
 

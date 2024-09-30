@@ -58,11 +58,12 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() permitDocumentName: any | null;
   @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
   @Input() isWayleave: boolean = false;
+  @Input() isSystemPacks: boolean;
   currentStage: string;
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService, private neighboutConsentService: NeighbourConsentService, private fileUploadComponent: FileUploadComponent, private bpApplicationService: BuildingApplicationsService) { }
-
+  
   ngOnInit(): void {
     //this.currentApplication = this.shared.getViewApplicationIndex();
 
@@ -284,6 +285,7 @@ export class DocumentsComponentComponent implements OnInit {
     })
   }
 
+  packsList: DocumentsList[] = [];
   getAllDocsForApplication() {
 
    
@@ -299,7 +301,7 @@ export class DocumentsComponentComponent implements OnInit {
             const current = data.dateSet[i];
             const nameCheck = current.documentName.substring(0, 13);
 
-            if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
+            if (current.documentName != "Service Condition" && current.createdById != "System Generated Pack") {
               tempDocList.DocumentID = current.documentID;
 
               tempDocList.DocumentName = current.documentName;
@@ -310,11 +312,30 @@ export class DocumentsComponentComponent implements OnInit {
               this.DocumentsList.push(tempDocList);
             }
 
+            if (current.createdById == "System Generated Pack") {
+
+              tempDocList.DocumentName = current.documentName;
+              tempDocList.DocumentLocalPath = current.documentLocalPath;
+              tempDocList.ApplicationID = current.applicationID;
+              tempDocList.AssignedUserID = current.assignedUserID;
+
+              this.packsList.push(tempDocList);
+            }
+
+            if (this.isSystemPacks == true) {
+              this.dataSourceDoc = this.packsList;
+            }
+            else {
+              this.dataSourceDoc = this.DocumentsList;
+            }
+
+
           }
 
 
           this.DocumentsListTable?.renderRows();
-          console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+          console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList);
+          console.log("SytemPacks : ", this.packsList);
         }
         else {
           alert(data.responseMessage);

@@ -607,7 +607,11 @@ export class ActionCenterComponent implements OnInit {
     if (this.CurrentUserRoles.some(x => x.roleName == "Admin")) {
       this.isAdmin = true;
     }
-    console.log("isAdmin", this.isAdmin);
+
+    if (this.CurrentApplication.ApplicationStatus == "Approval Pack Generation") {
+      this.getAllSubDepartmentsForComment();
+    }
+  
    
     this.getServicesByDepID();
     this.setRoles();
@@ -1068,21 +1072,20 @@ export class ActionCenterComponent implements OnInit {
     const startY = 100; // set the starting Y position for the table
 
     // Generate table body based on ServiceItemList data
-    const tableBody = this.PTCListForCheck.map(item => {
-      return [
-        item.SubDepartmentName,
-        item.PermitComment,
-        //item.PermitCommentStatus,
-      ];
-    });
+    //const tableBody = 
+    
+       
+        
+    //  ];
+   
 
-    autoTable(doc, {
-      head: [['Department Name', 'Comment']],
-      body: tableBody,
-      theme: 'grid',
-      startY: startY,
-      margin: { top: 20 }
-    });
+    //autoTable(doc, {
+    //  head: [['Department Name', 'Comment']],
+    //  body: tableBody,
+    //  theme: 'grid',
+    //  startY: startY,
+    //  margin: { top: 20 }
+    //});
 
     autoTable(doc, {
       body: [
@@ -1691,7 +1694,7 @@ export class ActionCenterComponent implements OnInit {
       this.AssignUserForComment = false;
     }
     debugger;
-    if (this.CurrentUserRoles.some(x => x.roleName == "Department Manager") && this.loggedInUserSubDepartmentName == "Land Survey") {
+    if (this.CurrentUserRoles.some(x => x.roleName == "Department Manager") && this.loggedInUsersSubDepartmentName == "Land Survey") {
       this.isLSDepartmentManager = true;
     }
     console.log("LSDepartmentManager", this.isLSDepartmentManager);
@@ -3014,7 +3017,7 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.subDPTforComment, "Approved", false, false, "Admin", true).subscribe((data: any) => {
             if (data.responseCode == 1) {
               debugger;
-              this.AddComment(" LS Approved", this.subDPTforComment);
+              this.AddComment("LS Approved", this.subDPTforComment);
             }
             else {
 
@@ -3113,11 +3116,15 @@ export class ActionCenterComponent implements OnInit {
                 this.openSnackBar("Application Actioned");
                 this.router.navigate(["/home"]);
               }
+              else {
+                alert(data.responseMessage);
+              }
             })
           }
           else {
             alert(data.responseMessage);
           }
+
         }, error => {
           console.log("Comment Status Error", error);
         })
@@ -5318,7 +5325,7 @@ export class ActionCenterComponent implements OnInit {
    
     debugger;
     if (this.CurrentUserProfile[0].subDepartmentName == "Land Survey") {
-      if (this.CurrentApplication.ApplicationStatus == "PTW Pending") {
+      if (this.CurrentApplication.ApplicationStatus == "PTW Pending" && this.CurrentUserRoles.some(x =>x.roleName  == "Permit Issuer")) {
         this.permit = true;
         this.openActionCenter(content);
       }
@@ -5345,7 +5352,7 @@ export class ActionCenterComponent implements OnInit {
           console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
           console.log("SubDepartmentForComment", this.subDPTforComment);
         });
-        this.openActionCenter(content);
+        
       }
       else {
         this.permit = false;
@@ -7261,7 +7268,7 @@ export class ActionCenterComponent implements OnInit {
     this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
 
     this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
-      if (data.reponseCode == 1) {
+      if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
 
@@ -7283,6 +7290,163 @@ export class ActionCenterComponent implements OnInit {
       console.log("SubDepartment List Error", error);
     })
   }
+  generateApprovalPackDoc() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Load the logo image (adjusted size)
+    const img = new Image();
+    img.src = 'assets/Msunduzi_CoA.png'; // Adjust this path to the correct location of your logo
+    doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
+
+    // Set font configuration
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+
+    // Add static header information
+    doc.text('Msunduzi Municipality', 200, 20, { align: 'right' });
+    doc.text('341 Church Street', 200, 26, { align: 'right' });
+    doc.text('Pietermaritzburg, 3201', 200, 32, { align: 'right' });
+    doc.text('Phone: (033) 392-3000', 200, 38, { align: 'right' });
+
+    // Add a static website link
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('https://www.msunduzi.gov.za', 200, 45, { align: 'right' });
+
+    // Add static reference number and date
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: ' + this.projectNo, 200, 55, { align: 'right' });
+    doc.text('DATE: 15/09/2024', 10, 60, { align: 'left' });
+
+    // Add a project description
+    doc.text('Wayleave Approval Pack', 10, 70, { align: 'left' });
+
+    // Greeting (static)
+    doc.text('Dear Applicant,', 10, 80, { align: 'left' });
+
+    // Invoice description
+    doc.text('Below Shows the Status of the interaction of all Departments with regards to your application', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Add static table data (dummy services and costs)
+    const data = this.LinkedSubDepartmentsList.map(item => {
+      return [item.subDepartmentName, item.commentStatus]
+    });
+    
+    
+
+    // Render the table in the PDF document
+    autoTable(doc, {
+      head: [['Sub Department Name', 'Status']],
+      body: data,
+      startY: 100, // Adjusted position of the table
+      headStyles: { fillColor: '#005870' },
+      styles: {
+        fontSize: 10, // Adjusted font size for better readability
+        halign: 'left',
+        valign: 'middle',
+      },
+      columnStyles: {
+        0: { cellWidth: 100, fontStyle: 'bold' },
+        
+        1: { cellWidth: 70, halign: 'right' }, // Align the amounts to the right
+      },
+    });
+
+    // Add a total section below the table
+    
+
+    // Disclaimer
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+ 
+
+    // Footer with company name
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Msunduzi Municipality', 10, 270, { align: 'left' });
+    doc.setFont('helvetica', 'italic');
+    doc.text('Thank you for your application!', 10, 280, { align: 'left' });
+
+    // Convert the PDF document to a blob object and prepare it for upload
+    const pdfData = doc.output('blob');
+    const file = new File([pdfData], 'Wayleave Approval Document.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data and push the file for temporary upload
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Wayleave Approval Document" + ".pdf");
+
+    this.saveApprovalPack(); // Call the save method for any additional operations
+
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  }
+
+ 
+  saveApprovalPack() {
+
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedAP(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  
+  uploadFinishedAP = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+    /*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID,this.CurrentUser.appUserId,"System Generated Pack","Approval Pack").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        /* this.moveToPermitToWorkStage();*/
+        this.router.navigate(["/home"]);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    }
 }
 
 
