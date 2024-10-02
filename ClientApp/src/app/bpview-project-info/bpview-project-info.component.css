@@ -71,7 +71,8 @@ h2 {
   width: 100%;
   margin: 17px 0px 6px 0px;
   overflow: auto;
-  max-height: 25vh;
+  max-height: 28vh;
+  min-height: 28vh;
 }
 .displayRow {
   display: flex;
@@ -271,6 +272,7 @@ h2 {
   overflow: auto;
   max-height: 42vh;
   height: 100%;
+  min-height: 42vh;
 }
 .Documents {
   border: 1px solid rgba(255, 255, 255, .25);
@@ -299,6 +301,7 @@ h2 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  overflow: hidden;
 }
 .rightSideHeader {
   width: 100%;
@@ -306,9 +309,12 @@ h2 {
   flex-direction: column;
 }
 .leftSideHeader {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 2px;
+    /* overflow: initial; */
+    /* height: 100vh !important; */
 }
 .example-h2 {
   margin: 10px;
@@ -923,14 +929,14 @@ table {
   justify-content: space-between;
 }
 .animationSlideDown {
-  animation: fade-in-bottom .7s ease-in-out;
+  animation: fade-in-bottom .5s ease-in-out;
 }
 
 .animationSlideUp {
-  animation: fade-in-top .7s ease-in-out;
+  animation: fade-in-top .5s ease-in-out;
 }
 .animationSlideLeft{
-    animation: fade-in-left .7s ease-in-out;
+    animation: fade-in-left .5s ease-in-out;
 }
 @keyframes fade-in-bottom {
   0% {

@@ -89,8 +89,8 @@
         </a>
         <span class="tooltip">Comment Builder</span>
       </li>
-      <mat-divider *ngIf="Config"></mat-divider>
-      <li *ngIf="Config">
+      <mat-divider *ngIf="Config || devConfig"></mat-divider>
+      <li *ngIf="Config || devConfig ">
         <a >
           <i class="fa fa-wrench" matTooltip="Configurations" (click)="goToConfig()"
              matTooltipPosition="after"></i>
@@ -109,9 +109,10 @@
       </li>
 
 
-      <mat-divider></mat-divider>
+      
       <li class="logout-button bottom">
-        <a >
+        <mat-divider></mat-divider>
+        <a>
           <i class="fa fa-sign-out" matTooltip="Log Out" (click)="LogoutUser()"
              matTooltipPosition="after"></i>
           <span class="nav-item"> Log Out</span>

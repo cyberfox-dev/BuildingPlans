@@ -198,8 +198,10 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectReg: string;
   architectEmail: string;
   architectCell: string;
-      isLoading = true;
+  isLoading = true;
+
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
+
   panelOpenState: boolean = false;
   async ngOnInit() {
     this.isLoading = true;

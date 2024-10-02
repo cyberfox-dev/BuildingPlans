@@ -1055,14 +1055,11 @@ body {
 }
 .dp {
   margin-top: 4px !important;
-    font-weight: 900;
-    font-size: 12px;
-    /* padding: 0 !important; */
+  font-weight: 900;
+  font-size: 12px;
   margin-left: 6px !important;
-  /* scale: 1; */
-  /* margin: 0 auto; */
   width: 28px;
-  
+  font-family: 'Nunito' !important;
 }
 .sidebar.active .userIMG2 {
   width: 50px;

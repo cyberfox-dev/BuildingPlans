@@ -34,9 +34,16 @@ button {
 }
 
 .mat-warn {
-  background-color: #9d2235;
+  background-color: #aa010252 !important;
   color: #fff;
+  border: 2px solid #970709 !important;
+  border-radius: 10px !important;
 }
+
+  .mat-warn:hover {
+    background-color: #aa010294 !important;
+  }
+
 
 .mat-orange {
   background-color: #ff9900;

@@ -126,7 +126,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getConfigForMaintenanceMode();
+/*    this.getConfigForMaintenanceMode();*/
     // Initialize the registration form
     this.registerForm = this.formBuilder.group({
       registerEmail: ['', [Validators.required, Validators.email]],
@@ -299,7 +299,7 @@ export class LoginComponent implements OnInit {
 
 
   getAllRolesForUserForAllAG(userId: number): void {
-    
+    debugger;
     this.bpAccessGroupUserLinkService.getAllRolesForUserForAllAG(userId).subscribe(
       (data: any) => {
         
