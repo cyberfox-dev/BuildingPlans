@@ -16,9 +16,23 @@
   }
 
   .example-sidenav {
-    background-color: #2f3a49;
+    background-color: #2f3a49 !important;
+    
   }
-  
+
+  .wayleaveAlert {
+    background-color: #526277;
+    border-color: #0000007d;
+    backdrop-filter: blur(10px);
+   
+  }
+  .createButton {
+    background-color: #ff9900 !important;
+  }
+  .wayleaveCard {
+    background-color: #4393d7 !important;
+    border-color: #4393d7 !important;
+  }
   .loading-screen {
     background-color: #2f3a49;
   }

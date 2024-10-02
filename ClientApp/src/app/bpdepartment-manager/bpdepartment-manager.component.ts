@@ -87,8 +87,7 @@ export class BPDepartmentManagerComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-    this.functionalArea = this.CurrentUserProfile[0].departmentName;
-    this.subDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
+   
 
     this.getAllFunctionalAreas();
   }
@@ -417,7 +416,7 @@ export class BPDepartmentManagerComponent implements OnInit {
     const departmentID: number = await this.getDepartmentID(this.selectedDepartment, this.selectedFunctionalArea);
 
     this.userProfileService.addUpdateUserProfiles(0, userID, this.fullName, this.emailAddress, this.phoneNumber, true, null, null, null, null, this.functionalArea, functionalAreaId, departmentID, null,
-      null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, false, false, this.subDepartmentName, null, null, this.firstName, this.surname, this.functionalArea, null, true, null, true, false).subscribe((data: any) => {
+      null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, false, false, this.selectedDepartment, null, null, this.firstName, this.surname, this.selectedFunctionalArea, null, true, null, true, false).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
           const UserProfileID = data.dateSet.userProfileID;
@@ -506,12 +505,14 @@ export class BPDepartmentManagerComponent implements OnInit {
   onAddUserToNewDepartment(index:any,newUser:any)  {
     this.existingUser = true;
    this.selectedUser = this.AllUsers[index];
+   
 
     this.firstName = this.selectedUser.FullName.substring(0, this.selectedUser.FullName.indexOf(" "));
     this.surname = this.selectedUser.FullName.substring(this.selectedUser.FullName.indexOf(" ") + 1);
     this.emailAddress = this.selectedUser.Email;
     this.phoneNumber = this.selectedUser.PhoneNumber;
     this.fullName = this.selectedUser.FullName;
+
     this.modalService.open(newUser, { centered: true, size: 'xl' });
   }
 
@@ -542,6 +543,8 @@ export class BPDepartmentManagerComponent implements OnInit {
                 tempUser.UserProfileID = current.userProfileID;
                 tempUser.UserID = current.userID;
                 tempUser.Email = current.email;
+
+
                 tempUser.FullName = current.fullName;
 
                 this.selectedUser = tempUser;

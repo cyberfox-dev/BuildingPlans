@@ -693,8 +693,7 @@ export class NewWayleaveComponent implements OnInit {
     this.reciveOption();
     this.getAllSubDepartments();
     this.getServiceItem("001");
-    this.getServiceItem("002");
-    this.getServiceItem("003");
+    
 
 
 
@@ -5732,7 +5731,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   newWayleaveDistrubution() {
-    this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+    this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Land Survey").subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
@@ -5828,20 +5827,15 @@ export class NewWayleaveComponent implements OnInit {
     let CurrentStageNameIn = "";
     let NextStageNameIn = "";
 
-    for (var i = 0; i < this.StagesList.length; i++) {
+   
+   
+      
+        previousStageNameIn = this.StagesList[0].StageName
+        CurrentStageNameIn = this.StagesList[1].StageName;
+        NextStageNameIn = this.StagesList[2].StageName
+      
 
-      if (this.StagesList[i].StageOrderNumber == 1) {
-        previousStageName = this.StagesList[i - 1].StageName
-        CurrentStageName = this.StagesList[i].StageName;
-        NextStageName = this.StagesList[i + 1].StageName
-      }
-      else if (this.StagesList[i].StageOrderNumber == 2) {
-        previousStageNameIn = this.StagesList[i - 2].StageName
-        CurrentStageNameIn = this.StagesList[i].StageName;
-        NextStageNameIn = this.StagesList[i + 1].StageName
-      }
-
-    }
+    
 
     if (this.internal == true && this.internalProxy != true) {
       // Internal Creating For themselves
@@ -6237,7 +6231,7 @@ export class NewWayleaveComponent implements OnInit {
     doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
 
-    const data = this.ServiceItemList.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.totalVat]);
+    const data = this.ServiceItemList.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.Rate]);
     // Render the table in the PDF document
     autoTable(doc, {
       head: [['Service Item', 'Description', 'Total']], // Define table headers

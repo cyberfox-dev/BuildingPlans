@@ -1,17 +1,16 @@
+import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { SharedService } from 'src/app/shared/shared.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from "@angular/router";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PDFDocument } from 'pdf-lib';
+import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
-import { PermitService } from '../service/Permit/permit.service';
-import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
+import { SharedService } from 'src/app/shared/shared.service';
 import { MobileFieldTrackingService } from '../service/MFT/mobile-field-tracking.service';
-import jsPDF from 'jspdf';
-import { PDFDocument } from 'pdf-lib';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from "@angular/router";
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { PermitService } from '../service/Permit/permit.service';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 
 @Component({

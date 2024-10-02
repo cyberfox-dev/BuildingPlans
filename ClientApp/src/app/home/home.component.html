@@ -832,8 +832,8 @@
           <div class="cont2">
             <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  New Client</button>
             <!--<button mat-raised-button color="internal" (click)="openUser(user,architectClient);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
-            <button mat-raised-button color="internal" (click)="openExternalClient(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
-            <button mat-raised-button color="internal" (click)="openChoiceExternalActingAsInternal(internalUser);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="client" (click)="openExternalClient(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="client" (click)="openChoiceExternalActingAsInternal(internalUser);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
           </div>
         </div>
 

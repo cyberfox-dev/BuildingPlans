@@ -152,6 +152,7 @@ h4 {
 .applicationDeatails {
   padding: 18px;
   overflow: auto !important;
+  margin-left:10px;
 }
 
 :host ::ng-deep .mat-tab-label {
@@ -1077,3 +1078,24 @@ table {
   bottom: 35px;
   right: 27px;
 }
+
+.currentStageText {
+  margin: 24px auto;
+  padding: 10px;
+  background: #3778af7d;
+  font-weight: 600;
+  text-align: center;
+  width: 62%;
+  border-radius: 6px;
+}
+
+.cardInfo {
+  border: 0.5px solid;
+  border-radius: 10px;
+  padding: 2px;
+  border-color: white;
+}
+
+  .cardInfo:hover {
+    border-color: #4393d7;
+  }
