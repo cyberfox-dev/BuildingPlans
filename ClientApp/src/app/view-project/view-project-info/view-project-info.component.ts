@@ -675,6 +675,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
   getAllComments() {
+    this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i ++ ) {
@@ -793,7 +794,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
 
-        this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.selectedComment.SubDepartmentForCommentID, this.ApplicationID, null, null, null, "Claried", null, null, null).subscribe((data: any) => {
+        this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.selectedComment.SubDepartmentForCommentID, this.ApplicationID, null, null, null, "Clarified", null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
 
             this.openSnackBar("Reply Saved Succesfully");

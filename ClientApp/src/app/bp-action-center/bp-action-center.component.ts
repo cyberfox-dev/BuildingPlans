@@ -274,6 +274,7 @@ export interface CurrentApplicationBeingViewed {
   currentStatus: string;
   fullName: string;
   userID: string;
+  
 }
   //Service Information Kyle 31/01/24
 
@@ -624,7 +625,7 @@ export class BpActionCenterComponent implements OnInit {
     //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
 /*    this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);*/
-
+  
    
     this.bpApplicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
@@ -648,11 +649,11 @@ export class BpActionCenterComponent implements OnInit {
 
 
     this.CheckApplicant();
-    this.setProjectNumber();
+    /*this.setProjectNumber();*/
     this.getAllDocumentsForServiceInformation();
+   
 
-
-
+    console.log("BP Action Center ApplicationID ", this.ApplicationID);
     debugger;
   
 /*    this.GetSubDepartment();*/
@@ -772,14 +773,14 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   setProjectNumber() {
+    debugger;
+    if (this.CurrentApplication.projectNumber == null) {
 
-    if (this.CurrentApplication.ProjectNumber == null) {
-
-
-      this.projectNo = this.CurrentApplication.applicationID.toString();
+      debugger;
+      this.projectNo = this.CurrentApplication.ApplicationID;
     }
     else {
-
+      debugger;
       this.projectNo = this.CurrentApplication.ProjectNumber;
     }
 
@@ -3772,6 +3773,8 @@ export class BpActionCenterComponent implements OnInit {
         }
 
         case "ApproveLSReviewer": {
+
+          debugger;
 
 
 
@@ -9775,7 +9778,7 @@ export class BpActionCenterComponent implements OnInit {
         if (tempApplication.currentStage == "Closed" && tempApplication.userID == this.CurrentUser.appUserId) {
           this.showCreateBP = true;
         }
-
+        
       }
       else {
         alert(data.responseMessage);

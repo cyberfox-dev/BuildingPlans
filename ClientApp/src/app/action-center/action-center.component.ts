@@ -1686,7 +1686,7 @@ export class ActionCenterComponent implements OnInit {
 
   setRoles() {
 
-    if (this.CurrentApplication.ApplicationStatus == "Admin Review" && this.CurrentUserRoles.some(x => x.roleName == "Admin") && this.loggedInUsersSubDepartmentName == "Land Survey") {
+    if (this.CurrentApplication.ApplicationStatus == "Admin Review" && this.CurrentUserRoles.some(x => x.roleName == "Admin") && this.loggedInUsersSubDepartmentName == "Land Survey" ) {
       this.AssignUserForComment = true;
     }
 
@@ -1866,7 +1866,7 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
 
           let current = data.dateSet[i];
-          if (current.userAssaignedToComment == null && this.CurrentApplication.ApplicationStatus == "Department Distribution") { /*&& current.userAssaignedToComment != this.userID*/
+          if ((current.userAssaignedToComment == null && this.CurrentApplication.ApplicationStatus == "Department Distribution" )|| (current.userAssaignedToComment == this.CurrentUser.appUserId && current.CommentStatus == "Clarified")) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
 
             //if (this.canComment == true && this.canCommentFinalApprover == false) {
@@ -6801,7 +6801,7 @@ export class ActionCenterComponent implements OnInit {
         if (current.subDepartmentName != "Land Survey") {
 
 
-          if (current.commentStatus != null && current.commentStatus != "Awaiting Clarity" ) {
+          if (current.commentStatus != null && current.commentStatus != "Awaiting Clarity" && current.commentStatus != "Clarified" ) {
             this.approvalCount++;
           }
         }

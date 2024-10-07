@@ -119,7 +119,7 @@
                           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === 'Rejected'">
                           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid.svg" class="icon2" *ngIf="element.commentStatus === 'Distributed'">
                           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.commentStatus == '' || element.commentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
-                          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
+                          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity || element.commentStatus == 'Clarified' ">
                           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-green.svg" class="icon2" *ngIf="element.commentStatus === 'Manager Approve'" />
                           <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.commentStatus == '' || element.commentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
@@ -222,7 +222,7 @@
                           <div class="messageFoot">
                             <p class="sub-text">{{comment.Comment}}</p>
                             <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReplay == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == userID">Reply</button>
-                            <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReplay != null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == userID">View Reply</button>
+                            <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReplay != null && comment.CommentStatus == 'Clarify' ">View Reply</button>
 
                           </div>
                         </div>
