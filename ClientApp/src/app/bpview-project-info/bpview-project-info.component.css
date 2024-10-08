@@ -20,7 +20,7 @@ h5 {
   color: #8080806b;
   text-align: center;
   font-size: 19px !important;
-  padding-top: 157px;
+  padding-top: 109px;
   font-style: italic !important;
 }
 h2 {
@@ -71,8 +71,8 @@ h2 {
   width: 100%;
   margin: 17px 0px 6px 0px;
   overflow: auto;
-  max-height: 28vh;
-  min-height: 28vh;
+  max-height: 24.4vh;
+  min-height: 24.4vh;
 }
 .displayRow {
   display: flex;

@@ -193,17 +193,18 @@
               <div class="generalcomments">
 
                 <div *ngFor="let comment of CommentsList ; let i = index">
+                  <div *ngIf="CommentsList.length === 0">
+                    <h5>No comments have been made yet.</h5>
+                  </div>
                   <div *ngIf="comment.CommentStatus === 'Clarify'">
-                    <div *ngIf="CommentsList.length === 0">
-                      <h5>No comments have been made yet.</h5>
-                    </div>
-                    <div  [class.cardClarify]="comment.CommentStatus === 'Clarify'">
+
+                    <div [class.cardClarify]="comment.CommentStatus === 'Clarify'">
                       <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
                         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
                       </div>
                       <div class="message-text-container">
                         <div class="messageHead">
-                          <h1  [class.message-textClarify]="comment.CommentStatus === 'Clarify'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+                          <h1 [class.message-textClarify]="comment.CommentStatus === 'Clarify'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
                           <p>{{comment.DateCreated}}</p>
                         </div>
                         <div class="messageFoot">
@@ -215,15 +216,16 @@
                       </div>
                     </div>
                   </div>
-                  </div>
+                </div>
 
                 </div>
             </mat-tab>
             <mat-tab label="Internal Comments" *ngIf="this.CurrentUserProfile[0].isInternal == true">
+              <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> Create New Internal Comment</button>
               <div *ngIf="CommentsList.length === 0">
                 <h5>No internal comments have been made yet.</h5>
               </div>
-              <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> Create New Internal Comment</button>
+
               <div *ngFor="let comment of CommentsList ; let i = index">
                 <div *ngIf="comment.CommentStatus =='Internal Comment'">
                   <div [class.cardNote]=" comment.CommentStatus == 'Internal Comment'">

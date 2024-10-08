@@ -1019,7 +1019,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   getAllMandatoryChecklistItemsForCurrentStage() {
     debugger;
-    this.bpStageChecklistService.getAllChecklistItemsForStage(this.currentStage, this.ApplicationType).subscribe((data: any) => {
+    this.bpStageChecklistService.getAllChecklistItemsForStage(this.currentStage, this.bpApplicationType).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
