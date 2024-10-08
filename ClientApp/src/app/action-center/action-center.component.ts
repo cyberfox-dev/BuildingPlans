@@ -1686,7 +1686,7 @@ export class ActionCenterComponent implements OnInit {
 
   setRoles() {
 
-    if (this.CurrentApplication.ApplicationStatus == "Admin Review" && this.CurrentUserRoles.some(x => x.roleName == "Admin") && this.loggedInUsersSubDepartmentName == "Land Survey") {
+    if (this.CurrentApplication.ApplicationStatus == "Admin Review" && this.CurrentUserRoles.some(x => x.roleName == "Admin") && this.loggedInUsersSubDepartmentName == "Land Survey" ) {
       this.AssignUserForComment = true;
     }
 
@@ -1866,7 +1866,7 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
 
           let current = data.dateSet[i];
-          if (current.userAssaignedToComment == null) { /*&& current.userAssaignedToComment != this.userID*/
+          if ((current.userAssaignedToComment == null && this.CurrentApplication.ApplicationStatus == "Department Distribution" )|| (current.userAssaignedToComment == this.CurrentUser.appUserId && current.CommentStatus == "Clarified")) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
 
             //if (this.canComment == true && this.canCommentFinalApprover == false) {
@@ -2391,7 +2391,7 @@ export class ActionCenterComponent implements OnInit {
 
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
       debugger;
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned", this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.subDPTforComment, this.ApplicationID, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned", this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
         debugger;
         if (data.responseCode == 1) {
           this.ChangeApplicationStatusToAssigned();
@@ -5355,6 +5355,7 @@ export class ActionCenterComponent implements OnInit {
         
       }
       else {
+        alert("You Current Have No Actions");
         this.permit = false;
       }
      
@@ -5370,15 +5371,20 @@ export class ActionCenterComponent implements OnInit {
 
           console.log("User assignment information:", data.dateSet);
           debugger;
-          let current = data.dateSet[0];
+          if (data.dateSet.length > 0) {
+            let current = data.dateSet[0];
 
-          this.subDPTforComment = current.subDepartmentForCommentID;
-          this.userAssignedText = current.userAssaignedToComment;
-          this.commentState = current.commentStatus;
-          this.openActionCenter(content);
+            this.subDPTforComment = current.subDepartmentForCommentID;
+            this.userAssignedText = current.userAssaignedToComment;
+            this.commentState = current.commentStatus;
+            this.openActionCenter(content);
+          }
+          else {
+            alert("You Currentl Have no actions");
+          }
         }
         else {
-          alert(data.responseMessage);
+          alert(data.responsemessage)
 
         }
       }, error => {
@@ -5445,9 +5451,9 @@ export class ActionCenterComponent implements OnInit {
   }
   openActionCenter(content: any) {
     debugger;
-    if (this.commentState == null || this.commentState == ''||  this.commentState == "Assigned") {
+    if (this.commentState == null || this.commentState == '' || this.commentState == "Assigned") {
       //This is so the Admin can assign
-     
+
       this.openXl(content);
     }
     else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" || this.commentState == "Approved(Conditional)")) {
@@ -5490,7 +5496,9 @@ export class ActionCenterComponent implements OnInit {
     else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
       alert("This application is currently under review by a senior reviewer or final approver.");
     }
-
+    else {
+      alert("You Currently have no actions");
+    }
   }
   //Final Approver && Senior Approver Kyle 01/02/24
   onCommentFA(interact: any) {
@@ -6793,7 +6801,7 @@ export class ActionCenterComponent implements OnInit {
         if (current.subDepartmentName != "Land Survey") {
 
 
-          if (current.commentStatus != null) {
+          if (current.commentStatus != null && current.commentStatus != "Awaiting Clarity" && current.commentStatus != "Clarified" ) {
             this.approvalCount++;
           }
         }
@@ -6806,7 +6814,7 @@ export class ActionCenterComponent implements OnInit {
     let previousStage = this.StagesList[1].StageName;
     let currentStage = this.StagesList[2].StageName;
     let nextStage = this.StagesList[3].StageName;
-    if (this.approvalCount ==(data.dateSet.length - 1)) {
+    if (this.approvalCount == (data.dateSet.length - 1)) {
       this.applicationsService.updateApplicationStage(this.ApplicationID, previousStage, 2, currentStage, 3, nextStage, 4, "LS Review").subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.router.navigate(["/home"]);
@@ -6818,6 +6826,10 @@ export class ActionCenterComponent implements OnInit {
       }, error => {
         console.log(error);
       })
+    }
+    else {                 
+      this.openSnackBar("Application Actioned");
+      this.router.navigate(["/home"]);
     }
   }
 
@@ -7138,7 +7150,34 @@ export class ActionCenterComponent implements OnInit {
     this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName,
       this.StagesList[2].StageOrderNumber, null, null, "Admin Review", null, this.projectNumber).subscribe((data: any) => {
         if (data.responseCode == 1) {
-         
+          this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Land Survey").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const current = data.dateSet[i];
+                if (current.departmentName == "Land Survey") {
+                  this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+                    if (data.responseCode == 1) {
+                      this.openSnackBar("Application Actioned");
+                      this.router.navigate(["/home"]);
+                     
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+                  }, error => {
+                    console.log(error);
+                  })
+                }
+              }
+            }
+            else {
+              alert(data.responseMessage);
+            }
+          }, error => {
+            console.log(error);
+          })
+          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);
       }
       else {
         alert(data.responseMessage);
@@ -7204,6 +7243,7 @@ export class ActionCenterComponent implements OnInit {
               if (current.departmentName != "Land Survey") {
                 this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
                   if (data.responseCode == 1) {
+                    this.modalService.dismissAll();
                     this.openSnackBar("Application moved to next stage");
                     this.router.navigate(["/home"]);
                   }

@@ -200,7 +200,7 @@
 
       <!-- #endregion ---->
       <!-- #region Land survey departments review -->
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Distribution' && !LSReviewerRole">
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Distribution' && !LSReviewerRole && this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
         <mat-form-field class="example-full-width">
           <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
           <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>

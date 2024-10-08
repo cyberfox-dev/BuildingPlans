@@ -179,6 +179,7 @@ export interface CommentsList {
   isClarifyCommentID?: number;
   isApplicantReplay?: string; 
   UserName: string;
+
    //Comments Kyle 01/02/24
   ZoneName: string;
    //Comments Kyle 01/02/24
@@ -285,6 +286,7 @@ export interface AllSubDepartmentList {
   commentStatus: string | null;
   GLCode: string | null;
   ProfitCenter: string | null;
+  isAwaitingClarity: boolean | null;
 }
    //Project size Kyle 27-02-24
 export interface MandatoryDocumentUploadList {
@@ -673,6 +675,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
   getAllComments() {
+    this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i ++ ) {
@@ -686,6 +689,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempComment.CanReplyUserID = current.canReplyUserID;
           tempComment.isApplicantReplay = current.isApplicantReply;
           tempComment.UserName = current.userName;
+          
+
           if (tempComment.isApplicantReplay != null) {
             tempComment.HasReply = true;
           }
@@ -742,8 +747,9 @@ export class ViewProjectInfoComponent implements OnInit {
         this.userID = current.userID;
         this.typeOfExcavation = current.excavationType;
         this.natureOfWork = current.natureOfWork;
-        this.currentStage = current.stage;
-        this.currentStageNumber = current.stageNumber;
+        this.currentStage = current.currentStageName;
+        this.currentStageNumber = current.currentStageNumber;
+       
         debugger;
         if (current.projectNumber == null || current.projectNumber == '') {
           this.projectNumber = this.ApplicationID.toString();
@@ -782,7 +788,32 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
   SaveReply() {
+    this.selectedComment
 
+    this.commentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, null, null, null, this.reply).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.selectedComment.SubDepartmentForCommentID, this.ApplicationID, null, null, null, "Clarified", null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            this.openSnackBar("Reply Saved Succesfully");
+            this.modalService.dismissAll();
+            this.getAllComments();
+          }
+          else {
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log("SubDepartmentForComment Error", error);
+        })
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Reply Error", error);
+    })
   }
 
   getEngineerAndContractorInfo() {
@@ -879,7 +910,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartment.subDepartmentName = current.subDepartmentName;
           tempSubDepartment.commentStatus = current.commentStatus;
           tempSubDepartment.UserAssaignedToComment = current.userAssaignedToComment;
-
+          tempSubDepartment.isAwaitingClarity = current.isAwaitingClarity;
           this.AllSubDepartmentList.push(tempSubDepartment);
         }
         this.dataSource = this.AllSubDepartmentList;
@@ -936,6 +967,7 @@ export class ViewProjectInfoComponent implements OnInit {
   ExpandEngineerDetails: boolean = false;
   ExpandTrackerInfo: boolean = false;
   ExpandComments: boolean = false;
+  ExpandApplicationDetails: boolean = false; 
   showMap: boolean = true;
   isLoading: boolean;
   isSystemPacks: boolean = true;
@@ -996,6 +1028,15 @@ export class ViewProjectInfoComponent implements OnInit {
         keyboard: false // Prevent pressing the ESC key to close the modal
       });
     }
+    else if (cardName == 'ApplicationDetails') {
+      this.ExpandApplicationDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
   }
   closeExpanded() {
     this.ExpandPropertyOwnerDetails = false;
@@ -1004,13 +1045,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ExpandTrackerInfo = false;
     this.ExpandContractorDetails = false;
     this.ExpandEngineerDetails = false;
+    this.ExpandApplicationDetails = false;
   }
 
   getAllStages() {
     this.StagesForApplication.splice(0, this.StagesForApplication.length);
     this.stagesService.getAllStages().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
+        for (let i = 1; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempStage = {} as StagesList;
 

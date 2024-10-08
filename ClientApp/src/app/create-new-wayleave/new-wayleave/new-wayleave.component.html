@@ -36,9 +36,9 @@
 <div class="content-body">
   <h2 *ngIf="isPlanning === false">Create New Wayleave</h2>
   <h2 *ngIf="isPlanning === true">Create New Request for Services Information</h2>
-  <div class="cont5">
-    <button mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
-    <button mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1">Save project as a draft</button>
+  <div class="cont5 ">
+    <button mat-raised-button color="draft createButton" class="createButton" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
+    <button mat-raised-button color="draft createButton" class="createButton" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1">Save project as a draft</button>
 
   </div>
   <!--Stepper-->
@@ -335,10 +335,10 @@
 
 
         <ng-template matStepLabel>Project Details</ng-template>
-        <div>
+        <div> 
           <br />
           <div class="container-fluid">
-              <div class="alert alert-warning">
+              <div class="alert alert-warning wayleaveCard">
                   <h4><strong>Compulsory Field</strong> - <em>Click and write description inside the textbox below.</em> </h4>
               </div>
           </div>
@@ -356,19 +356,19 @@
           <h3><span>Project Size</span></h3><!--wayleaveCreate Sindiswa 31 January 2024-->
         </div>
         <div class="container-fluid">
-          <div class="alert alert-warning">
+          <div class="alert alert-warning wayleaveCard">
             <!-- compulsoryProjectSize Sindiswa 15 January 2024 -->
             <h4><strong>Compulsory Field</strong> - <em>To determine project size, click the button below and make applicable selections.</em> </h4>
             <!-- end of compulsoryProjectSize Sindiswa 15 January 2024 -->
           </div>
           <br />
-          <div class="container-fluid23">
-            <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
+          <div class="container-fluid23 ">
+            <button mat-raised-button color="projectSize" class="createButton" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
           </div>
         </div>
 
-        <div *ngIf="PSM != ''">
-          <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
+        <div *ngIf="PSM != ''" class="cont34">
+          <div class="alert alert-info wayleaveAlert" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
         </div>
         <!--Out with the old-->
         <!--<mat-form-field appearance="fill">
@@ -431,7 +431,7 @@
             </div>
             <!--wayleaveCreate Sindiswa 31 January 2024-->
             <div class="container-fluid">
-              <div class="alert alert-warning">
+              <div class="alert alert-warning wayleaveCard">
                 <h4><strong>Compulsory Field</strong> - <em>To proceed, use the dropdown menu below and choose the relevant types of excavation.</em> </h4>
               </div>
             </div>
@@ -504,11 +504,11 @@
 
 
         </div>
-        <div class="alert alert-warning" *ngIf="client">
+        <div class="alert alert-warning wayleaveCard" *ngIf="client">
           <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
         </div>
         <!--Physical address Of project Kyle 16/01/24-->
-        <div class="alert alert-warning" *ngIf="client == false">
+        <div class="alert alert-warning wayleaveCard" *ngIf="client == false">
           <h4><strong>Note*</strong><em> In order to proceed to the next step a drawing needs to be provided of the location of works on the map</em></h4>
         </div>
         <!--Physical address Of project Kyle 16/01/24-->

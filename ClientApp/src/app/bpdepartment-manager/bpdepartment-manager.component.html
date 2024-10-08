@@ -87,14 +87,14 @@
 
     <div class="row">
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedFunctionalArea" (selectionChange)="GetAllDepartmentsForFunctionalArea()">
+        <mat-select [(ngModel)]="selectedFunctionalArea" (selectionChange)="GetAllDepartmentsForFunctionalArea()" >
           <mat-option *ngFor="let area of functionalAreasList" value="{{area.FAName}}">{{area.FAName}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="row">
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedDepartment">
+        <mat-select [(ngModel)]="selectedDepartment" >
           <mat-option *ngFor="let area of departmentsList" value="{{area.DepartmentName}}">{{area.DepartmentName}}</mat-option>
         </mat-select>
       </mat-form-field>

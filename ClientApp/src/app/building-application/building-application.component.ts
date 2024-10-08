@@ -699,7 +699,7 @@ export class BuildingApplicationComponent implements OnInit {
         alert(data.responseMessage)
       }
     }, error => {
-      console.log("AddUpdateBuildingApplicationError: ", error)
+      console.log("AddressTypeError: ", error)
 
     })
   }
@@ -976,8 +976,8 @@ export class BuildingApplicationComponent implements OnInit {
 /*  TPSupportingDocs: any;*/
   AddUpdateBuildingApplication() {
     this.mapAddress = this.sharedService.mapAddress;
-    this.latitude = this.sharedService.latitude;
-    this.longitude = this.sharedService.longitude;
+    this.latitude = this.sharedService.latitude.toString();
+    this.longitude = this.sharedService.longitude.toString();
     debugger;
 
     if (this.TPTOA == "other") {
@@ -1064,6 +1064,7 @@ export class BuildingApplicationComponent implements OnInit {
         })
       }
       else if (this.applicationBeingCreatedType == "Land Survey") {
+        debugger;
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
