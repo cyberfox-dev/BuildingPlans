@@ -1,0 +1,27 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="ChecklistItem">
+    <th mat-header-cell *matHeaderCellDef>Checklist Item </th>
+    <td mat-cell *matCellDef="let element"> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="isChecked">
+    <th mat-header-cell *matHeaderCellDef> isChecked</th>
+    <td mat-cell *matCellDef="let element"></td>
+  </ng-container>
+
+  <ng-container matColumnDef="CheckedBy" *ngIf="isExpand">
+    <th mat-header-cell *matHeaderCellDef>Checked By</th>
+    <td mat-cell *matCellDef="let element"> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateUpdated" *ngIf="isExpand">
+    <th mat-header-cell *matHeaderCellDef>DateUpdated </th>
+    <td mat-cell *matCellDef="let element"> </td>
+  </ng-container>
+
+
+ 
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

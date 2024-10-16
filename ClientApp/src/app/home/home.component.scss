@@ -2068,6 +2068,7 @@ tag {
 
 
 .mat-tab-group {
+    display:flow !important;
   flex-direction: row !important;
 }
 .mat-tab-labels {
@@ -2218,6 +2219,10 @@ tag {
   100% {
     z-index: 5;
     translate: 0px 30px;
+    translate: 0px 30px;
     opacity: 0;
   }
+
+
 }
+

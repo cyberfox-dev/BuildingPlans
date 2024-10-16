@@ -1082,7 +1082,7 @@ export class BuildingApplicationComponent implements OnInit {
             console.log("BuildingApplicationError: ", error)
           })
       }
-
+     
       }
   }
 

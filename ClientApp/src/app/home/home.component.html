@@ -24,14 +24,14 @@
     <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
     <mat-menu #menu2="matMenu" xPosition="after">
       <!--THIS IS ACTUALLY LAND SURVEY-->
-      <button mat-menu-item  [matMenuTriggerFor]="BPA">Building Plan</button>
+      <button mat-menu-item [matMenuTriggerFor]="BPA">Building Plan</button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="GoToBuildingApplication(false,null,true)">Wayleave Application</button>
 
     </mat-menu>
-
+   
     <!--OLD CREATE NEW WAYLEAVE, MOVED INSIDE THWE MAIN BUTTON-->
     <!-- <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>-->
     <!-- Service Information Kyle 31/01/24-->
@@ -47,7 +47,7 @@
       <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
-      <mat-divider *ngIf="this.CurrentUserProfile[0].isInternal == true"></mat-divider >
+      <mat-divider *ngIf="this.CurrentUserProfile[0].isInternal == true"></mat-divider>
       <button mat-menu-item (click)="openArchiveOption()" *ngIf="this.CurrentUserProfile[0].isInternal == true">Archive</button>
     </mat-menu>
   </div>
@@ -788,7 +788,7 @@
   <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->
   <ng-template #internalOpt let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal == false">As an internal applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal == false">As an internal applicant are you applying for :</h6>F
       <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal">As an external applicant are you applying for :</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
@@ -1157,7 +1157,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Next</button>
+      <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();onCreateBuildingApplication();modal.close('Save click');">Next</button>
     </div>
   </ng-template>
 
@@ -1221,10 +1221,10 @@
             </div>
           </div>
           <div class="row">
-<!--            <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" (onAddressChange)="onAddressSelect($event)" [(ngModel)]="clientPhysicalAddress" [disabled]="existingClientCheck">
-              <label for="applicantEmail">Address</label>
-            </div>-->
+            <div class="form-floating mb-3 mt-3 ">
+              <input type="text" class="form-control"  [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress"[disabled]="existingClientCheck">
+              <label for="clientPhysicalAddress">Address</label>
+            </div>
             <div *ngIf="isArchitect">
               <input type="checkbox" name="clientCheck" (click)="CheckExistingClient()" placeholder="Does your client already have a profile" />
               <label>Does your client already have a profile ?</label>
@@ -1243,7 +1243,7 @@
 
         <!--<button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>-->
         <!--I now validate when I create the client-->
-        <button mat-raised-button color="green" (click)="validateClientInfo()">Save</button>
+        <button mat-raised-button color="green" (click)="validateClientInfo();modal.dismiss('Cross click')">Save</button>
 
 
       </div>
