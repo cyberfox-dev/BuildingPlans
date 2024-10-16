@@ -2718,13 +2718,10 @@ export class BpActionCenterComponent implements OnInit {
           console.log("BuildingApplicationError: ", error)
         })
       }
-      else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Land Survey" || this.CurrentApplicationBeingViewed[0].BPApplicationType == "Building Plan") {
+      else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Land Survey" && this.CurrentApplicationBeingViewed[0].currentStage == "LS Review") {
         this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
           debugger;
           if (data.responseCode == 1) {
-
-
-
             if (data.dateSet.length > 0) {
               this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
               this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
@@ -2734,7 +2731,7 @@ export class BpActionCenterComponent implements OnInit {
                     null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null,
-                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                    null, null, null, null, null, null, "Reviewing", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
                       if (data.responseCode == 1) {
 
                         this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
@@ -2766,7 +2763,7 @@ export class BpActionCenterComponent implements OnInit {
                     null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null, null, null,
                     null, null, null, null, null, null, null,
-                    null, null, null, null, null, null, "Reviewing", "LS Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                    null, null, null, null, null, null, "Reviewing", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
                       if (data.responseCode == 1) {
 
                         /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -2799,8 +2796,83 @@ export class BpActionCenterComponent implements OnInit {
           console.log("BuildingApplicationError: ", error)
         })
       }
-      else {
+      else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Land Survey" && this.CurrentApplicationBeingViewed[0].currentStage == "TP Review") {
+        this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+          debugger;
+          if (data.responseCode == 1) {
+            if (data.dateSet.length > 0) {
+              this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
 
+                if (data.responseCode == 1) {
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
+
+                        this.AddComment("Assigned To A New Reviewer", this.currentBPDepartmentforCommentID);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+            else {
+              this.bpDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+                debugger;
+                if (data.responseCode == 1) {
+                  debugger;
+
+                  this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, "Reviewing", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                      if (data.responseCode == 1) {
+
+                        /*            this.CreateNotification(this.CurrentUser.appUserId);
+                                    this.CreateNotification(this.clientUserID);*/
+                        /*  this.moveToFinalApprovalForDepartment();*/
+                        this.AddComment("LS Admin Assigned A Reviewer", null);
+
+                      }
+                      else {
+                        alert(data.responseMessage)
+                      }
+                    }, error => {
+                      console.log("BuildingApplicationError: ", error)
+                    })
+
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+            }
+
+          }
+          else {
+            alert("Doesnt exisit in DB");
+          }
+        }, error => {
+          console.log("BuildingApplicationError: ", error)
+        })
       }
      
     }
@@ -5921,7 +5993,7 @@ export class BpActionCenterComponent implements OnInit {
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
       data: { message }, // Pass the message as data to the component
-      duration: 4 * 1000,
+      duration: 3 * 1000,
       panelClass: ['green-snackbar'],
       verticalPosition: 'top',
     });

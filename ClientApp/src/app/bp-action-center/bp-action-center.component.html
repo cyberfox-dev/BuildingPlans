@@ -16,7 +16,7 @@
   <div class="modal-body">
 
     <!--    <div class="contCards">-->
-    <div class="assign" *ngIf="TPAdminRole || LSAdminRole">
+    <div class="assign" *ngIf="LSAdminRole">
       <div class="AssignedTo">
         <p *ngIf="AssignUserForComment == false"> This project is already assigned</p>
       </div>
@@ -28,8 +28,28 @@
 
       </div>
       <div class="containerLS" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Approved(Pending)'">
-        <button mat-raised-button color="approveBTN" (click)="onComment('ApproveLSAdmin')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-        <button mat-raised-button color="rejectBTN" (click)="onComment('RejectLSAdmin')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+        <button mat-raised-button color="approveBTN" (click)="onComment('ApproveLSAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onComment('RejectLSAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+
+      </div>
+
+
+    </div>
+
+    <div class="assign" *ngIf="TPAdminRole">
+      <div class="AssignedTo">
+        <p *ngIf="AssignUserForComment == false"> This project is already assigned</p>
+      </div>
+      <div class="containerCard">
+        <p class="cardHeader">Assign Reviewer</p>
+        <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
+        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
+
+
+      </div>
+      <div class="containerLS" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Approved(Pending)'">
+        <button mat-raised-button color="approveBTN" (click)="onComment('ApproveLSAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onComment('RejectLSAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
 
       </div>
 
@@ -48,12 +68,12 @@
     <!-- #region Land survey (Building plans) -->
     <div class="" *ngIf="CurrentApplicationBeingViewed[0].BPApplicationType == 'Land Survey'">
 
-<!--       #region Land Survey Review Actions -->
+      <!--       #region Land Survey Review Actions -->
 
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review' && AssignUserForComment ||this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation' && AssignUserForComment  ">
         <p>LS Reviewer</p>
 
-              <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width">
           <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
           <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
           <div>{{ leaveAComment.length }}/250</div>

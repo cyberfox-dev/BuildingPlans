@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
 import { SharedService } from '../shared/shared.service';
 import { FinancialService } from '../service/Financial/financial.service';
+import { BuildingApplicationsService } from '../service/BuildingApplications/building-applications.service';
 export interface FinancialDocumentList {
   FinancialID: number;
   FinancialDocumentName: string;
@@ -20,12 +21,57 @@ export interface FinancialDocumentList {
 })
 export class BPFinancialsComponent implements OnInit {
 
+  /**/
+  lsNumber: string;
+  BPApplicationProjectNumber: string;
+  typeOfDev: string;
+
+  typeOfAddress: string;
+  noOfUnits: string;
+  unitNumber: string;
+  propertyValue: string;
+  erfNumber: string;
+  portionNumber: string;
+  premisesName: string;
+  propertyDescription: string;
+  occupationClassification: string;
+  buildingPlanFor: string;
+  physicalAddress: string;
+  latitude: string;
+  longitude: string;
+  sGCode: string;
+  OmnibusServitude: boolean = false;
+  functionalArea: string;
+  currentStage: string;
+  currentStageNumber: number;
+  ActionCenter: boolean = false;
+
+  //Owner Details
+  firstName: string;
+  surname: string;
+  cellNo: string;
+  altCellNo: string;
+  email: string;
+  altEmail: string;
+  address: string;
+  idNumber: string;
+
+
+
+  //Architect Detail
+  architectName: string;
+  architectSurname;
+  architectId: string;
+  architectReg: string;
+  architectEmail: string;
+  architectCell: string;
+/**/
   ApplicationID: number;
 
   hasRelaxationInvoice: boolean = false;
   isFinancial: boolean;
   hasFile: boolean;
-
+  popBtn: boolean = false;
 
   fileCount: number = 0;
   fileAttrs = '';
@@ -37,11 +83,14 @@ export class BPFinancialsComponent implements OnInit {
   displayedColumns: string[] = ['FinancialName', 'FinancialDocumentName', 'actions'];
   dataSource = this.financialDocumentList;
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  constructor(private bpFinancialService: BPFinancialService, private sharedService: SharedService, private modalService: NgbModal, private financialService: FinancialService) { }
+    bpApplicationType: any;
+    currentStatus: any;
+  constructor(private bpFinancialService: BPFinancialService, private sharedService: SharedService, private modalService: NgbModal, private financialService: FinancialService, private bpService: BuildingApplicationsService,) { }
 
   ngOnInit(): void {
     this.ApplicationID = this.sharedService.getApplicationID();
     this.getAllFinancialDocuments();
+    this.getApplicationInfo();
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
@@ -63,6 +112,34 @@ export class BPFinancialsComponent implements OnInit {
   }
 
 
+
+
+  getApplicationInfo() {
+
+    this.bpService.getBuildingApplicationByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        const current = data.dateSet[0];
+        console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA", data.dateSet[0]);
+        this.lsNumber = current.lsNumber;
+        this.bpApplicationType = current.bpApplicationType;
+        this.currentStage = current.stage;
+        this.currentStatus = current.status;
+        this.OmnibusServitude = current.omnibusServitude;
+
+
+      
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseKyle", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
   onFileUpload(event: any) {
 
 
@@ -71,8 +148,22 @@ export class BPFinancialsComponent implements OnInit {
 
   openUpload(UploadProof: any) {
     this.isFinancial = true;
-    this.fileAttrs = "Relaxation POP";
+    if (this.currentStatus == "Unpaid") {
+      this.fileAttrs = "Application POP";
+    }
+    else if (this.currentStatus == "Relaxation Pending") {
+      this.fileAttrs = "Relaxation POP";
+    }
+    else {
+
+    }
+    this.fileAttrs = "Application POP";
     this.modalService.open(UploadProof, { centered: true, size: 'xl' });
+  }
+
+  isPopDocumentInList(): boolean {
+    const expectedDocName = `Application POP_appID${this.ApplicationID}.pdf`;
+    return this.financialDocumentList.some(doc => doc.FinancialDocumentName === expectedDocName);
   }
   getAllFinancialDocuments() {
     if (this.isWayleave) {

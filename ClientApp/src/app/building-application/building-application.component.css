@@ -151,8 +151,12 @@ h3 {
   user-select: none;
 }
 .mat-green {
-  background-color: green;
+  background-color: #7ade7f;
   color: white;
+  width: 195px;
+  margin-top: 33px;
+  font-size: 15px;
+  height: 50px;
 }
 .mat-action {
   color: white;
