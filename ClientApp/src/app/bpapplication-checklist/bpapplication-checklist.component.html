@@ -2,7 +2,7 @@
 
   <ng-container matColumnDef="ChecklistItem">
     <th mat-header-cell *matHeaderCellDef>Checklist Item </th>
-    <td mat-cell *matCellDef="let element"> </td>
+    <td mat-cell *matCellDef="let element">{{element.ChecklistItem}} </td>
   </ng-container>
 
   <ng-container matColumnDef="isChecked">
@@ -10,14 +10,14 @@
     <td mat-cell *matCellDef="let element"></td>
   </ng-container>
 
-  <ng-container matColumnDef="CheckedBy" *ngIf="isExpand">
+  <ng-container matColumnDef="CheckedBy" >
     <th mat-header-cell *matHeaderCellDef>Checked By</th>
-    <td mat-cell *matCellDef="let element"> </td>
+    <td mat-cell *matCellDef="let element">{{element.CheckedBy}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="DateUpdated" *ngIf="isExpand">
+  <ng-container matColumnDef="DateUpdated"  >
     <th mat-header-cell *matHeaderCellDef>DateUpdated </th>
-    <td mat-cell *matCellDef="let element"> </td>
+    <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
   </ng-container>
 
 

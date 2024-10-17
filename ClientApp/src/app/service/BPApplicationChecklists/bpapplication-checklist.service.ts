@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class BPApplicationChecklistService {
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  private readonly baseURL: string = this.apiUrl + "bPApplicationChecklist/";
+  private readonly baseURL: string = this.apiUrl + "bPApplicationChecklists/";
   //BPAddressTypes
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 

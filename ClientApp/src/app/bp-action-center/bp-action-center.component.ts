@@ -62,6 +62,8 @@ import {BPAccessGroupUserLinkService } from '../service/BPAccessGroupsUserLink/b
 import { GoogleMap, MapInfoWindow, MapMarker, GoogleMapsModule } from '@angular/google-maps';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
+import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
+import { BPApplicationChecklistService } from '../service/BPApplicationChecklists/bpapplication-checklist.service';
 //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -574,6 +576,8 @@ export class BpActionCenterComponent implements OnInit {
 
     private cdRef: ChangeDetectorRef,
     private neighbourConsentService: NeighbourConsentService,
+    private bpStageChecklistService: BPStagesChecklistsService,
+    private bpApplicationChecklistService : BPApplicationChecklistService,
 
 ) { }
 
@@ -3618,6 +3622,7 @@ export class BpActionCenterComponent implements OnInit {
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
                 this.AddComment("TP Relaxation", null);
+                this.AddStageChecklistForApplication("TP Relaxation");
                 /*this.getAllServiceItemsForRelaxation();*/
               }
               else {
@@ -3718,6 +3723,7 @@ export class BpActionCenterComponent implements OnInit {
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
                 this.AddComment("TP Relaxation", null);
+                this.AddStageChecklistForApplication("TP Relaxation");
                 /*this.getAllServiceItemsForRelaxation();*/
               }
               else {
@@ -3784,6 +3790,7 @@ export class BpActionCenterComponent implements OnInit {
 
                         if (data.responseCode == 1) {
                           this.AddComment("LS Approved", this.currentBPDepartmentforCommentID);
+                          this.AddStageChecklistForApplication("TP Review");
                         }
                         else {
                           alert(data.responseMessage);
@@ -3869,7 +3876,9 @@ export class BpActionCenterComponent implements OnInit {
                             null, null, null, null, null, null, "Approved(Pending)", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
                               if (data.responseCode == 1) {
+                                
                                 this.AddComment("LS Approved", this.currentBPDepartmentforCommentID);
+                                this.AddStageChecklistForApplication("LS Review");
                               }
                               else {
                                 alert(data.responseMessage);
@@ -3925,6 +3934,7 @@ export class BpActionCenterComponent implements OnInit {
 
                               if (data.responseCode == 1) {
                                 this.AddComment("Relaxation Requested", this.currentBPDepartmentforCommentID);
+                                this.AddStageChecklistForApplication("LS Review");
                               }
                               else {
                                 alert(data.responseMessage);
@@ -4399,6 +4409,7 @@ export class BpActionCenterComponent implements OnInit {
                 //this.openSnackBar("Application Actioned");
                 //this.getAllServiceItemsForRelaxation();
                 this.AddComment("LS Relaxation", null);
+
               }
               else {
                 alert(data.responseMessage)
@@ -4788,6 +4799,7 @@ export class BpActionCenterComponent implements OnInit {
                 /*  this.moveToFinalApprovalForDepartment();*/
 
                 this.AddComment("LS Approved", null);
+                this.AddStageChecklistForApplication("BCO Recommendation");
               }
               else {
                 alert(data.responseMessage)
@@ -4819,6 +4831,7 @@ export class BpActionCenterComponent implements OnInit {
                 //this.openSnackBar("Application Actioned");
                 //this.getAllServiceItemsForRelaxation();
                 this.AddComment("LS Relaxation", null);
+                this.AddStageChecklistForApplication("Plans Examiner");
               }
               else {
                 alert(data.responseMessage)
@@ -5199,12 +5212,13 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Planning Approval Authority", "Reviewing", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Planning Approval Authority", "Reviewing",100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
 
                 this.AddComment("Town Planner Approved", null);
+                this.AddStageChecklistForApplication("Reviewing");
               }
               else {
                 alert(data.responseMessage)
@@ -5361,6 +5375,7 @@ export class BpActionCenterComponent implements OnInit {
                 /*  this.moveToFinalApprovalForDepartment();*/
 
                 this.AddComment("LS Approved", null);
+                this.AddStageChecklistForApplication("Plan Approval Committee(PAC)");
               }
               else {
                 alert(data.responseMessage)
@@ -5781,6 +5796,7 @@ export class BpActionCenterComponent implements OnInit {
                 /*  this.moveToFinalApprovalForDepartment();*/
 
                 this.AddComment("LS Approved", null);
+                this.AddStageChecklistForApplication("Jacket Upload Plans");
               }
               else {
                 alert(data.responseMessage)
@@ -5860,6 +5876,7 @@ export class BpActionCenterComponent implements OnInit {
                 /*  this.moveToFinalApprovalForDepartment();*/
 
                 this.AddComment("LS Approved", null);
+                this.AddStageChecklistForApplication("Building Inspector");
               }
               else {
                 alert(data.responseMessage)
@@ -10316,6 +10333,7 @@ export class BpActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
           this.modalService.dismissAll();
           this.openSnackBar("Application Distributed");
+          this.AddStageChecklistForApplication("Plans Examiner");
           this.router.navigate(["/home"]);
         }
         else {
@@ -10337,6 +10355,7 @@ export class BpActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
           this.modalService.dismissAll();
           this.openSnackBar("Application Distributed");
+          this.AddStageChecklistForApplication("Town Planner Review");
           this.router.navigate(["/home"]);
         }
         else {
@@ -10836,6 +10855,37 @@ export class BpActionCenterComponent implements OnInit {
   saveAllBuildingControls() {
     this.showApprove = true;
   }
-  
+
+
+  AddStageChecklistForApplication(currentStage: string) {
+
+    this.bpApplicationChecklistService.getChecklistForApplicationAndStage(this.bpApplicationId, currentStage, this.CurrentApplicationBeingViewed[0].BPApplicationType).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (data.dateSet.length <= 0 ) {
+          this.bpStageChecklistService.getAllChecklistItemsForStage(currentStage, this.CurrentApplicationBeingViewed[0].BPApplicationType).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const current = data.dateSet[i];
+
+                this.bpApplicationChecklistService.addUpdateApplicationChecklist(0, this.bpApplicationId, current.checklistItem, this.CurrentApplicationBeingViewed[0].BPApplicationType, currentStage, false, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                    return;
+                  }
+                })
+              }
+            }
+          })
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    })
+    
+  }
 }
 

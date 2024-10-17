@@ -173,8 +173,10 @@
 
               <p class="currentStageText">This {{bpApplicationType}} application is Currently at a {{currentStage}} stage.</p>
             </mat-tab>
-            <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
-              <app-bpapplication-checklist [ApplicationID]="applicationId"></app-bpapplication-checklist>
+            <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true && showChecklist">
+              <app-bpapplication-checklist [ApplicationID]="applicationId"
+                                           [StageName]="currentStage"
+                                           [FunctionalArea]="bpApplicationType"></app-bpapplication-checklist>
             </mat-tab>
           </mat-tab-group>
 

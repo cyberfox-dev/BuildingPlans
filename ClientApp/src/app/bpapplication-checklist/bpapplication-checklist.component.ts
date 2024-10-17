@@ -29,14 +29,16 @@ export class BPApplicationChecklistComponent implements OnInit {
   
   Checklist: Checklist[] = [];
   dataSource = this.Checklist;
-  displayedColumns: string[] = ["ChecklistItem", "isChecked", "CheckedBy", "DateUpdated"];
+  displayedColumns: string[] = ["ChecklistItem", "CheckedBy", "DateUpdated", "isChecked"];
 
   constructor(private bpChecklistService: BPApplicationChecklistService) { }
 
   ngOnInit(): void {
+    this.getChecklistForApplication();
   }
 
   getChecklistForApplication() {
+    debugger;
     this.bpChecklistService.getChecklistForApplicationAndStage(this.ApplicationID, this.StageName, this.FunctionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -46,6 +48,7 @@ export class BPApplicationChecklistComponent implements OnInit {
           tempCheckList.ChecklistItemID = current.checklistItemID;
           tempCheckList.ApplicationID = current.applicationID;
           tempCheckList.FunctionalArea = current.functionalArea;
+          tempCheckList.ChecklistItem = current.checklistItem;
           tempCheckList.StageName = current.stageName;
           tempCheckList.isChecked = current.isChecked;
           tempCheckList.CheckedBy = current.checkedBy;
@@ -53,11 +56,30 @@ export class BPApplicationChecklistComponent implements OnInit {
           tempCheckList.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
 
           this.Checklist.push(tempCheckList);
+          this.ChecklistTable?.renderRows();
         }
       }
       else {
         alert(data.responseMessage);
       }
     })
+  }
+
+  changeIsCheckedStatus(index: any) {
+    const checklistItem = this.Checklist[index];
+
+    if (checklistItem.isChecked == false) {
+
+      this.bpChecklistService.changeIsCheckedStatus(checklistItem.ChecklistItemID, true).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Checklist Item Error", error);
+      })
+    }
   }
 }
