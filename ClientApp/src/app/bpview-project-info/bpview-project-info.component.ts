@@ -301,7 +301,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   sanitizeHTML(comment: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
-
+  showChecklist: boolean;
   getApplicationInfo() {
 
     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
@@ -353,8 +353,8 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.ExtentOfProperty = current.ExtentOfProperty;
         this.TitleRestrictions = current.TitleRestrictions;
         this.RegisteredDescription = current.RegisteredDescription;
-        
-
+       
+        this.showChecklist = true;
         this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
       else {

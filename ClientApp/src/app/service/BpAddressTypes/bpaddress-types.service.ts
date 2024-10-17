@@ -29,4 +29,6 @@ export class BPAddressTypesService {
     
     return this.httpClient.post(this.baseURL + "AddUpdateAddressType", body);
   }
+
+ 
 }

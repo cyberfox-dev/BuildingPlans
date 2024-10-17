@@ -111,6 +111,7 @@ namespace BuildingPlans.Data
         public DbSet<DrawingCoOrdinates> DrawingCoOrdinates { get; set; }
         public DbSet<BPTasks> BPTasks { get; set; }
 
+        public DbSet<BPApplicationChecklists> BpApplicationChecklist { get; set; }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlServer("YourPostgreSqlConnectionStringHere")

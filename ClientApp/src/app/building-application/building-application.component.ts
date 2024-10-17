@@ -30,6 +30,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
+import { BPApplicationChecklistService } from '../service/BPApplicationChecklists/bpapplication-checklist.service';
+import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service'
 export interface ApplicaitionList {
   ApplicationID: number;
   LSNumber: string;
@@ -246,6 +248,8 @@ export class BuildingApplicationComponent implements OnInit {
     private financialService: BPFinancialService,
     private bpNotificationService: BPNotificationsService,
     private modalService: NgbModal, private http: HttpClient,
+    private bpApplicationChecklistService: BPApplicationChecklistService,
+    private bpChecklistService: BPStagesChecklistsService
   ) {
     
 }
@@ -1004,6 +1008,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid(Pending)", "TP Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
               this.generateTPApplicationFeeInvoice();
+              this.AddChecklistForApplication("TP Review");
               this.modalService.dismissAll();
               this.openSnackBar("Application Created");
               this.router.navigate(["/home"]);
@@ -1015,7 +1020,7 @@ export class BuildingApplicationComponent implements OnInit {
             console.log("BuildingApplicationError: ", error)
           })
       }
-      else if (this.applicationBeingCreatedType == "Building Plans") {
+      else if (this.applicationBeingCreatedType == "Building Plan") {
 
 
         this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
@@ -1073,6 +1078,7 @@ export class BuildingApplicationComponent implements OnInit {
             if (data.responseCode == 1) {
               this.modalService.dismissAll();
               this.generateLSApplicationFeeInvoice();
+              this.AddChecklistForApplication("LS Review");
               this.openSnackBar("Application Created");
               this.router.navigate(["/home"]);
             }
@@ -1083,7 +1089,7 @@ export class BuildingApplicationComponent implements OnInit {
             console.log("BuildingApplicationError: ", error)
           })
       }
-
+     
       }
   }
 
@@ -1560,6 +1566,31 @@ export class BuildingApplicationComponent implements OnInit {
       panelClass: ['green-snackbar'],
       verticalPosition: 'top',
     });
+  }
+
+  AddChecklistForApplication(currentStage: string) {
+    debugger;
+    this.bpChecklistService.getAllChecklistItemsForStage(currentStage, this.applicationBeingCreatedType).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          debugger;
+          this.bpApplicationChecklistService.addUpdateApplicationChecklist(0, this.applicationID, current.checklistItem, this.applicationBeingCreatedType, currentStage, false, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+            }
+            else {
+              alert(data.reponseMessage);
+              return;
+            }
+          })
+
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    })
   }
 }
 

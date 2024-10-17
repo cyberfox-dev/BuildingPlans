@@ -4815,7 +4815,7 @@ this.subscriptions.push(subscription);
     );
   }
   async validateClientInfo() {
-
+    debugger;
     let clientEmail = this.clientEmail;
     let phoneNumber = this.clientCellNo;
     let clientRefNo = this.clientRefNo;
@@ -4823,7 +4823,9 @@ this.subscriptions.push(subscription);
     let companyName = this.clientCompanyName;
     let companyRegNo = this.clientCompanyRegNo;
     let clientCompanyType = this.clientCompanyType;
-    let physicalAddress = this.clientPhysicalAddress.toString();
+    let physicalAddress = this.clientPhysicalAddress;
+    
+    
 
     let clientIDNumber = this.clientIDNumber; //hide
 
@@ -4838,10 +4840,13 @@ this.subscriptions.push(subscription);
         this.clientFullName = this.clientName + ' ' + this.clientSurname;
         console.log("Full Name: " + this.clientFullName);
       } else {
+
         alert("Invalid surname. Please enter a single name with letters only.");
+        return;
       }
     } else {
       alert("Invalid name. Please enter a single name with letters only.");
+      return;
     }
 
     /*if (clientIDNumber.length === 13) {
@@ -4916,6 +4921,7 @@ this.subscriptions.push(subscription);
       this.createNewClient();
     }
     else {
+      alert("Some Information may be entered incorrectly. Double check entries and try again");
       return;
     }
   }
@@ -4926,7 +4932,7 @@ this.subscriptions.push(subscription);
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
           
-          this.newProfileComponent.onNewProfileCreate(
+         this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             this.clientFullName,
             this.clientEmail,
@@ -4949,7 +4955,7 @@ this.subscriptions.push(subscription);
           alert(this.clientFullName + " has been added as an external client.\nYou can now link their professionals and create a wayleave on their behalf.");
           console.log("Who is logged in?" + JSON.stringify(this.CurrentUser));
          
-          
+          this.CheckUserID();
           //I NEED TO STAY INSIDE THIS MAT-STEPPER
           //this.router.navigate(["/new-profile"]);
         }
@@ -4961,7 +4967,27 @@ this.subscriptions.push(subscription);
 
     //the part that is relevant is the conditional statement that has a userID of null
 
-    this.getUserProfile();
+  }
+
+
+   CheckUserID() {
+  if (this.isWayleave) {
+      if (this.sharedService.clientUserID == null) {
+        alert("An Error has Occured");
+      }
+      else {
+        this.modalService.open(this.Prof, { centered: true, size: 'xl' });
+      }
+    }
+    else {
+      if (this.sharedService.clientUserID == null) {
+        alert("An Error has Occured");
+      }
+      else {
+        this.onCreateBuildingApplication();
+      }
+    }
+   
   }
   getUserProfile() {
     let stringifiedData = JSON.parse(
@@ -6999,7 +7025,8 @@ this.subscriptions.push(subscription);
   //}
 
   ApplicationBeginCreatedType: string;
-  GoToBuildingApplication(isPlanArchive, CreateApplicationType: any,isWayleave) {
+  GoToBuildingApplication(isPlanArchive, CreateApplicationType: any, isWayleave) {
+    debugger;
     if (CreateApplicationType == "ls") {
       this.ApplicationBeginCreatedType = "Land Survey";
     }
@@ -7016,9 +7043,10 @@ this.subscriptions.push(subscription);
     debugger;
     this.sharedService.setApplicationBeingCreatedType(this.ApplicationBeginCreatedType);
     this.isArchivePlan = isPlanArchive;
+
     if (this.isArchitect == false || this.isArchitect == null && this.CurrentUserProfile[0].isInternal == true) {
      
-      this.openSm(this.content);
+      this.openClientOption(this.clientOption);
     }
 
     else if (this.CurrentUserProfile[0].isInternal == true) {
@@ -7033,8 +7061,8 @@ this.subscriptions.push(subscription);
 
   }
 
-  getAllArchitectsForUser() {
-    
+      getAllArchitectsForUser() {
+
     this.ArchitectsList.splice(0, this.ArchitectsList.length);
     this.UserlinkToArchitectService.getArchitectsForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {

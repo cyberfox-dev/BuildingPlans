@@ -173,6 +173,11 @@
 
               <p class="currentStageText">This {{bpApplicationType}} application is Currently at a {{currentStage}} stage.</p>
             </mat-tab>
+            <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true && showChecklist">
+              <app-bpapplication-checklist [ApplicationID]="applicationId"
+                                           [StageName]="currentStage"
+                                           [FunctionalArea]="bpApplicationType"></app-bpapplication-checklist>
+            </mat-tab>
             <mat-tab label="Tasks">
               <app-bptasks></app-bptasks>
 </mat-tab>
@@ -295,9 +300,7 @@
             <mat-tab label="Financial Documents">
               <app-bpfinancials></app-bpfinancials>
             </mat-tab>
-            <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
-
-            </mat-tab>
+           
           </mat-tab-group>
           <div class="bottom-0">
             <button mat-raised-button color="expand" (click)="openExpand('Documents',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
