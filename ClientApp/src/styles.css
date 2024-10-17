@@ -347,18 +347,16 @@ body {
 
 .green-snackbar {
   text-align: center !important;
-  border-radius: 91px !important;
+  /* border-radius: 124px !important; */
   /* box-sizing: initial !important; */
-  margin-top: -5px !important;
+  margin-top: 10px !important;
   /* max-width: 33vw; */
   min-width: 240px !important;
   /* padding: 0; */
   min-height: 3px !important;
-
   background: #cee2cc00;
   color: #137000;
   box-shadow: none;
-
 }
 
 .red-snackbar {

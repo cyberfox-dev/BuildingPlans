@@ -204,34 +204,25 @@
     <div>
       <button mat-raised-button (click)="openAddDepartmentDocument(AddDepartmentDoc);modal.dismiss('Cross click')" color="action">Add Mandatory Department Document</button>
     </div>
-
     <table mat-table [dataSource]="DepartmentManDocDataSource" class="mat-elevation-z8">
-
       <ng-container matColumnDef="DocumentName">
         <th mat-header-cell *matHeaderCellDef>Document Name</th>
         <td mat-cell *matCellDef="let element">{{element.DocumentName}}</td>
       </ng-container>
-
       <ng-container matColumnDef="DateCreated">
         <th mat-header-cell *matHeaderCellDef>Date Created</th>
         <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
       </ng-container>
-
       <ng-container matColumnDef="Actions">
         <th mat-header-cell *matHeaderCellDef>actions</th>
         <td mat-cell *matCellDef="let i = index">
           <button mat-raised-button (click)="DeleteDepartmentMandatoryDocument(i,DepartmentManDoc)" color="warn" matTooltip="Delete Mandatory Department Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
-
         </td>
         <td mat-cell *matCellDef="let element"></td>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="displayedDepartmentDocColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedDepartmentDocColumns;"></tr>
-
     </table>
-
-
   </div>
 </ng-template>
 

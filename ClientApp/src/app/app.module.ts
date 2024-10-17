@@ -131,6 +131,7 @@ import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.compo
 import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
 import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-required-uploads/bpdepartment-doc-required-uploads.component'; //BPDialogBoxes Sindiswa 24062024
 import { CreateNewApplicationComponent } from './create-new-application/create-new-application.component';
+import { BPTasksComponent } from './bptasks/bptasks.component';
 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
@@ -247,7 +248,7 @@ import { CreateNewApplicationComponent } from './create-new-application/create-n
     BPServiceItemsComponent,
     BpMandoryDocumentsComponent,
     BpConfirmModalComponent, BPDepartmentDocRequiredUploadsComponent, //BPDialogBoxes Sindiswa 24062024
-    CreateNewApplicationComponent,
+    CreateNewApplicationComponent, BPTasksComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -88,7 +88,7 @@ namespace BuildingPlans.Controllers
                         tempStageTable.DateUpdated = DateTime.Now;
                         tempStageTable.isActive = true;
 
-                         _context.Update(tempStageTable);
+                        _context.Update(tempStageTable);
                         await _context.SaveChangesAsync();
 
                         result = tempStageTable;
@@ -118,7 +118,7 @@ namespace BuildingPlans.Controllers
                                         DateCreated = stage.DateCreated,
                                         DateUpdated = stage.DateUpdated,
                                         isActive = stage.isActive,
-                                        
+
 
                                     }
                                     ).ToListAsync();
@@ -132,13 +132,13 @@ namespace BuildingPlans.Controllers
         }
 
         [HttpPost("DeleteStageByStageID")]
-        public async Task<object> DeleteStageByStageID([FromBody]int stageID)
+        public async Task<object> DeleteStageByStageID([FromBody] int stageID)
         {
             try
             {
                 var tempStageTable = await _context.StagesTableBP.FindAsync(stageID);
 
-                if(tempStageTable == null)
+                if (tempStageTable == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Stage does not exist on database", false));
                 }
@@ -158,11 +158,11 @@ namespace BuildingPlans.Controllers
         }
 
         [HttpPost("GetStageByFunctionalArea")]
-        public async Task<object>GetStageByFunctionalArea([FromBody] StagesTableBPBindingModel model)
+        public async Task<object> GetStageByFunctionalArea([FromBody] StagesTableBPBindingModel model)
         {
             try
             {
-                
+
 
 
                 var result = await (from stageTable in _context.StagesTableBP
