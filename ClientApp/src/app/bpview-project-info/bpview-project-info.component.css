@@ -71,8 +71,8 @@ h2 {
   width: 100%;
   margin: 17px 0px 6px 0px;
   overflow: auto;
-  max-height: 24.4vh;
-  min-height: 24.4vh;
+  max-height: 25.4vh;
+  min-height: 25.4vh;
 }
 .displayRow {
   display: flex;

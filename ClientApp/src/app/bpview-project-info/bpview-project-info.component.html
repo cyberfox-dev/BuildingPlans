@@ -165,8 +165,8 @@
                   <div *ngFor="let stage of StagesForApplication; let i = index"
                        class="step"
                        [class.active]="i < currentStageNumber"
-                    [class.completed]="i < currentStageNumber" matTooltip="{{ stage.StageName}}">
-                    {{ i }}
+                       [class.completed]="i < currentStageNumber">
+                    {{ stage.StageName }}
                   </div>
                 </div>
               </div>
@@ -751,7 +751,7 @@
     <mat-tab-group>
 
       <mat-tab label=" General Comments">
-        <button mat-raised-button color="blue" (click)="openClarify(newClarify)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg">Clarify With Applicant</button>
+        <button mat-raised-button color="blue" (click)="openClarify(newClarify)"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg">Chat With Applicant</button>
         <div class="generalcomments">
           <div *ngIf="CommentsList.length === 0">
             <h5>No comments have been made yet.</h5>
@@ -759,24 +759,26 @@
           <div *ngFor="let comment of CommentsList ; let i = index">
 
             <div *ngIf="comment.CommentStatus === 'Clarify'">
+              <div [class.cardNote]=" comment.CommentStatus == 'Clarify'">
 
-              <div [class.cardClarify]="comment.CommentStatus === 'Clarify'">
-                <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
-                  <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
-                </div>
                 <div class="message-text-container">
-                  <div class="messageHead">
-                    <h1 [class.message-textClarify]="comment.CommentStatus === 'Clarify'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+
+                  <div class="noteHead">
+                    <h1 [class.message-textApprove]="comment.CommentStatus == 'Clarify'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
                     <p>{{comment.DateCreated}}</p>
                   </div>
                   <div class="messageFoot">
+
                     <p class="sub-text">{{comment.Comment}}</p>
-                    <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == comment.CanReplyUserID">Reply</button>
-                    <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
+                    <button mat-button matTooltip="Reply" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/reply.svg"></button>
+                  </div>
+                  <div *ngIf="comment.isApplicantReply != null">
+                    <p class="applicantsReply">Applicants Reply: {{comment.isApplicantReply}}</p>
 
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
 
