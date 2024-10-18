@@ -25,7 +25,9 @@
 
 
         <div class="PropertyOwnerDetails animationSlideUp">
-          <h3>Property Owner Details</h3>
+          <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
+          <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
+
           <p class="Name">{{firstName}} {{surname}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
           <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
@@ -34,8 +36,7 @@
           </div>
         </div>
         <div class="PropertyOwnerDetails animationSlideUp">
-          <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
-          <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
+          <h3>Property Owner Details</h3>
           <p class="Name">{{architectName}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
           <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
@@ -45,64 +46,93 @@
         </div>
         </div>
         <div class="down">
-        <div class="Map animationSlideDown">
-          <mat-tab-group>
+          <div class="Map animationSlideDown">
+            <mat-tab-group>
 
-            <mat-tab label="Map Details">
-              <google-map height="250px"
-                          width="100%"
-                          [center]="center"
-                          [options]="mapOptions">
+              <mat-tab label="Map Details">
+                <google-map height="250px"
+                            width="100%"
+                            [center]="center"
+                            [options]="mapOptions">
 
-                <map-marker *ngFor="let marker of Markers"
-                            [position]="marker.position"
-                            [title]="marker.title">
+                  <map-marker *ngFor="let marker of Markers"
+                              [position]="marker.position"
+                              [title]="marker.title">
 
-                </map-marker>
-              </google-map>
-            </mat-tab>
-            <mat-tab label="Application Details">
-              <div class="applicationDeatails">
-                <p>LS Number - {{ lsNumber }}</p>
-                <p *ngIf="BPApplicationProjectNumber">Project Number - {{ BPApplicationProjectNumber }}</p>
-                <p>Type Of Development - {{ typeOfDev }}</p>
-                <p>Type Of Address - {{ typeOfAddress }}</p>
-                <p>Number Of Units - {{ noOfUnits }}</p>
-                <p>Unit Number - {{ unitNumber }}</p>
-                <p>Property Value - {{ propertyValue }}</p>
-                <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
-                <p>Portion Number - {{ portionNumber }}</p>
-                <p>Premises Name - {{ premisesName }}</p>
-                <p>Property Description - {{ propertyDescription }}</p>
-                <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
-                <p>Building Plan For - {{ buildingPlanFor }}</p>
-                <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
-                <p>Physical Address Of Project - {{ physicalAddress }}</p>
-                <p>Latitude - {{ latitude }}</p>
-                <p>Longitude - {{ longitude }}</p>
-                <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
-                <div *ngIf="bpApplicationType == 'Town Planning'">
-                  <p>Title Restrictions - {{ TitleRestrictions }}</p>
-                  <p>Extent Of Property - {{ ExtentOfProperty }}</p>
-                  <p>TitleDeedNo - {{ TitleDeedNo }}</p>
-                  <p>Registered Description - {{ RegisteredDescription }}</p>
-                  <p>Company Name - {{ NameOfCompany }}</p>
-                  <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
-                  <p>isCombined - {{ isCombinedApplication }}</p>
-                  <p>Description Of Project - {{ DescriptionOfProject }}</p>
-                  <p>Application Type - {{ bpApplicationType }}</p>
+                  </map-marker>
+                </google-map>
+              </mat-tab>
+              <mat-tab label="Application Details">
+                <div class="applicationDeatails">
+
+
+                  <div class="card2">
+                    <p class="detailsCardName">Application Details</p>
+                  </div>
+                  <p>Application Type: {{bpApplicationType}}</p>
+                  <p>LS Number: {{ lsNumber }}</p>
+                  <p *ngIf="BPApplicationProjectNumber">Project Number: {{ BPApplicationProjectNumber }}</p>
+
+                  <div class="card2">
+                    <p class="detailsCardName">Property Details Of Development</p>
+                  </div>
+                  <p>Property Description - {{ propertyDescription }}</p>
+                  <p>Premises Name - {{ premisesName }}</p>
+                  <p>Type Of Address - {{ typeOfAddress }}</p>
+                  <p>Number Of Units - {{ noOfUnits }}</p>
+                  <p>Unit Number - {{ unitNumber }}</p>
+                  <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
+                  <p>Portion Number - {{ portionNumber }}</p>
+                  <p>Physical Address Of Project - {{ physicalAddress }}</p>
+                  <p>Latitude - {{ latitude }}</p>
+                  <p>Longitude - {{ longitude }}</p>
+                  <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
+
+                  <div class="card2">
+                    <p class="detailsCardName">Plan Details</p>
+                  </div>
+                  <p>Type Of Development - {{ typeOfDev }}</p>
+                  <p>Property Value - {{ propertyValue }}</p>
+                  <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
+                  <p>Building Plan For - {{ buildingPlanFor }}</p>
+                  <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
+                  <div *ngIf="bpApplicationType == 'Town Planning'">
+                    <p>Title Restrictions - {{ TitleRestrictions }}</p>
+                    <p>Extent Of Property - {{ ExtentOfProperty }}</p>
+                    <p>TitleDeedNo - {{ TitleDeedNo }}</p>
+                    <p>Registered Description - {{ RegisteredDescription }}</p>
+                    <p>Company Name - {{ NameOfCompany }}</p>
+                    <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
+                    <p>isCombined - {{ isCombinedApplication }}</p>
+                    <p>Description Of Project - {{ DescriptionOfProject }}</p>
+                    <p>Application Type - {{ bpApplicationType }}</p>
+                  </div>
                 </div>
-              </div>
+              </mat-tab>
+              <mat-tab label="Public Facing" *ngIf="this.CurrentUserProfile[0].isInternal == true">
+                <mat-tab-group>
+
+                 
+                  <div *ngIf="InternalCommentsList.length === 0">
+
+                  </div>
+                  <mat-tab label="Advert Pack" *ngIf="bpApplicationType == 'Town Planning'">
+                    <h5>Nothing here yet</h5>
+                  </mat-tab>
+                  <mat-tab label="Objections" *ngIf="bpApplicationType == 'Town Planning'">
+                    <h5>Nothing here yet</h5>
+                  </mat-tab>
+</mat-tab-group>
             </mat-tab>
 
-            <mat-tab label="Advert Pack" *ngIf="bpApplicationType == 'Town Planning'">
+            
 
-            </mat-tab>
-            <mat-tab label="Objections" *ngIf="bpApplicationType == 'Town Planning'">
 
-            </mat-tab>
-          </mat-tab-group>
-        </div>
+            </mat-tab-group>
+            <div class="bottom-0">
+              <button mat-raised-button color="expand" (click)="openExpand('ExpandDetails',expand)" matTooltip="Expand"><img class="expandBTN" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/expand.svg"></button>
+            </div>
+          </div>
         <div class="tracker animationSlideDown">
 
           <mat-tab-group>
@@ -125,18 +155,13 @@
                   <td mat-cell *matCellDef="let element">
                     <div class="contIndication">
                       <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'">
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'">
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null"> <!-- projectTracker Sindiswa 15 January 2024 -->
-                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity ">
-
-                      <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
-
-                      <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity && element.isAwaitingClarity">Awaiting Clarity</p>
-
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.CommentStatus === 'Approved' || element.CommentStatus === 'LS Admin Approved' || element.CommentStatus === 'LS Reviewer Approved'" matTooltip="Approved">
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.CommentStatus === 'Rejected'" matTooltip="Approved">
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element.CommentStatus == '' || element.CommentStatus == null" matTooltip="Waiting"> <!-- projectTracker Sindiswa 15 January 2024 -->
+                      <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity " matTooltip="Awaiting Clarity">
                       <!-- projectTracker Sindiswa 12 January 2024 -->
-                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'" />
-                      <p class="" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'">Under Review</p>
+                      <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element.CommentStatus == 'Assigned To Reviewer'" matTooltip="Under Review"/>
+
                       <!-- projectTracker Sindiswa 12 January 2024 -->
                     </div>
                   </td>
@@ -212,7 +237,7 @@
 
                         <div class="noteHead">
                           <h1 [class.message-textApprove]="comment.CommentStatus == 'Clarify'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                          <p>{{comment.DateCreated}}</p>
+                          <p class="date">{{comment.DateCreated}}</p>
                         </div>
                         <div class="messageFoot">
                        
@@ -245,7 +270,7 @@
 
                       <div class="noteHead">
                         <h1 [class.message-textApprove]="comment.CommentStatus == 'Internal Comment'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                        <p>{{comment.DateCreated}}</p>
+                        <p class="date">{{comment.DateCreated}}</p>
                       </div>
                       <div class="messageFoot">
                         <p class="sub-text">{{comment.Comment}}</p>
@@ -594,13 +619,13 @@
 
     <div class="POD">
       <div class="podInfo">
-      <p class="Name">{{firstName}} {{surname}}</p>
-      <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
-      <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
-        </div>
+        <p class="Name">{{firstName}} {{surname}}</p>
+        <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
+        <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{cellNo}}</p>
+      </div>
       <div class="image">
-      <img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/user.svg" class="ExpandIcon">
-        </div>
+        <img src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/user.svg" class="ExpandIcon">
+      </div>
     </div>
   </div>
 
@@ -719,7 +744,7 @@
 
                   <div class="noteHead">
                     <h1 class="message-textApprove">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                    <p>{{comment.DateCreated}}</p>
+                    <p class="date">{{comment.DateCreated}}</p>
                   </div>
                   <div class="messageFoot" *ngIf="comment.Comment != null || comment.Comment !=''">
                     <p class="sub-text" *ngIf="comment.Comment.length >1 ">{{comment.Comment}}</p>
@@ -765,7 +790,7 @@
 
                   <div class="noteHead">
                     <h1 [class.message-textApprove]="comment.CommentStatus == 'Clarify'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                    <p>{{comment.DateCreated}}</p>
+                    <p class="date">{{comment.DateCreated}}</p>
                   </div>
                   <div class="messageFoot">
 
@@ -798,7 +823,7 @@
 
                 <div class="noteHead">
                   <h1 [class.message-textApprove]="comment.CommentStatus == 'Internal Comment'"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> {{comment.CommentStatus}} by {{comment.UserName}}</h1>
-                  <p>{{comment.DateCreated}}</p>
+                  <p class="date">{{comment.DateCreated}}</p>
                 </div>
                 <div class="messageFoot">
                   <p class="sub-text">{{comment.Comment}}</p>
@@ -888,9 +913,90 @@
       <mat-tab label="Financial Documents">
         <app-bpfinancials></app-bpfinancials>
       </mat-tab>
-      <mat-tab label="Stage Checklist"  *ngIf="this.CurrentUserProfile[0].isInternal == true">
+      <mat-tab label="Stage Checklist" *ngIf="this.CurrentUserProfile[0].isInternal == true">
 
       </mat-tab>
+    </mat-tab-group>
+
+  </div>
+
+  <!-- #endregion -->
+  <!-- #region Application details -->
+
+  <div *ngIf="ExpandDetails">
+    <div class="modal-header">
+      <h4>Application Details</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeExpanded();modal.dismiss('Cross click')"></button>
+    </div>
+
+    <google-map height="250px"
+                width="100%"
+                [center]="center"
+                [options]="mapOptionsView">
+
+      <map-marker *ngFor="let marker of Markers"
+                  [position]="marker.position"
+                  [title]="marker.title">
+
+      </map-marker>
+    </google-map>
+
+    <mat-tab-group>
+
+      <mat-tab label="Application Details">
+        <div class="applicationDeatails">
+
+
+          <div class="card2">
+            <p class="detailsCardName">Application Details</p>
+          </div>
+          <p>Application Type: {{bpApplicationType}}</p>
+          <p>LS Number: {{ lsNumber }}</p>
+          <p *ngIf="BPApplicationProjectNumber">Project Number: {{ BPApplicationProjectNumber }}</p>
+
+          <div class="card2">
+            <p class="detailsCardName">Property Details Of Development</p>
+          </div>
+          <p>Property Description - {{ propertyDescription }}</p>
+          <p>Premises Name - {{ premisesName }}</p>
+          <p>Type Of Address - {{ typeOfAddress }}</p>
+          <p>Number Of Units - {{ noOfUnits }}</p>
+          <p>Unit Number - {{ unitNumber }}</p>
+          <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
+          <p>Portion Number - {{ portionNumber }}</p>
+          <p>Physical Address Of Project - {{ physicalAddress }}</p>
+          <p>Latitude - {{ latitude }}</p>
+          <p>Longitude - {{ longitude }}</p>
+          <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
+
+          <div class="card2">
+            <p class="detailsCardName">Plan Details</p>
+          </div>
+          <p>Type Of Development - {{ typeOfDev }}</p>
+          <p>Property Value - {{ propertyValue }}</p>
+          <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
+          <p>Building Plan For - {{ buildingPlanFor }}</p>
+          <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
+          <div *ngIf="bpApplicationType == 'Town Planning'">
+            <p>Title Restrictions - {{ TitleRestrictions }}</p>
+            <p>Extent Of Property - {{ ExtentOfProperty }}</p>
+            <p>TitleDeedNo - {{ TitleDeedNo }}</p>
+            <p>Registered Description - {{ RegisteredDescription }}</p>
+            <p>Company Name - {{ NameOfCompany }}</p>
+            <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
+            <p>isCombined - {{ isCombinedApplication }}</p>
+            <p>Description Of Project - {{ DescriptionOfProject }}</p>
+            <p>Application Type - {{ bpApplicationType }}</p>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Public Facing" *ngIf="this.CurrentUserProfile[0].isInternal == true">
+        <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> Create New Internal Comment</button>
+        <div *ngIf="InternalCommentsList.length === 0">
+          <h5>Nothing here yet</h5>
+        </div>
+      </mat-tab>
+
     </mat-tab-group>
 
   </div>

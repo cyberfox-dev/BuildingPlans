@@ -20,8 +20,10 @@ h5 {
   color: #8080806b;
   text-align: center;
   font-size: 19px !important;
-  padding-top: 109px;
-  font-style: italic !important;
+  margin: 0 auto;
+  font-style: italic;
+  margin-bottom: 75px;
+  margin-top: 60px;
 }
 h2 {
   margin-top: -2px;
@@ -121,7 +123,8 @@ h2 {
 }
 .applicationDeatails {
   padding: 18px;
-  overflow:auto !important;
+  overflow: auto !important;
+  max-height: 39vh;
 }
 :host ::ng-deep .mat-tab-label {
   height: 30px !important;
@@ -139,7 +142,8 @@ h2 {
 
 :host ::ng-deep .mat-tab-label.mat-tab-label-active {
   height: 33px !important;
-  background: #007090;
+  background: #4393d7;
+  color: white;
 }
 
 .noDep {
@@ -191,6 +195,7 @@ h2 {
   background-color: #cccccc2b;
   border-radius: 5px;
   position: relative;
+  display:none;
 }
 
 .percent {
@@ -342,6 +347,29 @@ h3 span {
 }
 .icon3{
 
+}
+/*google-map {
+  position: relative;
+  top: -73px;
+  z-index: -1;
+}*/
+.detailsCardName {
+  text-align: justify;
+  padding: 10px;
+  margin: 0 !important;
+  font-weight: 700 !important;
+  color: #00000096;
+}
+.card2 {
+  box-shadow: none !important;
+  /* margin: 20px; */
+  /* border-color: #f1f1f1; */
+  background-color: #60e1fd45 !important;
+  margin-bottom: 12px;
+  /* margin-top: 100px; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .card {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
@@ -608,7 +636,7 @@ table {
     color: #001824;
   }
 .date {
-  color: #60606045 !important;
+  color: #15151540 !important;
 }
 .noteHead {
   display: flex;
@@ -663,8 +691,7 @@ table {
 }
 
 .message-textApprove {
- /* color: #269b24 !important;*/
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 700;
 }
 
