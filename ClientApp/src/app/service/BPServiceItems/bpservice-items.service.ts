@@ -57,4 +57,12 @@ export class BPServiceItemsService {
 
     return this.httpClient.post(this.baseURL + "DeleteServiceItemByServiceItemID", body);
   }
+
+  public getAllServiceItemsForFA(functionalArea: string | null) {
+    const body = {
+      FunctionalArea : functionalArea
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllServiceItemsForFA", body);
+  }
 }

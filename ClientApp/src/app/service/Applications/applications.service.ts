@@ -269,5 +269,10 @@ export class ApplicationsService {
       ExpectedEndDate :endDate
     }
     return this.httpClient.post(this.baseURL + "GetApplicationsWithinDateRange", body);
-  } 
+  }
+
+  public getAllSystemApplications() {
+
+    return this.httpClient.get(this.baseURL + "GetAllSystemApplications");
+  }
 }

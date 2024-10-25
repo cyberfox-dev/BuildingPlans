@@ -7,15 +7,20 @@
     <td mat-cell *matCellDef="let element"> {{element.ServiceItemCode}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="Rate">
-    <th mat-header-cell *matHeaderCellDef>Rate </th>
-    <td mat-cell *matCellDef="let element"> {{element.Rate}} </td>
+  <ng-container matColumnDef="Description">
+    <th mat-header-cell *matHeaderCellDef>Description </th>
+    <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="VatApplicable">
+  <ng-container matColumnDef="Rate">
+    <th mat-header-cell *matHeaderCellDef>Rate </th>
+    <td mat-cell *matCellDef="let element"> R {{element.Rate}} </td>
+  </ng-container>
+
+  <!--<ng-container matColumnDef="VatApplicable">
     <th mat-header-cell *matHeaderCellDef>Has Vat </th>
     <td mat-cell *matCellDef="let element"> {{element.VatApplicable}} </td>
-  </ng-container>
+  </ng-container>-->
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
@@ -95,7 +100,7 @@
         </div>
 
         <div class="row">
-        <mat-checkbox (change)=" onHasVatChange()" [checked]="hasVat">Omnibus Servitude In Title Deed</mat-checkbox>
+        <mat-checkbox (change)=" onHasVatChange()" [checked]="hasVat">Has Vat</mat-checkbox>
         </div>
 
         <div class="row" *ngIf="hasVat">

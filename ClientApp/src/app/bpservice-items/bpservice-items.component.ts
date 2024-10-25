@@ -36,7 +36,7 @@ export class BPServiceItemsComponent implements OnInit {
   functionalAreaList: FunctionalAreaList[] = [];
 
   @ViewChild(MatTable) serviceItemsTable: MatTable<ServiceItemsList> | null;
-  displayedColumns: string[] = ['ServiceItemCode', 'Rate', 'VatApplicable', 'actions'];
+  displayedColumns: string[] = ['ServiceItemCode','Description', 'Rate', 'actions'];
   dataSource = this.serviceItemsList;
 
   serviceItemID: number = 0;

@@ -236,5 +236,36 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        [HttpPost("GetAllServiceItemsForFA")]
+        public async Task<object> GetAllServiceItemsForFA([FromBody] ServiceItemBindingModel model)
+        {
+            if(model.FunctionalArea == null)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing'null",null));
+            }
+            else
+            {
+                var result = await (from serviceItem in _context.BPServiceItems
+                                    where serviceItem.FunctionalArea == model.FunctionalArea && serviceItem.isActive == true
+                                    select new BPServiceItems()
+                                    {
+                                        ServiceItemID = serviceItem.ServiceItemID,
+                                        ServiceItemCode = serviceItem.ServiceItemCode,
+                                        Description = serviceItem.Description,
+                                        Rate = serviceItem.Rate,
+                                        TotalVat = serviceItem.TotalVat,
+                                        Category = serviceItem.Category,
+                                        FunctionalArea = serviceItem.FunctionalArea,
+                                        VAtApplicable = serviceItem.VAtApplicable,
+                                        Remarks = serviceItem.Remarks,
+                                        DateCreated = serviceItem.DateCreated,
+                                        DateUpdated = serviceItem.DateUpdated,
+                                        CreatedById = serviceItem.CreatedById
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items For Functional Area", result));
+            }
+        }
     }
 }

@@ -770,7 +770,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       //this.ServerType = this.sharedService.getServerType();onFilterButtonClick
       this.isBannerVisible();
  
-    this.GetAllApplications();
+    /*this.GetAllApplications();*/  //this is the old all applications method use this is other method does not work
+
+    this.getAllSystemApplications();
 /*        this.GetAllPreInvoiceScrutinyApplications();
         this.GetAllBuildingPlansApplications();
         this.getAllPreInvoiceScurtinyApplications();*/
@@ -7969,7 +7971,8 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         
-        this.GetAllApplications();
+        /* this.GetAllApplications();*/ //Put this back
+        this.getAllSystemApplications(); // this is a test method remove this
 
         break;
     }
@@ -8020,5 +8023,49 @@ this.subscriptions.push(subscription);
   //Home Tabs Kyle 27-05 - 24
   openCreateNewApplicationBar() {
     this._bottomSheet.open(CreateNewApplicationComponent);
+  }
+  testList: ApplicationsListBP[] = [];
+  getAllSystemApplications() {
+    debugger;
+    this.applicationService.getAllSystemApplications().subscribe((data: any) => {
+      debugger; 
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+         
+            tempApplication.applicationID = current.applicationID;
+            tempApplication.ProjectNumber = current.lsNumber;
+            tempApplication.erfNumber = current.erfNumber;
+            tempApplication.stage = current.stage;
+          tempApplication.ownerName = current.firstName + current.surname;
+
+          
+
+          const address = current.physicalAddress
+            ? (current.physicalAddress.includes(",") ? current.physicalAddress.split(",") : [current.physicalAddress])
+            : [];
+
+
+          if (address.length > 0) {
+            tempApplication.propertyAddress = address[0];
+          }
+          else {
+            tempApplication.propertyAddress = current.physicalAddress;
+          }
+           
+            tempApplication.status = current.status;
+            tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+            tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+
+            this.testList.push(tempApplication);
+        }
+
+        this.dataSourceBP = this.testList;
+        this.dataSourceSA = this.testList;
+      }
+    })
   }
 }

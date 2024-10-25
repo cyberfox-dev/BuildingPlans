@@ -5,6 +5,7 @@ using BuildingPlans.Models.BindingModel;
 using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuildingPlans.Controllers
 {
@@ -644,6 +645,62 @@ namespace BuildingPlans.Controllers
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
+            }
+        }
+
+        [HttpGet("GetAllSystemApplications")]
+        public async Task<object> GetAllSystemApplications()
+        {
+            try
+            {
+                var result = new object();
+
+                var query1 = await (from wayleave in _context.Application
+                                    where wayleave.ProjectNumber != null && wayleave.ProjectNumber != "" && wayleave.isActive == true 
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = wayleave.ApplicationID,
+                                        LSNumber = wayleave.ProjectNumber,
+                                        BPApplicationType = "Wayleave",
+                                        PhysicalAddress = wayleave.PhysicalAddressOfProject,
+                                        BPApplicationID = "",
+                                        FirstName = wayleave.FullName.Substring(0,wayleave.FullName.IndexOf(" ")),
+                                        Surname = wayleave.FullName.Substring(wayleave.FullName.IndexOf(" ")),
+                                        Stage = wayleave.CurrentStageName,
+                                        Status = wayleave.ApplicationStatus,
+                                        DateCreated = wayleave.DateCreated,
+                                        DateUpdated = wayleave.DateUpdated
+                                        
+
+                                    }).ToListAsync();
+
+                var query2 = await (from bp in _context.BuildingApplications
+                                    where bp.LSNumber != null && bp.LSNumber != "" && bp.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = bp.ApplicationID,
+                                        LSNumber = bp.LSNumber,
+                                        BPApplicationType = "",
+                                        PhysicalAddress = bp.PhysicalAddress,
+                                        BPApplicationID = bp.BPApplicationID,
+                                        FirstName = bp.FirstName,
+                                        Surname = bp.Surname,
+                                        Stage = bp.Stage,
+                                        Status = bp.Status,
+                                        DateCreated = bp.DateCreated,
+                                        DateUpdated = bp.DateUpdated
+
+                                    }).ToListAsync();
+
+                result =  query1
+                    .Concat(query2)
+                    .ToList();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
     }
