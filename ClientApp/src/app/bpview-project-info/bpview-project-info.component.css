@@ -20,8 +20,10 @@ h5 {
   color: #8080806b;
   text-align: center;
   font-size: 19px !important;
-  padding-top: 109px;
-  font-style: italic !important;
+  margin: 0 auto;
+  font-style: italic;
+  margin-bottom: 75px;
+  margin-top: 60px;
 }
 h2 {
   margin-top: -2px;
@@ -71,8 +73,8 @@ h2 {
   width: 100%;
   margin: 17px 0px 6px 0px;
   overflow: auto;
-  max-height: 24.4vh;
-  min-height: 24.4vh;
+  max-height: 25.4vh;
+  min-height: 25.4vh;
 }
 .displayRow {
   display: flex;
@@ -121,14 +123,15 @@ h2 {
 }
 .applicationDeatails {
   padding: 18px;
-  overflow:auto !important;
+  overflow: auto !important;
+  max-height: 39vh;
 }
 :host ::ng-deep .mat-tab-label {
   height: 30px !important;
 }
 
 .currentStageText {
-  margin: 24px auto;
+  margin: 13px auto;
   padding: 10px;
   background: #3778af7d;
   font-weight: 600;
@@ -139,11 +142,10 @@ h2 {
 
 :host ::ng-deep .mat-tab-label.mat-tab-label-active {
   height: 33px !important;
-  background: #007090;
+  background: #4393d7;
+  color: white;
 }
-.mat-tab-group {
-  height: 90%;
-}
+
 .noDep {
   color: #8080806b;
   text-align: center;
@@ -151,6 +153,10 @@ h2 {
   margin: 64px 0px;
   font-style: italic !important;
   padding: 0 !important;
+}
+.custom-modal-size .modal-dialog {
+  max-width: 90%; /* Set your desired width */
+  height: 90vh; /* Set your desired height relative to viewport */
 }
 .mat-horizontal-stepper-header-container mat-stepper-vertical {
   top: 0 !important;
@@ -189,6 +195,7 @@ h2 {
   background-color: #cccccc2b;
   border-radius: 5px;
   position: relative;
+  display:none;
 }
 
 .percent {
@@ -207,15 +214,22 @@ h2 {
 
 .step {
   position: relative;
-  width: 14%;
+  width:90%;
   text-align: center;
   font-weight: bold;
+  font-size: 12px;
   padding: 10px;
   transition: background-color 0.3s ease;
   border-radius: 20px;
+
   -webkit-backdrop-filter: blur(9px);
-  backdrop-filter: blur(9px);
-  BACKGROUND: #d6d6d6;
+  /* backdrop-filter: blur(9px); */
+  BACKGROUND: #ffffff42;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+  height: 40px;
 }
 .projectTimeLine{
     font-size:20px;
@@ -229,14 +243,13 @@ h2 {
   color: white;
 }
 
-  .step.completed {
-    background-color: #4393d7; /* Completed step color */
-    color: white;
-  }
+.step.completed {
+  background-color: #94b4d0;
+  color: white;
+}
 .mat-stepper-horizontal-header .mat-stepper-vertical-header {
   top: 0 !important;
   position: sticky !important;
-  /* background: #ffffff45; */
   backdrop-filter: blur(9px);
   pointer-events: none !important;
 }
@@ -301,7 +314,7 @@ h2 {
   display: flex;
   flex-direction: row;
   width: 100%;
-  overflow: hidden;
+/*  overflow: hidden;*/
 }
 .rightSideHeader {
   width: 100%;
@@ -333,6 +346,29 @@ h3 span {
 }
 .icon3{
 
+}
+/*google-map {
+  position: relative;
+  top: -73px;
+  z-index: -1;
+}*/
+.detailsCardName {
+  text-align: justify;
+  padding: 10px;
+  margin: 0 !important;
+  font-weight: 700 !important;
+  color: #00000096;
+}
+.card2 {
+  box-shadow: none !important;
+  /* margin: 20px; */
+  /* border-color: #f1f1f1; */
+  background-color: #60e1fd45 !important;
+  margin-bottom: 12px;
+  /* margin-top: 100px; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .card {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
@@ -451,10 +487,10 @@ h3 {
 }
 .mat-blue {
   margin: 7px 5px;
-  background-color: #1b9416;
+  background-color: #4393d7;
   width: auto;
   font-weight: 500;
-  color:white;
+  color: white;
 }
 
 .mat-orange {
@@ -574,7 +610,7 @@ table {
 }
 
 .cardNote {
-  height: 80px;
+/*  height: 80px;*/
   border-radius: 9px;
   border-color: #bcbcbc00;
   box-sizing: border-box;
@@ -591,8 +627,15 @@ table {
   background: #ffffff42;
   margin-bottom: 10px;
 }
+  .cardNote:hover {
+    background: #00a3ff0a;
+    /* opacity: 20%; */
+    filter: brightness(1.5);
+    /* border: 1px solid #005298; */
+    color: #001824;
+  }
 .date {
-  color: #60606045 !important;
+  color: #15151540 !important;
 }
 .noteHead {
   display: flex;
@@ -601,9 +644,9 @@ table {
   padding-left: 10px;
   padding-right: 10px;
   background: #95959524;
-  margin-bottom: 8px;
   flex-direction: row;
   align-items: baseline;
+  margin-bottom: 10px;
 }
 
 .waveApprove {
@@ -647,8 +690,7 @@ table {
 }
 
 .message-textApprove {
- /* color: #269b24 !important;*/
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -1159,3 +1201,11 @@ table {
   }
 }
 
+.applicantsReply {
+  background: #ff00ff2e;
+  padding: 10px;
+  border-radius: 20px;
+  margin: 10px;
+  font-weight: 700;
+  color: #00000099;
+}

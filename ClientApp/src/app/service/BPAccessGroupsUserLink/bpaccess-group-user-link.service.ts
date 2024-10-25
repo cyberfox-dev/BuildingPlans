@@ -74,11 +74,11 @@ export class BPAccessGroupUserLinkService {
 
   }
 
-  public getPeopleByAccessGroupAndSubDept(agID: number | null, subDepartmentId: number | null) {
+  public getPeopleByAccessGroupAndSubDept(agID: number | null, DepartmentId: number | null) {
 
     const requestBody = {
       AccessGroupID: agID,
-      SubDepartmentID: subDepartmentId
+      DepartmentID: DepartmentId
     };
     return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupAndSubDept", requestBody);
   }

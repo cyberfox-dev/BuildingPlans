@@ -59,7 +59,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.SubDepartmentID == model.SubDepartmentID && accessGL.UserProfileID != null
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.SubDepartmentID == model.DepartmentID && accessGL.UserProfileID != null
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
@@ -91,7 +91,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.ZoneID == model.ZoneID && accessGL.SubDepartmentID == model.SubDepartmentID //&& accessGL.UserProfileID != null
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.ZoneID == model.ZoneID && accessGL.SubDepartmentID == model.DepartmentID //&& accessGL.UserProfileID != null
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
@@ -154,7 +154,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.ZoneID == model.ZoneID && (model.SubDepartmentID == null || accessGL.SubDepartmentID == model.SubDepartmentID)
+                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.ZoneID == model.ZoneID && (model.DepartmentID == null || accessGL.SubDepartmentID == model.DepartmentID)
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
@@ -186,7 +186,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.SubDepartmentID == model.SubDepartmentID
+                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.SubDepartmentID == model.DepartmentID
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,

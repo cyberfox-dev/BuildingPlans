@@ -199,6 +199,8 @@ table {
   margin: 20px;
   /* margin-bottom: 32px; */
 }
+
+
 .mat-relaxationBTN {
   background-color: #24a2bd;
   color: #fff;
@@ -679,3 +681,4 @@ input.mat-input-element {
   .button:active {
     scale: 0.95;
   }
+

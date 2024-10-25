@@ -113,7 +113,7 @@ export class NewProfileComponent implements OnInit {
 
   ZoneDropdown: ZoneDropdown[] = [];
   DepartmentsDropdown: ZoneDropdown[] = []; //BPRegister Sindiswa 20062024
-  FunctionalAreaDropdown: string[] = ["Building Plan", "Signage", "Banner & Poster", "Flags & Poles"] //BPRegister Sindiswa 20062024
+  FunctionalAreaDropdown: string[] = ["Building Plan", "Signage", "Banner & Poster", "Flags & Poles","Town Planning"] //BPRegister Sindiswa 20062024
   selectedFA = '' //BPRegister Sindiswa 20062024
   DepartmentAdminList: DepartmentAdminList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];

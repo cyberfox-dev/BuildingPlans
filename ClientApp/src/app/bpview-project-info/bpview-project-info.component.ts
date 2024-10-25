@@ -19,6 +19,7 @@ import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment
 import { ConfigService } from '../service/Config/config.service';
 import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
 import { BPStagesService } from '../service/BPStages/bpstages.service';
+import { BpTasksService } from '../service/BPTasks/bp-tasks.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -55,6 +56,17 @@ export interface BPDepartmentsForCommentList {
   CommentStatus: string;
 }
 
+export interface Taskslist {
+  TaskID: any;
+  Task: any;
+  isChecked: boolean;
+  CheckedBy: number;
+  TaskCreatedFor: string;
+  ApplicationId: number;
+  DateCreated: any;
+  DateUpdated: any;
+}
+
 
 export interface LSMandatoryDocumentsList {
   mandatoryDocumentStageLinkID: number;
@@ -81,6 +93,37 @@ export interface CommentsList {
   DateCreated: any;
   ViewReply: boolean;
 }
+export interface InternalCommentsList {
+  CommentID: number;
+  ApplicationID: number;
+  FunctionalArea: string;
+  Comment: string;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number;
+  isApplicantReply: string;
+  SecondReply: string;
+  UserName: string;
+  CanReplyUserID: string;
+  CreatedById: string;
+  DateCreated: any;
+  ViewReply: boolean;
+}
+export interface NotesList {
+  CommentID: number;
+  ApplicationID: number;
+  FunctionalArea: string;
+  Comment: string;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number;
+  isApplicantReply: string;
+  SecondReply: string;
+  UserName: string;
+  CanReplyUserID: string;
+  CreatedById: string;
+  DateCreated: any;
+  ViewReply: boolean;
+}
+
 @Component({
   selector: 'app-bpview-project-info',
   templateUrl: './bpview-project-info.component.html',
@@ -105,6 +148,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     TitleRestrictions: any;
     RegisteredDescription: any;
     bpApplicationType: any;
+    ExpandDetails: boolean;
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -125,6 +169,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private BpDepartmentForCommentService: BpDepartmentForCommentService,
     private cdRef: ChangeDetectorRef,
     private BPStagesService: BPStagesService,
+    private BpTasksService: BpTasksService,
   ) { }
 
   // Properties
@@ -134,11 +179,14 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   DocumentList: DocumentsList[] = [];
   BPDepartmentsForCommentList: BPDepartmentsForCommentList[] = [];
+  Taskslist: Taskslist[] = [];
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
   stageChecklist: StageChecklistItems[] = [];
   StagesForApplication: StagesForApplication[] = [];
   CommentsList: CommentsList[] = [];
+  InternalCommentsList: InternalCommentsList[] = [];
+  NotesList: NotesList[] = [];
 
 
 
@@ -581,6 +629,87 @@ export class BPViewProjectInfoComponent implements OnInit {
         }
 
         console.log("BPComments", this.CommentsList);
+        this.GetAllInternalCommentsForApplication();
+      }
+      else {
+
+      }
+
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  GetAllInternalCommentsForApplication() {
+
+    this.InternalCommentsList.splice(0, this.InternalCommentsList.length);
+    this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempComment = {} as InternalCommentsList;
+
+          tempComment.CommentID = current.commentID;
+          tempComment.ApplicationID = current.applicationID;
+          tempComment.FunctionalArea = current.functionalArea;
+          tempComment.Comment = current.comment;
+          tempComment.CommentStatus = current.commentStatus;
+          tempComment.SubDepartmentForCommentID = current.BPDepartmentForCommentID;
+          tempComment.isApplicantReply = current.isApplicantReplay;
+          tempComment.SecondReply = current.secondReply;
+          tempComment.UserName = current.userName;
+          tempComment.CanReplyUserID = current.canReplyUserID;
+          tempComment.CreatedById = current.createdById;
+          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempComment.ViewReply = false;
+
+
+          this.InternalCommentsList.push(tempComment);
+        }
+
+        console.log("InternalCommentsList", this.InternalCommentsList);
+        this.GetNotesForApplication();
+      }
+      else {
+
+      }
+
+    }, error => {
+      console.log(error);
+    })
+  }
+  GetNotesForApplication() {
+
+    this.NotesList.splice(0, this.NotesList.length);
+    this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempComment = {} as NotesList;
+
+          tempComment.CommentID = current.commentID;
+          tempComment.ApplicationID = current.applicationID;
+          tempComment.FunctionalArea = current.functionalArea;
+          tempComment.Comment = current.comment;
+          tempComment.CommentStatus = current.commentStatus;
+          tempComment.SubDepartmentForCommentID = current.BPDepartmentForCommentID;
+          tempComment.isApplicantReply = current.isApplicantReplay;
+          tempComment.SecondReply = current.secondReply;
+          tempComment.UserName = current.userName;
+          tempComment.CanReplyUserID = current.canReplyUserID;
+          tempComment.CreatedById = current.createdById;
+          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempComment.ViewReply = false;
+
+
+          this.NotesList.push(tempComment);
+        }
+
+        console.log("BPComments", this.NotesList);
       }
       else {
 
@@ -665,7 +794,12 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   displayedColumns: string[] = ['DepartmentName', 'indication'];
   dataSource = this.BPDepartmentsForCommentList;
+
+  displayedColumnsTasks: string[] = ['Tasks', 'Checked'];
+  dataSourceTasks = this.Taskslist;
+
   @ViewChild(MatTable) BPDepartmentsForCommentListTable: MatTable<BPDepartmentsForCommentList> | undefined;
+  
   getAllDepartmentsForCommentForBPApplication() {
     this.BpDepartmentForCommentService.getDepartmentForComment(this.applicationId).subscribe((data: any) => {
 
@@ -688,7 +822,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         }
 
         console.log("BPDepartmentsForCommentList", this.BPDepartmentsForCommentList);
-        this.getAllMandatoryChecklistItemsForCurrentStage();
+
       }
       else {
 
@@ -762,6 +896,116 @@ export class BPViewProjectInfoComponent implements OnInit {
     zoom: this.zoom,
     mapTypeControl: true,
     zoomControl: true,
+    scrollwheel: false,
+    mapTypeId: 'satellite',
+    styles: [
+      {
+        "elementType": "geometry",
+        "stylers": [{ "color": "#212121" }]
+      },
+      {
+        "elementType": "labels.icon",
+        "stylers": [{ "visibility": "off" }]
+      },
+      {
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "elementType": "labels.text.stroke",
+        "stylers": [{ "color": "#212121" }]
+      },
+      {
+        "featureType": "administrative",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "administrative.country",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#9e9e9e" }]
+      },
+      {
+        "featureType": "administrative.land_parcel",
+        "stylers": [{ "visibility": "off" }]
+      },
+      {
+        "featureType": "administrative.locality",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#bdbdbd" }]
+      },
+      {
+        "featureType": "poi",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#181818" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#616161" }]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.stroke",
+        "stylers": [{ "color": "#1b1b1b" }]
+      },
+      {
+        "featureType": "road",
+        "elementType": "geometry.fill",
+        "stylers": [{ "color": "#2c2c2c" }]
+      },
+      {
+        "featureType": "road",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#8a8a8a" }]
+      },
+      {
+        "featureType": "road.arterial",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#373737" }]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#3c3c3c" }]
+      },
+      {
+        "featureType": "road.highway.controlled_access",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#4e4e4e" }]
+      },
+      {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#616161" }]
+      },
+      {
+        "featureType": "transit",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
+      {
+        "featureType": "water",
+        "elementType": "geometry",
+        "stylers": [{ "color": "#000000" }]
+      },
+      {
+        "featureType": "water",
+        "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#3d3d3d" }]
+      }
+    ]
+  };
+  mapOptionsView = {
+    center: this.center,
+    zoom: this.zoom,
+    mapTypeControl: false,
+    zoomControl: false,
     scrollwheel: false,
     mapTypeId: 'satellite',
     styles: [
@@ -944,7 +1188,8 @@ export class BPViewProjectInfoComponent implements OnInit {
         centered: true,
         size: 'xl',
         backdrop: 'static',
-        keyboard: false // Prevent pressing the ESC key to close the modal
+        keyboard: false, // Prevent pressing the ESC key to close the modal
+        windowClass: 'custom-modal-size',
       });
     }
     else if (cardName == 'Comments') {
@@ -965,11 +1210,21 @@ export class BPViewProjectInfoComponent implements OnInit {
         keyboard: false // Prevent pressing the ESC key to close the modal
       });
     }
+    else if (cardName == 'ExpandDetails') {
+      this.ExpandDetails = true;
+      this.modalService.open(expand, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static',
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
   }
   closeExpanded(){
     this.ExpandPropertyOwnerDetails = false;
     this.ExpandComments = false;
     this.ExpandDocuments = false;
+    this.ExpandDetails = false;
     this.ExpandTrackerInfo = false;
     this.ExpandArchitectOwnerDetails = false;
   }
@@ -1010,12 +1265,34 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
     })
   }
+
+  saveNewClarify() {
+    this.bpCommentsService.addUpdateComment(0, this.applicationId, this.functionalArea, this.leaveAComment, "Clarify", this.CurrentUserProfile[0].subDepartmentID, null, null, this.CurrentUser.fullName, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        this.GetAllCommentsForApplication();
+        this.modalService.dismissAll();
+
+        
+      }
+      else {
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: "An Error has occured"
+          }
+        });
+      }
+    })
+  }
   openInternalComment(newInternalComment: any) {
     this.modalService.open(newInternalComment, { centered: true, size: 'xl' });
   }
 
   openNote(newNote: any) {
     this.modalService.open(newNote, { centered: true, size: 'xl' });
+  }
+  openClarify(newClarify: any) {
+    this.modalService.open(newClarify, { centered: true, size: 'xl' });
   }
   getAllMandatoryChecklistItemsForCurrentStage() {
     debugger;
@@ -1037,7 +1314,7 @@ export class BPViewProjectInfoComponent implements OnInit {
           this.stageChecklist.push(tempChecklist);
         }
         console.log("This is the checklist for this stage.", this.stageChecklist);
-       
+        this.getAllBPTasks();
       }
       else {
         alert(data.responseCode);
@@ -1054,32 +1331,97 @@ export class BPViewProjectInfoComponent implements OnInit {
 
     this.StagesForApplication.splice(0, this.StagesForApplication.length);
     debugger;
-    this.BPStagesService.getAllStagesForFunctionalArea(this.functionalArea).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        debugger;
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          const tempStage = {} as StagesForApplication;
+    if (this.BPApplicationProjectNumber != null) {
+      this.BPStagesService.getAllStagesForFunctionalArea("Building Plan").subscribe((data: any) => {
+        if (data.responseCode == 1) {
           debugger;
-          tempStage.StageID = current.stageID;
-          tempStage.StageName = current.stageName;
-          tempStage.StageNummber = current.stageOrder;
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempStage = {} as StagesForApplication;
+            debugger;
+            tempStage.StageID = current.stageID;
+            tempStage.StageName = current.stageName;
+            tempStage.StageNummber = current.stageOrder;
 
-          this.StagesForApplication.push(tempStage);
+            this.StagesForApplication.push(tempStage);
 
-          
+
+          }
+          this.totalStages = this.StagesForApplication.length;
+          console.log("SKJFSKDJFHJKSDF", this.StagesForApplication);
+
         }
-        this.totalStages = this.StagesForApplication.length;
-        console.log("SKJFSKDJFHJKSDF", this.StagesForApplication);
-  
-      }
-      else {
-        alert(data.responseMessage);
-      }
-    }, error => {
-      console.log("Error", error);
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
 
-    })
+      })
+    }
+    else {
+      this.BPStagesService.getAllStagesForFunctionalArea(this.functionalArea).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempStage = {} as StagesForApplication;
+            debugger;
+            tempStage.StageID = current.stageID;
+            tempStage.StageName = current.stageName;
+            tempStage.StageNummber = current.stageOrder;
+
+            this.StagesForApplication.push(tempStage);
+            
+
+          }
+          this.totalStages = this.StagesForApplication.length;
+          console.log("SKJFSKDJFHJKSDF", this.StagesForApplication);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+
+      })
+    }
+    
   }
+
+
+  @ViewChild(MatTable) TaskListTable: MatTable<Taskslist> | undefined;
+  getAllBPTasks() {
+    debugger;
+      this.BpTasksService.getTasksForApplication(this.applicationId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          console.log("This is the tasks list", data.dateSet);
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempStage = {} as Taskslist;
+            debugger;
+            tempStage.TaskID = current.taskID;
+            tempStage.Task = current.taskName;
+            tempStage.CheckedBy = current.checkedBy;
+            this.Taskslist.push(tempStage);
+          }
+          this.dataSourceTasks = this.Taskslist;
+          this.TaskListTable?.renderRows();
+          console.log("SKJFSKDJFHJKSDF", this.Taskslist);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+
+      })
+  }
+
+
+
 }
 

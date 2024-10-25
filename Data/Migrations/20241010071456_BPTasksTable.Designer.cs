@@ -4,6 +4,7 @@ using BuildingPlans.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241010071456_BPTasksTable")]
+    partial class BPTasksTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -542,49 +544,6 @@ namespace BuildingPlans.Data.Migrations
                     b.HasKey("AddresTypeID");
 
                     b.ToTable("BPAddressTypes");
-                });
-
-            modelBuilder.Entity("BuildingPlans.Data.Entities.BPApplicationChecklists", b =>
-                {
-                    b.Property<int?>("ChecklistItemID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ChecklistItemID"), 1L, 1);
-
-                    b.Property<int?>("ApplicationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CheckedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ChecklistItem")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FunctionalArea")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("isChecked")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ChecklistItemID");
-
-                    b.ToTable("BpApplicationChecklist");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPBannerApplication", b =>
@@ -1684,8 +1643,8 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("isChecked")
-                        .HasColumnType("bit");
+                    b.Property<string>("isChecked")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TaskID");
 

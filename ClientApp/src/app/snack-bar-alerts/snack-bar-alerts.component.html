@@ -1,11 +1,5 @@
 <div class="container">
-  <div class="GoodCase" *ngIf="data.message == 'Draft Saved!' || data.message == 'Application Created'|| data.message == 'Application Actioned'|| data.message == 'User Assigned Successfully'">
-    <div class="notification-text">
-
-      <span>{{ data.message}}</span>
-    </div>
-  </div>
-  <div class="BadCase" *ngIf=" data.message != 'Draft Saved!'&& data.message != 'Application Created'&& data.message != 'Application Actioned'&& data.message != 'User Assigned Successfully'">
+  <div class="GoodCase" *ngIf="data.message == 'Draft Saved!' || data.message == 'Application Created'|| data.message == 'Application Actioned'|| data.message == 'User Assigned Successfully'|| data.message == 'Task Completed'">
     <div class="notification-text">
 
       <span>{{ data.message}}</span>

@@ -235,7 +235,7 @@ export interface UserZoneList {
   Email: string;
   alternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
 }
-export interface LSReviewerUserList {
+export interface ReviewerUserList {
   id: string;
   fullName: string;
   Email: string;
@@ -438,9 +438,9 @@ export class BpActionCenterComponent implements OnInit {
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
-  LSReviewerList: LSReviewerUserList[] = [];
+  ReviewerUserList: ReviewerUserList[] = [];
   LinkedUserToSub: UserZoneList[] = [];
-  ReviewerUserList: UserZoneList[] = [];
+/*  ReviewerUserList: UserZoneList[] = [];*/
   PermitIssuerList: UserZoneList[] = [];
   GISReviewerUserList: UserZoneList[] = [];
   CurrentApplicationBeingViewed: CurrentApplicationBeingViewed[] = [];
@@ -466,11 +466,10 @@ export class BpActionCenterComponent implements OnInit {
   displayedColumnsViewLinkedZones: string[] = ['zoneName', 'actions'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
 
-  displayedColumnsViewUsersForLink: string[] = ['fullName', 'actions'];
-  dataSourceViewUsersForLink = this.ReviewerUserList;
+
 
   displayedColumnsViewLSUsersForLink: string[] = ['fullName', 'actions'];
-  dataSourceViewLSUsersForLink = this.LSReviewerList;
+  dataSourceViewLSUsersForLink = this.ReviewerUserList;
 
 
   displayedColumnsViewUsersForLinkForGISReview: string[] = ['fullName', 'actions'];
@@ -493,14 +492,14 @@ export class BpActionCenterComponent implements OnInit {
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
   @ViewChild(MatTable) PermitIssuerTable: MatTable<UserZoneList> | undefined;
-  @ViewChild(MatTable) SubDepartmentListTableTable: MatTable<LSReviewerUserList> | undefined;
+  @ViewChild(MatTable) SubDepartmentListTableTable: MatTable<ReviewerUserList> | undefined;
 
   //#region escalation Sindiswa 30 January 2024
 
   displayedColumnsViewDepartmentsForEMBComment: string[] = ['subDepartmentName', 'zoneName', 'progress']; //notifications Sindiswa 01 February 2024 - changed column name when text text was being formatted funny
   dataSourceViewDepartmentsForEMBComment = this.LinkedSubDepartmentsList;
   @ViewChild(MatTable) SubDepartmentsListTable: MatTable<SubDepartmentListForComment> | undefined;
-  @ViewChild(MatTable) LSReviewerListTable: MatTable<LSReviewerUserList> | undefined;
+  @ViewChild(MatTable) LSReviewerListTable: MatTable<ReviewerUserList> | undefined;
   //#endregion
 
   closeResult!: string;
@@ -616,7 +615,7 @@ export class BpActionCenterComponent implements OnInit {
 
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
-    this.getAllUsersForLandSurveyReview();
+/*    this.getAllUsersForLandSurveyReview();*/
     this.getLSReviewerForLink();
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
@@ -1780,7 +1779,7 @@ export class BpActionCenterComponent implements OnInit {
 
   getReviewerForLink() {
 
-    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+/*    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
     // this.ReviewerUserList = []; // Initialize the new list
 
     for (var i = 0; i < this.reviewerUsers.length; i++) {
@@ -1797,17 +1796,17 @@ export class BpActionCenterComponent implements OnInit {
 
 
       this.ReviewerUserList.push(tempreviewer);
-    }
+    }*/
 
   }
   getLSReviewerForLink() {
 
-    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+/*    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
     // this.ReviewerUserList = []; // Initialize the new list
 
-    for (var i = 0; i < this.LSReviewerList.length; i++) {
+    for (var i = 0; i < this.ReviewerUserList.length; i++) {
 
-      var reviewer = this.LSReviewerList[i];
+      var reviewer = this.ReviewerUserList[i];
 
       const tempreviewer = {} as UserZoneList;
 
@@ -1817,8 +1816,8 @@ export class BpActionCenterComponent implements OnInit {
 
 
 
-      this.LSReviewerList.push(tempreviewer);
-    }
+      this.ReviewerUserList.push(tempreviewer);
+    }*/
 
   }
   /*JJS 07-03-24 GIS Reviewer*/
@@ -2807,7 +2806,7 @@ export class BpActionCenterComponent implements OnInit {
             if (data.dateSet.length > 0) {
               this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
               this.bpDepartmentForCommentService.addUpdateDepartmentForComment(this.currentBPDepartmentforCommentID, this.ApplicationID, this.loggedInUsersDepartmentID, this.loggedInUsersSubDepartmentName, this.UserSelectionForManualLink.selected[0].id, "Assigned To Reviewer", this.CurrentUserProfile[0].userID).subscribe((data: any) => {
-
+                debugger;
                 if (data.responseCode == 1) {
                   this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
                     null, null, null, null, null, null, null,
@@ -3563,7 +3562,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Submission Plan", "Closed", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Approved", "Closed", 3, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3850,6 +3849,89 @@ export class BpActionCenterComponent implements OnInit {
           break;
 
         }
+        case "ApproveTPAdmin": {
+
+
+          this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
+
+
+
+              if (data.dateSet.length > 0) {
+                this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+                this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "TP Admin Approved", false, null, true).subscribe((data: any) => {
+                  debugger;
+                  if (data.responseCode == 1) {
+
+                    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, "Approved", "Closed", 3, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+                        if (data.responseCode == 1) {
+                          this.AddComment("TP Approved", this.currentBPDepartmentforCommentID);
+                          this.AddStageChecklistForApplication("TP Review");
+                        }
+                        else {
+                          alert(data.responseMessage);
+                        }
+                      }, error => {
+                        console.log("BuildingApplicationError: ", error)
+                      })
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+              }
+              else {
+                alert("Error With Fetching getDepForCommentByID");
+              }
+
+
+            }
+            else {
+              alert("Doesnt exisit in DB");
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+
+
+          /*          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+          
+                        if (data.responseCode == 1) {
+          
+                          *//*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*//*
+*//*  this.moveToFinalApprovalForDepartment();*//*
+
+          this.AddComment("LS Approved", null);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+*/
+
+
+
+
+          break;
+
+        }
 
         case "ApproveLSReviewer": {
 
@@ -3908,6 +3990,66 @@ export class BpActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("BuildingApplicationError: ", error)
                 })
+
+          break;
+        }
+        case "ApproveTPReviewer": {
+
+          debugger;
+
+
+
+          this.bpDepartmentForCommentService.getDepartmentForCommentByDepID(this.ApplicationID, this.loggedInUsersDepartmentID, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
+
+
+
+              if (data.dateSet.length > 0) {
+                this.currentBPDepartmentforCommentID = data.dateSet[0].bpDepartmentForCommentID;
+                this.bpDepartmentForCommentService.updateCommentStatus(this.currentBPDepartmentforCommentID, "TP Reviewer Approved", false, null, false).subscribe((data: any) => {
+                  debugger;
+                  if (data.responseCode == 1) {
+                    alert(data.responseMessage);
+                    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, "Approved(Pending)", "TP Review", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+
+                        if (data.responseCode == 1) {
+
+                          this.AddComment("TP Approved", this.currentBPDepartmentforCommentID);
+                          /*this.AddStageChecklistForApplication("TP Review");*/
+                        }
+                        else {
+                          alert(data.responseMessage);
+                        }
+                      }, error => {
+                        console.log("BuildingApplicationError: ", error)
+                      })
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+              }
+              else {
+                alert("Error With Fetching getDepForCommentByID");
+              }
+
+
+            }
+            else {
+              alert("Doesnt exisit in DB");
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
 
           break;
         }
@@ -4790,7 +4932,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "BCO Recommendation", "BCO Recommendation", 6, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "BCO Recommendation", "BCO Recommendation", 5, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
@@ -4821,7 +4963,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Referral", "Plans Examiner",  2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Referral", "Plans Examiner",  4, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -5366,7 +5508,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Plan Approval Committee(PAC)", "Plan Approval Committee(PAC)", 7, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Reviewing", "Plan Approval Committee(PAC)", 6, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
@@ -5787,7 +5929,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Jacket Upload Plans", "Jacket Upload Plans", 8, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Jacket Upload Plans", "Jacket Upload Plans", 7, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
@@ -5867,7 +6009,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Building Inspector", "Building Inspector", 9, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Reviewing", "Building Inspector", 8, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
@@ -5947,7 +6089,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Approved", "Closed Plan", 10, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Approved", "Closed Plan", 9, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               
               if (data.responseCode == 1) {
                 
@@ -6791,6 +6933,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   openAssignToUser(assignProjectToUser: any) {
+    this.getAllReviewers();
     this.modalService.open(assignProjectToUser, { backdrop: 'static', size: 'xl' });
   }
   openAssignToUserGISReviewer(assignProjectToUserGISReviewer: any) {
@@ -10461,43 +10604,86 @@ export class BpActionCenterComponent implements OnInit {
   }
 
 
-  getAllUsersForLandSurveyReview() {
+  getAllReviewers() {
     debugger;
-    this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(11, this.loggedInUsersDepartmentID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
-          this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              for (let i = 0; i < data.dateSet.length; i++) {
-                debugger;
-                this.userPofileService.getUserProfileById(data.dateSet[i].userID)
-                const tempZoneList = {} as LSReviewerUserList;
-                const current = data.dateSet[i];
-                tempZoneList.id = current.userID;
-                tempZoneList.fullName = current.fullName;
-                tempZoneList.Email = current.email;
-                tempZoneList.alternativeEmail = current.alternativeEmail; 
+    if (this.LSAdminRole == true) {
+      this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(11, this.loggedInUsersDepartmentID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            debugger;
+            this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                for (let i = 0; i < data.dateSet.length; i++) {
+                  debugger;
+                  this.userPofileService.getUserProfileById(data.dateSet[i].userID)
+                  const tempZoneList = {} as ReviewerUserList;
+                  const current = data.dateSet[i];
+                  tempZoneList.id = current.userID;
+                  tempZoneList.fullName = current.fullName;
+                  tempZoneList.Email = current.email;
+                  tempZoneList.alternativeEmail = current.alternativeEmail;
 
-                this.LSReviewerList.push(tempZoneList);
-                console.log("Got All LS Review Users", this.LSReviewerList);
+                  this.ReviewerUserList.push(tempZoneList);
+                  console.log("Got All LS Review Users", this.ReviewerUserList);
+                }
               }
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("Got All Users from land survey for land survey admin", error)
-          })
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("Got All Users from land survey for land survey admin", error)
+            })
+          }
+          this.LSReviewerListTable?.renderRows();
         }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("Got All Users from land survey for land survey admin", error)
+      })
+    }
+    else if (this.TPAdminRole == true) {
+      this.bpAccessGroupUserLinkService.getPeopleByAccessGroupAndSubDept(12, this.loggedInUsersDepartmentID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            debugger;
+            this.userPofileService.getUserProfileById(data.dateSet[i].userID).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                for (let i = 0; i < data.dateSet.length; i++) {
+                  debugger;
+                  this.userPofileService.getUserProfileById(data.dateSet[i].userID)
+                  const tempZoneList = {} as ReviewerUserList;
+                  const current = data.dateSet[i];
+                  tempZoneList.id = current.userID;
+                  tempZoneList.fullName = current.fullName;
+                  tempZoneList.Email = current.email;
+                  tempZoneList.alternativeEmail = current.alternativeEmail;
 
-      }
-      else {
-        alert(data.responseMessage)
-      }
-    }, error => {
-      console.log("Got All Users from land survey for land survey admin", error)
-    })
+                  this.ReviewerUserList.push(tempZoneList);
+                  console.log("Got All LS Review Users", this.ReviewerUserList);
+                }
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("Got All Users from land survey for land survey admin", error)
+            })
+          }
+          this.LSReviewerListTable?.renderRows();
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("Got All Users from land survey for land survey admin", error)
+      })
+    }
+    else {
+
+    }
+
   }
 
 

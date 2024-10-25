@@ -1,0 +1,62 @@
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  overflow-x: scroll;
+}
+
+.mat-blue {
+  background-color: #268df7;
+  color: #fff;
+  margin: 10px;
+}
+.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-column-Tasks {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 75% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-Checked {
+    text-align:center;
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-actions {
+  text-align: center;
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.fa-check-circle {
+  color: green !important;
+  font-size: 40px !important;
+}

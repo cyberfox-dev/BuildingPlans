@@ -131,6 +131,7 @@ import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.compo
 import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
 import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-required-uploads/bpdepartment-doc-required-uploads.component'; //BPDialogBoxes Sindiswa 24062024
 import { CreateNewApplicationComponent } from './create-new-application/create-new-application.component';
+import { BPTasksComponent } from './bptasks/bptasks.component';
 import { BPApplicationChecklistComponent } from './bpapplication-checklist/bpapplication-checklist.component'
 
 //import { MatExpansionModule } from '@angular/material/expansion';
@@ -247,6 +248,7 @@ import { BPApplicationChecklistComponent } from './bpapplication-checklist/bpapp
     BPServiceItemsComponent,
     BpMandoryDocumentsComponent,
     BpConfirmModalComponent, BPDepartmentDocRequiredUploadsComponent, //BPDialogBoxes Sindiswa 24062024
+    CreateNewApplicationComponent, BPTasksComponent,
     CreateNewApplicationComponent,
     BPApplicationChecklistComponent,
   ],

@@ -7,7 +7,7 @@
 
         public string? UserID { get; set; }
 
-        public int? SubDepartmentID { get; set; }
+        public int? DepartmentID { get; set; }
         public int? ZoneID { get; set; }
         public int? UserProfileID { get; set; }
 
