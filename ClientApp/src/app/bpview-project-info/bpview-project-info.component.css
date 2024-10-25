@@ -131,7 +131,7 @@ h2 {
 }
 
 .currentStageText {
-  margin: 24px auto;
+  margin: 13px auto;
   padding: 10px;
   background: #3778af7d;
   font-weight: 600;
@@ -221,7 +221,7 @@ h2 {
   padding: 10px;
   transition: background-color 0.3s ease;
   border-radius: 20px;
-  /* text-align: center; */
+
   -webkit-backdrop-filter: blur(9px);
   /* backdrop-filter: blur(9px); */
   BACKGROUND: #ffffff42;
@@ -229,7 +229,7 @@ h2 {
   align-items: center;
   justify-content: center;
   line-height: normal;
-  height: 70px;
+  height: 40px;
 }
 .projectTimeLine{
     font-size:20px;
@@ -243,14 +243,13 @@ h2 {
   color: white;
 }
 
-  .step.completed {
-    background-color: #4393d7; /* Completed step color */
-    color: white;
-  }
+.step.completed {
+  background-color: #94b4d0;
+  color: white;
+}
 .mat-stepper-horizontal-header .mat-stepper-vertical-header {
   top: 0 !important;
   position: sticky !important;
-  /* background: #ffffff45; */
   backdrop-filter: blur(9px);
   pointer-events: none !important;
 }

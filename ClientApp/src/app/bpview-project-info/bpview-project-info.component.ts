@@ -1372,7 +1372,7 @@ export class BPViewProjectInfoComponent implements OnInit {
             tempStage.StageNummber = current.stageOrder;
 
             this.StagesForApplication.push(tempStage);
-
+            
 
           }
           this.totalStages = this.StagesForApplication.length;
@@ -1420,5 +1420,8 @@ export class BPViewProjectInfoComponent implements OnInit {
 
       })
   }
+
+
+
 }
 

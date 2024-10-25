@@ -307,7 +307,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from accessGL in _context.BPAccessGroupsUserLinks
-                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID 
+                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.DepartmentName ==model.DepartmentID.ToString()
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
