@@ -1,9 +1,10 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus !='Unpaid' && CurrentApplication.ApplicationStatus != 'PTW'" (click)="actionCentreView(content)">Show My Actions</button>
+  <button mat-raised-button color="relaxationBTN" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus !='Unpaid' && CurrentApplication.ApplicationStatus != 'PTW'" (click)="actionCentreView(content)">Show My Actions</button>
   <button mat-raised-button color="relaxationBTN" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus == 'Unpaid'" (click)="openPaidModal(paidDateModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move Application To Paid</button>
   <button mat-raised-button color="relaxationBTN" *ngIf="isInternalUser && CurrentApplication.ApplicationStatus == 'PTW'" (click)="openPermitModal(permitModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">Apply For Permit</button>
   <button mat-raised-button color="relaxationBTN" *ngIf="(CurrentApplication.UserID == CurrentUser.appUserId || CurrentApplication.CreatedById == CurrentUser.appUserId) && CurrentApplication.ApplicationStatus == 'Approval Pack Generation'">Generate Approval Pack</button>
+  <button mat-raised-button color="relaxationBTN" (click)="getAllWayleaveServiceItems(invoiceModal)" *ngIf="CurrentApplication.ApplicationStatus == 'Waiting'">Generate Invoice</button>
   <!--<button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>-->
 </div>
 
@@ -932,5 +933,92 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" [disabled]=" permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #invoiceModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Generate Application Invoice</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="container-fluid">
+      <!--<mat-form-field>
+        <mat-label>Filter BY </mat-label>
+        <mat-select>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{category}}
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>-->
+
+    </div>
+    <div class="container-fluid">
+      <mat-form-field>
+        <mat-label>Select Service Items </mat-label>
+        <mat-select multiple [(ngModel)]="AllServiceItems" (selectionChange)=" onSelectServiceItem(invoiceModal)">
+
+          <mat-option *ngFor="let item of ServiceItemList" [value]="item">
+            {{item.Description}}               R{{item.Rate}}  excluding VAT
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+
+    </div>
+
+    <div>
+      <div class="row" *ngFor="let selection of AllServiceItems;let i = index">
+
+
+        <div class="form-floating mb-3 mt-3" style="width:10%">
+          <input type="text" class="form-control" placeholder="Service Item Code" [(ngModel)]="selection.serviceItemCode">
+          <label for="name">Service Item Code</label>
+        </div>
+
+
+        <mat-form-field  style="width:70%">       
+          <mat-label>Description</mat-label>
+          <textarea matInput readonly [(ngModel)]="selection.Description"></textarea>
+        </mat-form-field>
+
+        <div class="form-floating mb-3 mt-3" style="width:10%">
+          <input type="number" class="form-control" placeholder="Quantity" min="0" max="100" step="1" [(ngModel)]="selection.quantity" (ngModelChange)=" onNumberChange2(i)">
+          <label for="name">Quantity</label>
+        </div>
+
+        <div class="form-floating mb-3 mt-3" style="width:10%">
+           <input type="text" class="form-control" placeholder="Amount" name="amount" [(ngModel)]="selection.amount" />
+          <label for="amount">Amount</label>
+        </div>
+
+      
+      </div>
+
+      <div class="row" *ngIf="VAT != 0 && total != 0">
+
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" name="Vat" placeholder="Total" [(ngModel)]="showVAT" />
+            <label for="Vat">Total VAT</label>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" name="total" placeholder="Total" [(ngModel)]="showTotal" />
+            <label for="total">Total</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" [disabled]="showTotal == null || total == 0 " (click)="genInvoice2()">Generate Invoice</button>
   </div>
 </ng-template>

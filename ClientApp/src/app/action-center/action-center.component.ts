@@ -53,6 +53,7 @@ import { ConfigService } from '../service/Config/config.service';
 import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
 import { BPAccessGroupsService } from '../service/BPAccessGroups/bpaccess-groups.service';
+import { BPServiceItemsService } from '../service/BPServiceItems/bpservice-items.service';
  //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -100,8 +101,12 @@ export interface ServiceItemList {
   isChecked: boolean;
   remarks: string;
   quantity: number;
+  amount: number;
   addAmount: number;
   servicesRendered: any;
+  FunctionalArea: string;
+  Category: string;
+  Quantity: number; 
 }
 
 export interface StagesList {
@@ -475,7 +480,8 @@ export class ActionCenterComponent implements OnInit {
     private auditTrailService: AuditTrailService,
     private configService: ConfigService,
     private bpDepartmentService: BpDepartmentsService,
-    private bpAccessGroupsService: BPAccessGroupsService
+    private bpAccessGroupsService: BPAccessGroupsService,
+    private bpServiceItemsService: BPServiceItemsService,
     //Audit Trail Kyle
 
 
@@ -6904,7 +6910,7 @@ export class ActionCenterComponent implements OnInit {
     this.showSelection = true;
   }
 
-  genInvoice2() {
+  genInvoice3() {
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -6996,7 +7002,7 @@ export class ActionCenterComponent implements OnInit {
     this.sharedService.pushFileForTempFileUpload(file, "Deposit Required Invoice" + ".pdf");
     this.saveDeposit();
 
-    // window.open(pdfUrl, '_blank')
+    /* window.open(pdfUrl, '_blank')*/
 
     // this.router.navigate(["/home"]);
 
@@ -7486,8 +7492,263 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+  categories = []; 
+  getAllWayleaveServiceItems(invoiceModal : any) {
+    this.ServiceItemList.splice(0, this.ServiceItemList.length);
+
+    this.bpServiceItemsService.getAllServiceItemsForFA("Wayleave").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const current = data.dateSet[i];
+          const tempServiceItem = {} as ServiceItemList;
+
+          tempServiceItem.serviceItemID = current.serviceItemID;
+          tempServiceItem.serviceItemCode = current.serviceItemCode;
+          tempServiceItem.Description = current.description;
+          tempServiceItem.Rate = current.rate;
+          tempServiceItem.totalVat = current.totalVat;
+          tempServiceItem.Category = current.category;
+          tempServiceItem.FunctionalArea = current.functionalArea;
+          tempServiceItem.vatApplicable = current.vatApplicable;
+          tempServiceItem.remarks = current.remarks;
+          tempServiceItem.isChecked = false;
+          tempServiceItem.amount = 0;
+
+          this.ServiceItemList.push(tempServiceItem);
+          debugger;
+          this.categories.push(current.category);
+          //if (this.categories.some(current.category)) {
+          //  // nothing to be done if the category is in the list 
+          //}
+          //else {
+          //  this.categories.push(current.category);
+          //}
+        }
+        this.modalService.open(invoiceModal, { centered: true, size: 'xl' });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Service Items Error", error);
+    })
+  }
+  selectedServiceItem: ServiceItemList[] = [];
+  AllServiceItems: any;
+  total: number;
+  VAT: number;
+  showVAT: string;
+  showTotal: string;
+  onSelectServiceItem(invoiceModal:any) {
+    debugger;
+    this.modalService.dismissAll();
+    for (let i = 0; i < this.AllServiceItems.length; i++) {
+      let tempItem = this.AllServiceItems[i];
+
+      this.selectedServiceItems.push(tempItem);
     }
+    this.modalService.open(invoiceModal, { centered: true, size: 'xl' });
+  }
+
+  onNumberChange2(index:any) {
+    let amount = 0;
+    
+
+    const serviceItem = this.AllServiceItems[index];
+    debugger;
+    this.AllServiceItems[index].amount = Number(serviceItem.Rate) * Number(serviceItem.quantity);
+
+    for (let i = 0; i < this.AllServiceItems.length; i++) {
+      const item = this.AllServiceItems[i];
+      debugger;
+      amount = Number(amount) + Number(item.amount)
+      
+    }
+
+    debugger;
+    this.total = amount;
+    this.VAT = Number(amount) * 0.15;
+    this.showVAT = this.VAT.toFixed(2);
+    this.total = Number(this.total) + + Number(this.VAT);
+    this.showTotal = this.total.toFixed(2);
+  }
+
+  genInvoice2() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const img = new Image();
+    img.src = 'assets/Msunduzi_CoA.png';
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
+    doc.setFont('CustomFont', 'normal');
+    let currentPage = 1;
+    // Add logo
+    doc.addImage(img, 'png', 6, 10, 50, 40);
+
+    // Set font for header
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Msunduzi Municipality', 200, 17, { align: 'right' });
+    doc.text('341 Church Street', 200, 22, { align: 'right' });
+    doc.text('Pietermaritzburg 3201', 200, 27, { align: 'right' });
+
+    // Website and Portal links
+    doc.setFont('CustomFontBold', 'bold');
+
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('http://www.msunduzi.gov.za/site/home/index.html', 200, 35, { align: 'right' });
+
+    // Reference number
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: ' + "to be determined", 200, 50, { align: 'right' });
+
+    // Date and project description
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'normal');
+    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
+    doc.text('BUILDING PLANS APPLICATION: ', 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    // Greeting
+    doc.text('Dear ' + this.CurrentApplication.clientName, 10, 80, { align: 'left' });
+
+    // Application summary
+    doc.text('Please find below service items', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Status summary title
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+
+    const data = this.AllServiceItems.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.Rate,deposit.quantity ,deposit.amount]);
+    // Render the table in the PDF document
+    data.push(['', '', '', '',''],
+      ['Vat (15%):', '', '', '',this.showVAT],
+      ['Total Amount:', '','','', this.showTotal]);
+    autoTable(doc, {
+      head: [['Service Item', 'Description','Unit Price','Quantity','Total']], // Define table headers
+      body: data, // Populate table body with data
+      startY: 120, // Start position of the table on the Y axis
+      headStyles: { fillColor: '#005870' }, // Header styles
+      styles: {
+        fontSize: 8, // Font size for table content
+        halign: 'left', // Horizontal alignment for table content
+        valign: 'middle', // Vertical alignment for table content
+      },
+      columnStyles: {
+        0: { cellWidth: 30, fontStyle: 'bold' }, // Style for the first column
+        1: { cellWidth: 70 }, // Style for the second column
+        2: { cellWidth: 30 }, // Style for the second column
+        3: { cellWidth: 30 }, // Style for the second column
+        4: { cellWidth: 30 }, // Style for the second column
+      },
+    });
+
+   
+    // Rejection summary
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'italic');
+    doc.text("Disclaimer:\n This Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    // Signature
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('CITY OF PIETERMARITZBURG', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+
+    // Save PDF document
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Wayleave Invoice', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Wayleave Invoice" + ".pdf");
+    this.saveInvoice();
+
+
+    //Code below used to open generated pdf in a new window (for testing)
+    //const pdfUrl = URL.createObjectURL(pdfData); 
+    //window.open(pdfUrl, '_blank')
+  }
+
+  saveInvoice() {
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished2(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinished2 = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+       /* this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
+    this.financialService.addUpdateFinancial(0, "Wayleave Invoice", "Generated Pack", documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        /*  this.router.navigate(["/home"]);*/
+        this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, null, null, null, null, "Unpaid(Pending)").subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.openSnackBar("Invoice Created");
+            this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
+          }
+          else {
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log("Application Status Error", error);
+        })
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+
+
+  }
+  
 }
-
-
-

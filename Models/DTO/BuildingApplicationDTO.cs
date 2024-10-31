@@ -3,7 +3,7 @@ namespace BuildingPlans.Models.DTO
 {
     public class BuildingApplicationDTO
     {
-        public int ApplicationID { get; set; }
+        public int? ApplicationID { get; set; }
         public string? LSNumber { get; set; }
         public string? UserID { get; set; }
         public string? FirstName { get; set; }

@@ -5,6 +5,7 @@ using BuildingPlans.Models.BindingModel;
 using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuildingPlans.Controllers
 {
@@ -644,6 +645,109 @@ namespace BuildingPlans.Controllers
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
+            }
+        }
+
+        [HttpGet("GetAllSystemApplications")]
+        public async Task<object> GetAllSystemApplications()
+        {
+            try
+            {
+                var result = new object();
+
+                var query1 = await (from wayleave in _context.Application
+                                    where wayleave.ProjectNumber != null && wayleave.ProjectNumber != "" && wayleave.isActive == true 
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = wayleave.ApplicationID,
+                                        LSNumber = wayleave.ProjectNumber,
+                                        BPApplicationType = "Wayleave",
+                                        PhysicalAddress = wayleave.PhysicalAddressOfProject,
+                                        BPApplicationID = "",
+                                        FirstName = wayleave.FullName.Substring(0,wayleave.FullName.IndexOf(" ")),
+                                        Surname = wayleave.FullName.Substring(wayleave.FullName.IndexOf(" ")),
+                                        Stage = wayleave.CurrentStageName,
+                                        Status = wayleave.ApplicationStatus,
+                                        DateCreated = wayleave.DateCreated,
+                                        DateUpdated = wayleave.DateUpdated
+                                        
+
+                                    }).ToListAsync();
+
+                var query2 = await (from bp in _context.BuildingApplications
+                                    where bp.LSNumber != null && bp.LSNumber != "" && bp.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = bp.ApplicationID,
+                                        LSNumber = bp.LSNumber,
+                                        BPApplicationType = bp.BPApplicationType,
+                                        PhysicalAddress = bp.PhysicalAddress,
+                                        BPApplicationID = bp.BPApplicationID,
+                                        FirstName = bp.FirstName,
+                                        Surname = bp.Surname,
+                                        Stage = bp.Stage,
+                                        Status = bp.Status,
+                                        DateCreated = bp.DateCreated,
+                                        DateUpdated = bp.DateUpdated
+
+                                    }).ToListAsync();
+
+                var query3 = await (from sign in _context.BPSignageApplication
+                                    where sign.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = sign.ApplicationID,
+                                        BPApplicationType = "Signage",
+                                        PhysicalAddress = sign.Address,
+                                        FirstName = sign.ApplicantName,
+                                        Surname = sign.ApplicantSurname ,
+                                        Stage = sign.CurrentStage,
+                                        DateCreated = sign.DateCreated,
+                                        DateUpdated = sign.DateUpdated
+
+                                    }).ToListAsync();
+
+                var query4 = await (from flag in _context.BPFlagApplication
+                                    where flag.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = flag.ApplicationID,
+                                        BPApplicationType = "Flag",
+                                        PhysicalAddress = flag.Location,
+                                        FirstName = flag.ApplicantName,
+                                        Surname = flag.ApplicantSurname,
+                                        DateCreated = flag.DateCreated,
+                                        DateUpdated = flag.DateUpdated
+
+                                    }).ToListAsync();
+
+                var query5 = await (from banner in _context.BPBannerApplication
+                                    where banner.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = banner.ApplicationID,
+                                        BPApplicationType = "Banner",
+                                        PhysicalAddress = banner.Address,
+                                        FirstName = banner.ApplicantName,
+                                        Surname = banner.ApplicantSurname,
+                                        Stage = banner.CurrentStage,
+                                        DateCreated = banner.DateCreated,
+                                        DateUpdated = banner.DateUpdated
+
+                                    }).ToListAsync();
+                result =  query1
+                    .Concat(query2)
+                    .Concat(query3)
+                    .Concat(query4)
+                    .Concat(query5).OrderByDescending(x => x.DateCreated)
+                    .ToList();
+                
+                
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
     }

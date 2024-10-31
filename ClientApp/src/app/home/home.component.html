@@ -23,7 +23,7 @@
     <!-- Service Information Kyle 31/01/24-->
     <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
     <mat-menu #menu2="matMenu" xPosition="after">
-      <!--THIS IS ACTUALLY LAND SURVEY-->
+      <!--THIS IS ACTUALLY LAND SURVEY--> 
       <button mat-menu-item [matMenuTriggerFor]="BPA">Building Plan</button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
@@ -31,7 +31,7 @@
       <button mat-menu-item (click)="GoToBuildingApplication(false,null,true)">Wayleave Application</button>
 
     </mat-menu>
-   
+
     <!--OLD CREATE NEW WAYLEAVE, MOVED INSIDE THWE MAIN BUTTON-->
     <!-- <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>-->
     <!-- Service Information Kyle 31/01/24-->

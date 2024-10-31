@@ -638,7 +638,7 @@ export class NewWayleaveComponent implements OnInit {
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
-    if (this.CurrentUserProfile[0].isInternal == false) {
+    if (this.CurrentUserProfile[0].isInternal == true) {
       
       this.external = true;
       this.internal = false;
@@ -685,9 +685,9 @@ export class NewWayleaveComponent implements OnInit {
 
     }
     else {
-      this.internal = true;
-      this.external = false;
-      this.client = false;
+      //this.internal = true;
+      //this.external = false;
+      //this.client = false;
     }
 
     this.reciveOption();
@@ -718,6 +718,7 @@ export class NewWayleaveComponent implements OnInit {
 
     this.shared.getCanGoNextC();
     this.shared.getCanGoNextE();
+
   }
 
 
@@ -892,7 +893,7 @@ export class NewWayleaveComponent implements OnInit {
           // this.sharedService.setStageData(this.StagesList);
         }
         //this.getAllManDocsByStageID();
-
+        console.log("All Stages", this.StagesList);
       }
       else {
         //alert("Invalid Email or Password");
@@ -5830,9 +5831,9 @@ export class NewWayleaveComponent implements OnInit {
    
    
       
-        previousStageNameIn = this.StagesList[0].StageName
-        CurrentStageNameIn = this.StagesList[1].StageName;
-        NextStageNameIn = this.StagesList[2].StageName
+        previousStageName = this.StagesList[0].StageName
+        CurrentStageName= this.StagesList[1].StageName;
+        NextStageName= this.StagesList[2].StageName
       
 
     
@@ -5874,14 +5875,14 @@ export class NewWayleaveComponent implements OnInit {
     else if (this.client && this.option == "client") {
       //internal creating for external
       debugger;
-      this.applicationsService.addUpdateApplication(this.applicationID, this.clientUserID, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientAlternativeEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.physicalAddressOfProject, this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, this.clientUserID, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientAlternativeEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.physicalAddressOfProject, this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Waiting", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           this.SavedProjectSizeSelections();
 
 
           this.AddProfessinal(contractorData, engineerData);
-          this.genInvoice2();
+          
           // this.UploadDocuments(data.dateSet);
           /*this.newWayleaveDistrubution();*/
           this.shared.setApplicationID(0);
@@ -5907,7 +5908,7 @@ export class NewWayleaveComponent implements OnInit {
     else {
       debugger;
       //external applying for themselves
-      this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.CurrentUserProfile[0].alternativeEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.CurrentUserProfile[0].alternativeEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Waiting", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.SavedProjectSizeSelections();
 
@@ -5915,7 +5916,7 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
 
           // this.UploadDocuments(data.dateSet);
-          this.genInvoice2();
+          
           this.shared.setApplicationID(0);
           this.shared.clearContractorData();
           this.shared.clearEngineerData();
@@ -6180,162 +6181,6 @@ export class NewWayleaveComponent implements OnInit {
     
   }
 
-  genInvoice2() {
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
+ 
 
-    const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png';
-
-    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
-    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
-    doc.setFont('CustomFont', 'normal');
-    let currentPage = 1;
-    // Add logo
-    doc.addImage(img, 'png', 6, 10, 50, 40);
-
-    // Set font for header
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text('Msunduzi Municipality', 200, 17, { align: 'right' });
-    doc.text('341 Church Street', 200, 22, { align: 'right' });
-    doc.text('Pietermaritzburg 3201', 200, 27, { align: 'right' });
-
-    // Website and Portal links
-    doc.setFont('CustomFontBold', 'bold');
-
-    doc.setTextColor(0, 88, 112);
-    doc.textWithLink('http://www.msunduzi.gov.za/site/home/index.html', 200, 35, { align: 'right' });
-
-    // Reference number
-    doc.setTextColor(0, 0, 0);
-    doc.text('Reference Number: ' + "to be determined", 200, 50, { align: 'right' });
-
-    // Date and project description
-    doc.setFontSize(10);
-    doc.setFont('CustomFont', 'normal');
-    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
-    doc.text('BUILDING PLANS APPLICATION: ', 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
-
-    // Greeting
-    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
-
-    // Application summary
-    doc.text('Please find below service items', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-
-    // Status summary title
-    doc.setFont('CustomFontBold', 'bold');
-    doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-    doc.setFont('CustomFont', 'normal');
-
-    const data = this.ServiceItemList.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.Rate]);
-    // Render the table in the PDF document
-    autoTable(doc, {
-      head: [['Service Item', 'Description', 'Total']], // Define table headers
-      body: data, // Populate table body with data
-      startY: 120, // Start position of the table on the Y axis
-      headStyles: { fillColor: '#005870' }, // Header styles
-      styles: {
-        fontSize: 8, // Font size for table content
-        halign: 'left', // Horizontal alignment for table content
-        valign: 'middle', // Vertical alignment for table content
-      },
-      columnStyles: {
-        0: { cellWidth: 50, fontStyle: 'bold' }, // Style for the first column
-        1: { cellWidth: 50 }, // Style for the second column
-        2: { cellWidth: 30 }, // Style for the second column
-      },
-    });
-    // Rejection summary
-    doc.setFontSize(10);
-    doc.setFont('CustomFont', 'italic');
-    doc.text("Disclaimer:\n This Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-    doc.setFont('CustomFont', 'normal');
-    // Signature
-    doc.setFontSize(12);
-    doc.setFont('CustomFontBold', 'bold');
-    doc.text('CITY OF PIETERMARITZBURG', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-    doc.setFont('CustomFont', 'italic');
-
-    // Save PDF document
-
-    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
-    const file = new File([pdfData], 'Wayleave Invoice', { type: 'application/pdf' });
-
-
-    // Prepare the form data
-    const formData = new FormData();
-    formData.append('file', file);
-    this.shared.pushFileForTempFileUpload(file, "Wayleave Invoice" + ".pdf");
-    this.saveInvoice();
-
-    // window.open(pdfUrl, '_blank')
-
-    // this.router.navigate(["/home"]);
-
-  }
-
-
-  saveInvoice() {
-
-
-
-
-    const filesForUpload = this.shared.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
-      const formData = new FormData();
-      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
-      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
-              this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinished2(event.body);
-
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
-    }
-
-  }
-
-  uploadFinished2= (event: any) => {
-    const currentApplication = this.shared.getViewApplicationIndex();
-
-    this.response = event;
-    console.log("this.response", this.response);
-    console.log("this.response?.dbPath", this.response?.dbPath);
-
-
-    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    console.log("documentName", documentName);
-    //JJS Commit Permit Cover 30 May 24
-    /*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
-    this.financialService.addUpdateFinancial(0, "Wayleave Invoice", "Generated Pack", documentName, this.response?.dbPath, this.applicationID, "System Generated Pack").subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        /*  this.router.navigate(["/home"]);*/
-      }
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-    
-
-  }
 }
