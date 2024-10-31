@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using NetTopologySuite.Geometries;
+
 
 namespace BuildingPlans.Data.Entities
 {
@@ -14,7 +14,6 @@ namespace BuildingPlans.Data.Entities
         public string? Radius { get; set; } 
         
         //public Geometry? Geometry { get; set; }
-        
         }
   
     }

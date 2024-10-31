@@ -10310,7 +10310,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Pending", "Building Plan",  2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+      null, null, null, null, null, null, "Pending", "Building Plan",  3, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
           /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -10319,9 +10319,9 @@ export class BpActionCenterComponent implements OnInit {
           //this.modalService.dismissAll();
           //this.openSnackBar("Application Actioned");
           //this.getAllServiceItemsForRelaxation();
-          /* this.AddComment("LS Relaxation", null);*/
-          this.openSnackBar("Application Actioned");
-          this.router.navigate(["/home"]);
+           this.AddComment("Building Plan Applied For", null);
+/*          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);*/
         }
         else {
           alert(data.responseMessage)

@@ -1,5 +1,4 @@
 ﻿using BuildingPlans.Data.Entities;
-using NetTopologySuite.Geometries;
 namespace BuildingPlans.Models.DTO
 {
     public class BuildingApplicationDTO

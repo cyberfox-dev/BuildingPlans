@@ -66,7 +66,7 @@ namespace BuildingPlans.Controllers
                             ApplicationFee = model.ApplicationFee,
                             PreviousStage = model.PreviousStage,
                             CurrentStage = model.CurrentStage,
-                            NextStage = model.NextStage
+                            ProjectNumber = model.ProjectNumber
                         };
 
                         await _context.BPBannerApplication.AddAsync(tempBannerApplication);
@@ -144,9 +144,9 @@ namespace BuildingPlans.Controllers
                         {
                             tempBannerApplication.CurrentStage = model.CurrentStage;
                         }
-                        if (model.NextStage != null)
+                        if (model.ProjectNumber != null)
                         {
-                            tempBannerApplication.NextStage = model.NextStage;
+                            tempBannerApplication.ProjectNumber = model.ProjectNumber;
                         }
 
                         _context.Update(tempBannerApplication);
@@ -193,7 +193,7 @@ namespace BuildingPlans.Controllers
                                         ApplicationFee = applications.ApplicationFee,
                                         PreviousStage = applications.PreviousStage,
                                         CurrentStage = applications.CurrentStage,
-                                        NextStage = applications.NextStage,
+                                        ProjectNumber = applications.ProjectNumber,
                                         CreatedById = applications.CreatedById,
                                         DateCreated = applications.DateCreated,
                                         DateUpdated = applications.DateUpdated,
@@ -244,7 +244,7 @@ namespace BuildingPlans.Controllers
                                             ApplicationFee = applications.ApplicationFee,
                                             PreviousStage = applications.PreviousStage,
                                             CurrentStage = applications.CurrentStage,
-                                            NextStage = applications.NextStage,
+                                            ProjectNumber = applications.ProjectNumber,
                                             CreatedById = applications.CreatedById,
                                             DateCreated = applications.DateCreated,
                                             DateUpdated = applications.DateUpdated,

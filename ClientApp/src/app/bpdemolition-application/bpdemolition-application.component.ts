@@ -3,6 +3,7 @@ import { OccupationClassificationService } from 'src/app/service/OccupationClass
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SharedService } from '../shared/shared.service';
 import { BPDemolitionApplicationService } from '../service/BPDemolitionApplication/bpdemolition-application.service';
+import { ConfigService } from 'src/app/service/Config/config.service';
 export interface OccupationsClassificationsList {
   OccupationID: number;
   OccupationName: string;
@@ -22,7 +23,7 @@ export interface OccupationsClassificationsList {
 })
 export class BPDemolitionApplicationComponent implements OnInit {
 
-  constructor(private occupationService: OccupationClassificationService, private router: Router, private sharedService: SharedService, private bpDemolitionService: BPDemolitionApplicationService) { }
+  constructor(private occupationService: OccupationClassificationService, private router: Router, private sharedService: SharedService, private bpDemolitionService: BPDemolitionApplicationService, private configService: ConfigService,) { }
 
   OccupationsClassificationList: OccupationsClassificationsList[] = [];
 
@@ -122,7 +123,7 @@ export class BPDemolitionApplicationComponent implements OnInit {
     this.applicantAddress = this.applicantStreetNumber + " " + this.applicantStreetName + " " + this.applicantSuburb + " " + this.applicantCity + " " + this.applicantPostalCode;
     this.siteAddress = this.siteStreetNumber + " " + this.siteStreetName + " " + this.siteSuburb + " " + this.siteCity + " " + this.sitePostalCode;
     
-    this.bpDemolitionService.addUpdateDemolitionApplication(0, this.mainMunicipality, this.applicantName, this.applicantSurname, this.applicantIDNumber, this.applicantEmail, this.applicantContact, this.isOwner, this.ownerIDNumber, this.ownerName, this.ownerSurname, this.ownerEmail, this.ownerContact, this.applicantAddress, this.siteAddress, this.siteERFNumber, this.siteCadastralDescription, this.reasonForDemolition, this.propertyExistingUser, this.DemolitionFees, this.isArchive, this.CurrentUser.appUserId,null,null,null).subscribe((data: any) => {
+    this.bpDemolitionService.addUpdateDemolitionApplication(0, this.mainMunicipality, this.applicantName, this.applicantSurname, this.applicantIDNumber, this.applicantEmail, this.applicantContact, this.isOwner, this.ownerIDNumber, this.ownerName, this.ownerSurname, this.ownerEmail, this.ownerContact, this.applicantAddress, this.siteAddress, this.siteERFNumber, this.siteCadastralDescription, this.reasonForDemolition, this.propertyExistingUser, this.DemolitionFees, this.isArchive, this.CurrentUser.appUserId, null, null, this.lSNumber).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.router.navigate(["/home"]);
       }
@@ -134,5 +135,63 @@ export class BPDemolitionApplicationComponent implements OnInit {
       console.log("Error: ", error);
     })
    
+  }
+
+  configNumberOfProject: any;
+  configMonthYear: any;
+  lSNumber: string = "";
+  generateProjectNumber() {
+    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        const current = data.dateSet[0];
+        this.configNumberOfProject = current.utilitySlot1;
+        const configId = current.configID;
+
+        this.getMonthYear();
+
+        this.configService.addUpdateConfig(configId, "ProjectNumberTracker", null, (Number(this.configNumberOfProject) + 1).toString(), this.configMonthYear, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.lSNumber = "LS:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+            this.Create();
+           
+          }
+          else {
+
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
+
+
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+  
+  }
+  getMonthYear() {
+    const currentDate = new Date();
+
+
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+
+    this.configMonthYear = (currentMonth + 1).toString().padStart(2, '0') + '/' + currentYear.toString().slice(-2);
+
+
+    console.log(this.configMonthYear);
   }
 }
