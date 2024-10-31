@@ -680,7 +680,7 @@ namespace BuildingPlans.Controllers
                                     {
                                         ApplicationID = bp.ApplicationID,
                                         LSNumber = bp.LSNumber,
-                                        BPApplicationType = "",
+                                        BPApplicationType = bp.BPApplicationType,
                                         PhysicalAddress = bp.PhysicalAddress,
                                         BPApplicationID = bp.BPApplicationID,
                                         FirstName = bp.FirstName,
@@ -692,10 +692,57 @@ namespace BuildingPlans.Controllers
 
                                     }).ToListAsync();
 
+                var query3 = await (from sign in _context.BPSignageApplication
+                                    where sign.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = sign.ApplicationID,
+                                        BPApplicationType = "Signage",
+                                        PhysicalAddress = sign.Address,
+                                        FirstName = sign.ApplicantName,
+                                        Surname = sign.ApplicantSurname ,
+                                        Stage = sign.CurrentStage,
+                                        DateCreated = sign.DateCreated,
+                                        DateUpdated = sign.DateUpdated
+
+                                    }).ToListAsync();
+
+                var query4 = await (from flag in _context.BPFlagApplication
+                                    where flag.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = flag.ApplicationID,
+                                        BPApplicationType = "Flag",
+                                        PhysicalAddress = flag.Location,
+                                        FirstName = flag.ApplicantName,
+                                        Surname = flag.ApplicantSurname,
+                                        DateCreated = flag.DateCreated,
+                                        DateUpdated = flag.DateUpdated
+
+                                    }).ToListAsync();
+
+                var query5 = await (from banner in _context.BPBannerApplication
+                                    where banner.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = banner.ApplicationID,
+                                        BPApplicationType = "Banner",
+                                        PhysicalAddress = banner.Address,
+                                        FirstName = banner.ApplicantName,
+                                        Surname = banner.ApplicantSurname,
+                                        Stage = banner.CurrentStage,
+                                        DateCreated = banner.DateCreated,
+                                        DateUpdated = banner.DateUpdated
+
+                                    }).ToListAsync();
                 result =  query1
                     .Concat(query2)
+                    .Concat(query3)
+                    .Concat(query4)
+                    .Concat(query5).OrderByDescending(x => x.DateCreated)
                     .ToList();
-
+                
+                
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
             }
             catch (Exception ex)

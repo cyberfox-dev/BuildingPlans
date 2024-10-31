@@ -211,7 +211,7 @@ export class CreateNewApplicationComponent implements OnInit {
         this.sharedList.push(tempApplicationListShared);
         this.sharedService.setViewApplicationIndex(this.sharedList);
 
-        this.router.navigate(["/view-project-info"])
+        this.router.navigate(["/view-project-info"]);
         
       }
       else {

@@ -729,7 +729,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.sharedService.setShowFormerApps(true);
       this.sharedService.setFromReApplyArchive(false);
       // #endregion
-    this.GetAllApplications();
+    /* this.GetAllApplications();*/
+    this.getAllSystemApplications();
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -772,7 +773,7 @@ export class HomeComponent implements OnInit, OnDestroy {
  
     /*this.GetAllApplications();*/  //this is the old all applications method use this is other method does not work
 
-    this.getAllSystemApplications();
+   
 /*        this.GetAllPreInvoiceScrutinyApplications();
         this.GetAllBuildingPlansApplications();
         this.getAllPreInvoiceScurtinyApplications();*/
@@ -7630,6 +7631,7 @@ this.subscriptions.push(subscription);
 
   }
   // #endregion BPRegister Sindiswa 20 June 2024
+  sharedList = [];
   ViewProject(index) {
     let applicationId: any;
     debugger;
@@ -7668,10 +7670,74 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         debugger;
-        applicationId = this.AllApplications[index].applicationID;
-        this.sharedService.setCurrentStage(this.AllApplications[index].stage);
-        this.sharedService.setApplicationID(applicationId);
-        this.router.navigate(['bpview-project-info']);
+        if (this.AllApplications[index].bpApplicationType != "Wayleave") {
+
+          applicationId = this.AllApplications[index].applicationID;
+          this.sharedService.setCurrentStage(this.AllApplications[index].stage);
+          this.sharedService.setApplicationID(applicationId);
+          this.router.navigate(['bpview-project-info']);
+        }
+        else {
+          applicationId = this.AllApplications[index].applicationID;
+          this.sharedService.setApplicationID(applicationId);
+          this.applicationService.getApplicationsByApplicationID(applicationId).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              const tempApplicationListShared = {} as ApplicationList;
+              const current = data.dateSet[0];
+
+              tempApplicationListShared.applicationID = current.applicationID;
+              tempApplicationListShared.clientName = current.fullName;
+              tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+              tempApplicationListShared.clientAddress = current.physicalAddress;
+              tempApplicationListShared.clientRefNo = current.referenceNumber;
+              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+              tempApplicationListShared.NotificationNumber = current.notificationNumber;
+              tempApplicationListShared.WBSNumber = current.wbsNumber;
+              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+              tempApplicationListShared.NatureOfWork = current.natureOfWork;
+              tempApplicationListShared.ExcavationType = current.excavationType;
+              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+              tempApplicationListShared.Location = current.location;
+              tempApplicationListShared.clientCellNo = current.phoneNumber;
+              tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.UserID = current.userID;//
+              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+              tempApplicationListShared.CurrentStageName = current.currentStageName;
+              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+              tempApplicationListShared.NextStageName = current.nextStageName;
+              tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+              tempApplicationListShared.PreviousStageName = current.previousStageName;
+              tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+              tempApplicationListShared.DatePaid = current.datePaid;
+              tempApplicationListShared.wbsrequired = current.wbsRequired;
+              tempApplicationListShared.Coordinates = current.coordinates;
+              if (current.projectNumber != null) {
+                tempApplicationListShared.ProjectNumber = current.projectNumber;
+              } else {
+                tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+              }
+
+              tempApplicationListShared.isPlanning = current.isPlanning;
+              tempApplicationListShared.permitStartDate = current.permitStartDate;
+              this.sharedList.push(tempApplicationListShared);
+              this.sharedService.setViewApplicationIndex(this.sharedList);
+              this.router.navigate(['/view-project-info']);
+            }
+            else {
+              alert(data.responseMessage);
+            }
+          })
+         
+          
+        }
+      
         break;
     }
   
@@ -8024,9 +8090,10 @@ this.subscriptions.push(subscription);
   openCreateNewApplicationBar() {
     this._bottomSheet.open(CreateNewApplicationComponent);
   }
-  testList: ApplicationsListBP[] = [];
+  
   getAllSystemApplications() {
     debugger;
+    this.AllApplications.splice(0, this.AllApplications.length);
     this.applicationService.getAllSystemApplications().subscribe((data: any) => {
       debugger; 
       if (data.responseCode == 1) {
@@ -8057,15 +8124,34 @@ this.subscriptions.push(subscription);
            
             tempApplication.status = current.status;
             tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
-            tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
 
+          //cal plan age
+          const currentDate = new Date();
+          const dateCreated2 = new Date(tempApplication.dateCreated);
+          const timeDiff = currentDate.getTime() - dateCreated2.getTime();
+          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+          tempApplication.planAge = daysDiff;
+          tempApplication.bpApplicationType = current.bpApplicationType;
 
-            this.testList.push(tempApplication);
+          /*cal stage age*/
+          const stageDateCreated = new Date(tempApplication.dateCreated);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplication.stageAge = stageDateDiff;
+          tempApplication.status = current.status;
+          tempApplication.justForFilteringByDate = current.dateCreated;
+
+          this.AllApplications.push(tempApplication);
         }
-
-        this.dataSourceBP = this.testList;
-        this.dataSourceSA = this.testList;
+        console.log("All Applications", this.AllApplications);
+        this.dataSourceBP = this.AllApplications;
+        this.dataSourceSA = this.AllApplications;
       }
     })
   }
+
+
 }
+
+
