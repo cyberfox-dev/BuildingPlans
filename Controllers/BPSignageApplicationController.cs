@@ -75,7 +75,7 @@ namespace BuildingPlans.Controllers
                             CreatedById = model.CreatedById,
                             PreviousStage = model.PreviousStage,
                             CurrentStage = model.CurrentStage,
-                            NextStage = model.NextStage,
+                            ProjectNumber = model.ProjectNumber,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             isActive = true
@@ -197,9 +197,9 @@ namespace BuildingPlans.Controllers
                         {
                             tempSignageApplication.CurrentStage = model.CurrentStage;
                         }
-                        if(model.NextStage != null)
+                        if(model.ProjectNumber != null)
                         {
-                            tempSignageApplication.NextStage = model.NextStage;
+                            tempSignageApplication.ProjectNumber = model.ProjectNumber;
                         }
                         tempSignageApplication.DateUpdated = DateTime.Now;
                         _context.Update(tempSignageApplication);
@@ -253,7 +253,7 @@ namespace BuildingPlans.Controllers
                                         Encroachment = application.Encroachment,
                                         PreviousStage = application.PreviousStage,
                                         CurrentStage = application.CurrentStage,
-                                        NextStage = application.NextStage,
+                                        ProjectNumber = application.ProjectNumber,
                                         DateCreated = application.DateCreated,
                                         DateUpdated = application.DateUpdated,
                                         CreatedById = application.CreatedById,

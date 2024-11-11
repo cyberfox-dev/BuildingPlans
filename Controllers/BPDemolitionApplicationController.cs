@@ -69,7 +69,7 @@ namespace BuildingPlans.Controllers
                             isArchive = model.isArchive,
                             PreviousStage = model.PreviousStage,
                             CurrentStage = model.CurrentStage,
-                            NextStage = model.NextStage,
+                            ProjectNumber = model.ProjectNumber,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             isActive = true
@@ -169,9 +169,9 @@ namespace BuildingPlans.Controllers
                         {
                             tempDemolitionApplication.CurrentStage = model.CurrentStage;
                         }
-                        if(model.NextStage != null)
+                        if(model.ProjectNumber != null)
                         {
-                            tempDemolitionApplication.NextStage = model.NextStage;
+                            tempDemolitionApplication.ProjectNumber = model.ProjectNumber;
                         }
 
 
@@ -221,7 +221,7 @@ namespace BuildingPlans.Controllers
                                         isArchive = applications.isArchive,
                                         CurrentStage = applications.CurrentStage,
                                         PreviousStage = applications.PreviousStage,
-                                        NextStage = applications.NextStage,
+                                        ProjectNumber = applications.ProjectNumber,
                                         DateCreated = applications.DateCreated,
                                         DateUpdated = applications.DateUpdated,
                                         CreatedById = applications.CreatedById,
@@ -274,7 +274,7 @@ namespace BuildingPlans.Controllers
                                             isArchive = applications.isArchive,
                                             CurrentStage = applications.CurrentStage,
                                             PreviousStage = applications.PreviousStage,
-                                            NextStage = applications.NextStage,
+                                            ProjectNumber = applications.ProjectNumber,
                                             DateCreated = applications.DateCreated,
                                             DateUpdated = applications.DateUpdated,
                                             CreatedById = applications.CreatedById,

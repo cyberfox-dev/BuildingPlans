@@ -25,7 +25,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 using iText.Commons.Actions.Contexts;
-using NetTopologySuite.Geometries;
+
 namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]

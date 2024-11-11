@@ -25,6 +25,6 @@ namespace BuildingPlans.Data.Entities
         public string? ApplicationFee { get; set; }
         public string? PreviousStage { get; set; }
         public string? CurrentStage { get; set; }
-        public string? NextStage { get; set; }
+        public string? ProjectNumber { get; set; }
     }
 }

@@ -27,5 +27,6 @@ namespace BuildingPlans.Data.Entities
         public DateTime? EndDate { get; set; }
         public string? PlaceOfEvent { get; set; }
         public string? ApplicationFee { get; set; }
+        public string? ProjectNumber { get; set; }
     }
 }

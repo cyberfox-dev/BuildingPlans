@@ -22,14 +22,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.9" />
-    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
+
     <PackageReference Include="PdfSharp" Version="1.50.5147" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <!-- Don't publish the SPA source files, but do show them in the project files list ... -->
     <Compile Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\**" />
     <Compile Remove="ClientApp\.angular\cache\14.2.4\babel-webpack\**" />
     <Content Remove="$(SpaRoot)**" />

@@ -34,7 +34,7 @@ namespace BuildingPlans.Data.Entities
         public bool? Encroachment { get; set; }
         public string? PreviousStage { get; set; }
        public string? CurrentStage { get; set; }
-        public string? NextStage { get; set; }
+        public string? ProjectNumber { get; set; }
 
     }
 }

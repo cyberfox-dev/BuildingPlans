@@ -22,7 +22,7 @@
         public string? ApplicationFee { get; set; }
         public string? PreviousStage { get; set; }
         public string? CurrentStage { get; set; }
-        public string? NextStage { get; set; }
+        public string? ProjectNumber { get; set; }
         public string? CreatedById { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }

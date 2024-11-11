@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using NetTopologySuite.Geometries;
+
 namespace BuildingPlans.Models.BindingModel
 {
     public class BuildingApplicationBindingModel
