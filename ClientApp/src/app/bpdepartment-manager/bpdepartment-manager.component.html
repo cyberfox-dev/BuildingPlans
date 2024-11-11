@@ -10,10 +10,39 @@
 
 <ng-template #linkedUsers let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">View All Users for {{functionalArea}} in {{subDepartmentName}}</h4>
+    <h4 class="modal-title" id="modal-basic-title">View All Users for {{functionalArea}}</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+
+    <div class="container02">
+
+      <button mat-button [matMenuTriggerFor]="asPerAccessGroup" matTooltip="access group filter" color="filter" aria-label="">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
+      </button>
+
+      <button mat-button matTooltip="Undo all filtering" color="filter" aria-label="" (click)=" resetLinkedUserFilter()">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/arrow-rotate-left.svg" class="icon">
+      </button>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <div class="cont6">
+          <!--TODO: check which list the textbox filter pulls from-->
+          <input matInput placeholder="Search By Internal User Name" (keyup)="applyFilter2($event)" #input>
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
+        </div>
+
+      </mat-form-field>
+
+
+      <mat-menu #asPerAccessGroup="matMenu">
+        <ng-container *ngFor="let group of accessGroupList">
+          <button mat-menu-item (click)="onFilterInternalUsersByAccessGroup(group)" value="{{group.AccessGroupID}}">{{ group.AccessGroupName }}</button>
+        </ng-container>
+      </mat-menu>
+    </div>
     <table mat-table class="mat-elevation-z8" [dataSource]="dataSource">
 
       <ng-container matColumnDef="userName">
@@ -87,6 +116,7 @@
 
     <div class="row">
       <mat-form-field>
+        <mat-label>Select a functional area</mat-label>
         <mat-select [(ngModel)]="selectedFunctionalArea" (selectionChange)="GetAllDepartmentsForFunctionalArea()" >
           <mat-option *ngFor="let area of functionalAreasList" value="{{area.FAName}}">{{area.FAName}}</mat-option>
         </mat-select>
@@ -94,6 +124,7 @@
     </div>
     <div class="row">
       <mat-form-field>
+        <mat-label>Select a sub department</mat-label>
         <mat-select [(ngModel)]="selectedDepartment" >
           <mat-option *ngFor="let area of departmentsList" value="{{area.DepartmentName}}">{{area.DepartmentName}}</mat-option>
         </mat-select>
@@ -136,10 +167,43 @@
 
 <ng-template #allUsers let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">View Internal All Users f</h4>
+    <h4 class="modal-title" id="modal-basic-title">View Internal All Users </h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+
+    <div class="container02">
+      <button mat-button matTooltip="Filter By Department" color="filter" aria-label="" (click)="openAllUsersFilter(AllUserFilter)">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/house.svg" class="icon">
+      </button>
+
+      <button mat-button [matMenuTriggerFor]="asPerAccessGroup" matTooltip="access group filter" color="filter" aria-label="" >
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
+      </button>
+
+      <button mat-button matTooltip="Undo all filtering" color="filter" aria-label="" (click)="resetAllUserFilter()">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/arrow-rotate-left.svg" class="icon">
+      </button>
+
+      <mat-menu #asPerAccessGroup="matMenu">
+        <ng-container *ngFor="let group of accessGroupList">
+          <button mat-menu-item (click)="onfilterAllUsersByAccessGroup(group)"value="{{group.AccessGroupID}}">{{ group.AccessGroupName }}</button>
+        </ng-container>
+      </mat-menu>
+
+      <mat-form-field appearance="outline">
+
+
+        <mat-label>Search</mat-label>
+        <div class="cont6">
+          <!--TODO: check which list the textbox filter pulls from-->
+          <input matInput placeholder="Search By Internal User Name" (keyup)="applyFilter($event)" #input>
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
+        </div>
+
+      </mat-form-field>
+    </div>
+
     <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceUser">
 
       <ng-container matColumnDef="userName">
@@ -169,5 +233,44 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsUser"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsUser;"></tr>
     </table>
+  </div>
+</ng-template>
+
+
+<ng-template #AllUserFilter let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Filter User List</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <p> All Fields do not need to be selected only select those you which to use to filter the list</p>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select a functional area</mat-label>
+        <mat-select [(ngModel)]="filterFunctionalArea" (selectionChange)="GetAllDepartmentsForFunctionalArea()">
+          <mat-option *ngFor="let area of functionalAreasList" value="{{area.FAName}}">{{area.FAName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+ 
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select a sub department</mat-label>
+        <mat-select [(ngModel)]="filterSubDepartment">
+          <mat-option *ngFor="let area of departmentsList" value="{{area.DepartmentName}}">{{area.DepartmentName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)=" onFilterAllUsersList();modal.dismiss('Cross click')">Filter List</button>
+   
   </div>
 </ng-template>

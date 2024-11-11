@@ -60,4 +60,12 @@ export class BPAccessGroupsService {
 
     return this.httpClient.post(this.baseURL + "GetAllUsersForAccessGroup", body);
   }
+
+  public getAllUsersByAccessGroupID(accessGroupID:any) {
+    const body = {
+      AccessGroupID :accessGroupID
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllUserByAccessGroupID", body);
+  }
 }

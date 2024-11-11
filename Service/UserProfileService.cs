@@ -786,7 +786,7 @@ namespace BuildingPlans.Service
         {
             return await (
                 from UserProfile in _context.UserProfilesTable
-                where UserProfile.DepartmentName == departmentName && UserProfile.SubDepartmentName == subDepartmentName && UserProfile.isActive == true
+                where UserProfile.DepartmentName == departmentName  && UserProfile.isActive == true
                 select new UserProfileDTO()
                 {
                     UserProfileID = UserProfile.UserProfileID,

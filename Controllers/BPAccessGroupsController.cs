@@ -218,7 +218,7 @@ namespace BuildingPlans.Controllers
         {
             try
             {
-                if (model.DepartmentName == null || model.FunctionalArea == null || model.AccessGroupName == null)
+                if (model.DepartmentName == null && model.FunctionalArea == null && model.AccessGroupName == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -248,5 +248,47 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+
+        [HttpPost("GetAllUserByAccessGroupID")]
+        public async Task<object> GetAllUsersByAccessGroupID([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                if(model.AccessGroupID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+
+                else
+                {
+                    var UserIDs = await (from access in _context.BPAccessGroupsUserLinks
+                                         where access.AccessGroupID == model.AccessGroupID && access.isActive == true
+                                         select access.UserProfileID).ToListAsync();
+
+                    var result = await (from user in _context.UserProfilesTable
+                                        where user.isActive == true && UserIDs.Contains(user.UserProfileID)
+                                        select new UserProfileDTO()
+                                        {
+                                            UserProfileID = user.UserProfileID,
+                                            UserID = user.UserID,
+                                            FullName = user.FullName,
+                                            Email = user.Email,
+                                            AlternativeEmail = user.AlternativeEmail,
+                                            DepartmentName = user.DepartmentName,
+                                            SubDepartmentName = user.SubDepartmentName,
+                                            
+
+                                        }).ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Users For Access Group", result));
+                }
+            }
+            catch(Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+       
     }
 }
