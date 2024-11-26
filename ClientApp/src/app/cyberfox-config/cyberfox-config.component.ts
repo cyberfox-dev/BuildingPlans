@@ -1,9 +1,13 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, TemplateRef } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConfigService } from '../service/Config/config.service';
 import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { BPEmailMessagesService } from '../service/BPEmailMessagesService/bpemail-messages.service';
+
 //reminder: roles, man-doc and project size
 export interface RolesList {
   RoleID: number;
@@ -28,7 +32,8 @@ export class CyberfoxConfigComponent implements OnInit {
 
   })
   RolesList: RolesList[] = [];
-  constructor(private formBuilder: FormBuilder, private configService: ConfigService, private accessGroupsService: AccessGroupsService, private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,) { }
+  constructor(private formBuilder: FormBuilder, private configService: ConfigService, private accessGroupsService: AccessGroupsService, private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef, private modalService: NgbModal, private emailMessageService: BPEmailMessagesService
+  ) { }
   stringifiedData: any;
   CurrentUser: any;
   ngOnInit(): void {
@@ -149,5 +154,31 @@ export class CyberfoxConfigComponent implements OnInit {
 
   }
 
+  emailCategory: any;
+  emailMessage: any;
 
+  openEmailMessage(emailMessageModal: any) {
+    this.modalService.open(emailMessageModal, { centered: true, size: 'xl' });
+  }
+
+
+  saveNewEmailMessage() {
+    if (this.emailCategory == null || this.emailMessage == null) {
+      alert("Please fill in all fields in order to add new email message");
+
+    }
+    else {
+      this.emailMessageService.addUpdateEmailMessage(0, this.emailMessage, this.emailCategory, "DB").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Email Message Added Successfully");
+          this.modalService.dismissAll();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Email message error ", error);
+      })
+    }
+  }
 }

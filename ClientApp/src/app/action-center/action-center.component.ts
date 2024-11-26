@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap'; 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
@@ -54,6 +54,8 @@ import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentS
 import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
 import { BPAccessGroupsService } from '../service/BPAccessGroups/bpaccess-groups.service';
 import { BPServiceItemsService } from '../service/BPServiceItems/bpservice-items.service';
+import { BPEmailMessagesService } from '../service/BPEmailMessagesService/bpemail-messages.service';
+
  //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -482,6 +484,7 @@ export class ActionCenterComponent implements OnInit {
     private bpDepartmentService: BpDepartmentsService,
     private bpAccessGroupsService: BPAccessGroupsService,
     private bpServiceItemsService: BPServiceItemsService,
+    private emailMessageService: BPEmailMessagesService,
     //Audit Trail Kyle
 
 
@@ -7750,5 +7753,73 @@ export class ActionCenterComponent implements OnInit {
 
 
   }
+  emailCategory: string; 
+  openEmailModal(selectEmail: any) {
+
+    this.emailCategory = "Approve"; 
+    this.emailMessageService.getAllEmailMessagesForCategory(this.emailCategory).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        const current = data.dateSet[0];
+        debugger;
+
+        this.emailMessage = current.emailMessage;
+        this.modalService.open(selectEmail, { centered: true, size: 'xl' });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Email Message Error",error)
+    })
+    
+   
+  }
+
+  emailMessage: any;
+  emailSubject: string; j
+
+  sendExternalEmail() {
+    debugger;
+    const emailContent = `
+    <html>
+      <head>
+        <style>
+          /* Define your font and styles here */
+          body {
+           font-family: 'Century Gothic';
+          }
+          .email-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          .footer {
+            margin-top: 20px;
+            color: #777;
+          }
+          .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+          } 
+      </head>
+      <body>
+        <div class="email-content">
+          <p>Dear Sir/Madam,</p>
+          <p> ${this.emailMessage}</p>
+          <p>Project reference number : ${this.projectNo} </p>
+
+
+           <p>Regards,<br>Msunduzi Engage System</p>
+           <img class="footer-logo" src='assets/Msunduzi-logo-new2.png' alt="Msunduzi Municipality Logo" width="100">
+        </div>
+
+      </body>
+    </html>
+  `;
+
+
   
+  
+  }
 }

@@ -67,6 +67,43 @@
     <!--<mat-tab label="Wayleave Expiry">
       <app-subdept-wayleave-expiration></app-subdept-wayleave-expiration>
     </mat-tab>-->
+    <mat-tab label="Email Messages">
+      <button mat-raised-button color="blue" (click)="openEmailMessage(emailMessageModal)">Add new email Message</button>
+    </mat-tab>
+    
   </mat-tab-group>
   
 </div>
+
+
+<ng-template #emailMessageModal let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add new email message</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" modal.dismiss('Cross click')"></button>
+  </div>
+
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text"  class="form-control"id="emailCategory" [(ngModel)]="emailCategory" placeholder="enter email category" name="emailCategory">
+        <label for="emailCategroy">Email Category </label>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" id="emailMessage" class="form-control" [(ngModel)]="emailMessage" placeholder="enter email category" name="emailMessage">
+        <label for="emailMessage">Email Message </label>
+
+      </div>
+    </div>
+    </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="saveNewEmailMessage()">Save</button>
+  </div>
+</ng-template>

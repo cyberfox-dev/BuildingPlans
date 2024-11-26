@@ -29,7 +29,7 @@ export class BPEmailMessagesService {
     return this.httpClient.get(this.baseURL + "GetAllEmailMessages");
   }
 
-  public getAllEmailMessagesFroCategory(category:string | null) {
+  public getAllEmailMessagesForCategory(category:string | null) {
     const body = {
       Category :category
     }

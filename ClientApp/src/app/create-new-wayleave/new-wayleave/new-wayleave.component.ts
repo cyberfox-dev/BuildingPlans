@@ -51,7 +51,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 04 March 2024
 import { AccessGroupUserLinkServiceService } from '../../service/AccessGroupUserLink/access-group-user-link-service.service'; //zxNumberUpdate Sindiswa 04 March 2024
 import { BpDepartmentsService } from '../../service/BPDepartments/bp-departments.service'
-
+import { BPEmailMessagesService } from '../../service/BPEmailMessagesService/bpemail-messages.service';
 
 
 /*import { format } from 'path/win32';*/
@@ -592,6 +592,7 @@ export class NewWayleaveComponent implements OnInit {
     private draftApplicationsService: DraftApplicationsService,
     private cdr: ChangeDetectorRef,
     private bpDepartmentService: BpDepartmentsService,
+    private emailMessageService: BPEmailMessagesService,
    
        /*zxNumberUpdate Sindiswa 04 March 2024*/private departmentService: DepartmentsService,
        /*zxNumberUpdate Sindiswa 04 March 2024*/private accessGrouperUserLinkService: AccessGroupUserLinkServiceService,
@@ -5888,9 +5889,8 @@ export class NewWayleaveComponent implements OnInit {
           this.shared.setApplicationID(0);
           this.shared.clearContractorData();
           this.shared.clearEngineerData();
-          this.router.navigate(["/home"]);
-          this.openSnackBar("Application Created");
 
+          this.sendExternalEmail("client");
 
 
 
@@ -6181,6 +6181,35 @@ export class NewWayleaveComponent implements OnInit {
     
   }
 
- 
+  emailCategory: string;
+  emailMessage: string;
+  emailSubject: string;
 
+  openSendEmail(editEmail: any) {
+    this.modalService.open(editEmail, { centered: true, size: 'xl' });
+  }
+
+  getEmailMessage() {
+    this.emailMessageService.getAllEmailMessagesForCategory(this.emailCategory).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        const current = data.dateSet;
+        this.emailMessage = current.emailMessage;
+
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Email Message Error", error);
+    })
+  }
+
+  sendExternalEmail(option:string) {
+
+
+    this.router.navigate(["/home"]);
+    this.openSnackBar("Application Created");
+  }
 }

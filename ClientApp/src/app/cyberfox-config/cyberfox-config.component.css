@@ -25,3 +25,8 @@ h1 {
     margin-bottom:10px;
 }
 
+.mat-blue {
+  margin-right: 5px;
+  background-color: #268df7 !important;
+  color: #005870;
+}

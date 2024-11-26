@@ -539,3 +539,23 @@ mat-column-zoneName {
    margin: 5px; 
   border-radius: 10px;
 }
+
+.emailBody{
+    font-family: 'Century Gothic';
+
+}
+.email-content{
+    padding :20px;
+    border : 1px solid #ccc;
+    border-radius : 5px;
+}
+
+.emailFooter{
+    margin-top : 20px;
+    color: #777;
+}
+
+.footer-logo{
+    display : inline-block;
+    vertical-align : middle;
+}
