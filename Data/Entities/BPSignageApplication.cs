@@ -5,7 +5,7 @@ namespace BuildingPlans.Data.Entities
     public class BPSignageApplication:BaseEntity
     {
         [Key]
-        public int? ApplicationID { get; set; }
+        public int ApplicationID { get; set; }
         public string? ApplicationType { get; set; }
         public string? ApplicantType { get; set; }
         public string? OrganisationName { get; set; }

@@ -269,6 +269,60 @@ namespace BuildingPlans.Controllers
             }
         }
 
-        
+
+        [HttpPost("GetSignageApplicationByID")]
+        public async Task<object> GetSignageApplicationByID([FromBody] BPSignageApplicationBindingModel model)
+        {
+            try
+            {
+                var result = await (from application in _context.BPSignageApplication
+                                    where application.isActive == true && application.ApplicationID == model.ApplicationID
+                                    select new BPSignageApplicationDTO()
+                                    {
+                                        ApplicationID = application.ApplicationID,
+                                        ApplicationType = application.ApplicationType,
+                                        ApplicantType = application.ApplicantType,
+                                        OrganisationName = application.OrganisationName,
+                                        UserID = application.UserID,
+                                        ApplicantName = application.ApplicantName,
+                                        ApplicantSurname = application.ApplicantSurname,
+                                        ApplicantCell = application.ApplicantCell,
+                                        ApplicantTelephone = application.ApplicantTelephone,
+                                        ApplicantFax = application.ApplicantFax,
+                                        ApplicantEmail = application.ApplicantEmail,
+                                        AddressType = application.AddressType,
+                                        Address = application.Address,
+                                        NatureOfAdvertisement = application.NatureOfAdvertisement,
+                                        AreasOfControl = application.AreasOfControl,
+                                        Height = application.Height,
+                                        Width = application.Width,
+                                        NoOfFaces = application.NoOfFaces,
+                                        StartDate = application.StartDate,
+                                        EndDate = application.EndDate,
+                                        ApplicationFee = application.ApplicationFee,
+                                        MonthlyFee = application.MonthlyFee,
+                                        Voltage = application.Voltage,
+                                        ElectrictyRequired = application.ElectrictyRequired,
+                                        EnvironmentalImpactAssessment = application.EnvironmentalImpactAssessment,
+                                        AdvertisingSignRight = application.AdvertisingSignRight,
+                                        Encroachment = application.Encroachment,
+                                        PreviousStage = application.PreviousStage,
+                                        CurrentStage = application.CurrentStage,
+                                        ProjectNumber = application.ProjectNumber,
+                                        DateCreated = application.DateCreated,
+                                        DateUpdated = application.DateUpdated,
+                                        CreatedById = application.CreatedById,
+
+
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Signage Application", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
     }
 }

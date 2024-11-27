@@ -52,4 +52,11 @@ export class BPSignageApplicationService {
 
     return this.httpClient.get(this.baseURL + "GetAllSignageApplications");
   }
+
+  public getSignageApplicationByID(applicationID: number | null) {
+    const body = {
+      ApplicationID: applicationID
+    }
+    return this.httpClient.post(this.baseURL + "GetSignageApplicationByID", body);
+  }
 }

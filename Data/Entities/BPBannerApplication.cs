@@ -5,7 +5,7 @@ namespace BuildingPlans.Data.Entities
     public class BPBannerApplication:BaseEntity
     {
         [Key]
-        public int? ApplicationID { get; set; }
+        public int ApplicationID { get; set; }
         public string? UserID { get; set; }
         public string? ApplicantName { get; set; }
         public string? ApplicantSurname { get; set; }

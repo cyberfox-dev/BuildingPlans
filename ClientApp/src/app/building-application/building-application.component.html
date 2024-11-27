@@ -318,8 +318,13 @@
       <div class="container04">
         <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
 
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
+<!--        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
           Create Application
+        </button>-->
+        <button class="pushable" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front">Create Application</span>
         </button>
 
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
@@ -926,9 +931,11 @@
 
 
 
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
-          Create Application
 
+        <button class="pushable" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front">Create Application</span>
         </button>
 
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->

@@ -5,7 +5,7 @@ namespace BuildingPlans.Data.Entities
     public class Applications : BaseEntity
     {
         [Key]
-        public int? ApplicationID { get; set; }
+        public int ApplicationID { get; set; }
         public string? UserID { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }

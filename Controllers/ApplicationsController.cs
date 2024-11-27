@@ -6,6 +6,7 @@ using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace BuildingPlans.Controllers
 {
@@ -703,8 +704,8 @@ namespace BuildingPlans.Controllers
                                         Surname = sign.ApplicantSurname ,
                                         Stage = sign.CurrentStage,
                                         DateCreated = sign.DateCreated,
-                                        DateUpdated = sign.DateUpdated
-
+                                        DateUpdated = sign.DateUpdated,
+                                        LSNumber = sign.ProjectNumber
                                     }).ToListAsync();
 
                 var query4 = await (from flag in _context.BPFlagApplication
@@ -717,8 +718,8 @@ namespace BuildingPlans.Controllers
                                         FirstName = flag.ApplicantName,
                                         Surname = flag.ApplicantSurname,
                                         DateCreated = flag.DateCreated,
-                                        DateUpdated = flag.DateUpdated
-
+                                        DateUpdated = flag.DateUpdated,
+                                        LSNumber = flag.ProjectNumber
                                     }).ToListAsync();
 
                 var query5 = await (from banner in _context.BPBannerApplication
@@ -732,14 +733,31 @@ namespace BuildingPlans.Controllers
                                         Surname = banner.ApplicantSurname,
                                         Stage = banner.CurrentStage,
                                         DateCreated = banner.DateCreated,
-                                        DateUpdated = banner.DateUpdated
+                                        DateUpdated = banner.DateUpdated,
+                                        LSNumber = banner.ProjectNumber
+                                    }).ToListAsync();
 
+                var query6 = await (from demolition in _context.BPDemolitionApplication
+                                    where demolition.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = demolition.DemolitionID,
+                                        BPApplicationType = "Demolition",
+                                        PhysicalAddress = demolition.SiteAddress,
+                                        FirstName = demolition.ApplicantName,
+                                        Surname = demolition.ApplicantSurname,
+                                        Stage = demolition.CurrentStage,
+                                        Status = demolition.CurrentStage,
+                                        DateCreated = demolition.DateCreated,
+                                        DateUpdated = demolition.DateUpdated,
+                                        LSNumber = demolition.ProjectNumber
                                     }).ToListAsync();
                 result =  query1
                     .Concat(query2)
                     .Concat(query3)
                     .Concat(query4)
-                    .Concat(query5).OrderByDescending(x => x.DateCreated)
+                    .Concat(query5)
+                    .Concat(query6).OrderByDescending(x => x.DateCreated)
                     .ToList();
                 
                 

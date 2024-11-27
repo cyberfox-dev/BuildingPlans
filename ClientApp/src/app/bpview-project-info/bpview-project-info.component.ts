@@ -20,6 +20,7 @@ import { ConfigService } from '../service/Config/config.service';
 import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
 import { BPStagesService } from '../service/BPStages/bpstages.service';
 import { BpTasksService } from '../service/BPTasks/bp-tasks.service';
+import { BPSignageApplicationService } from '../service/BPSignageApplication/bpsignage-application.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -149,6 +150,9 @@ export class BPViewProjectInfoComponent implements OnInit {
     RegisteredDescription: any;
     bpApplicationType: any;
     ExpandDetails: boolean;
+    ApplicationBeingViewedType: any;
+
+     
 
   constructor(
     private bpService: BuildingApplicationsService,
@@ -158,6 +162,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     private bpStageChecklistService: BPStagesChecklistsService,
     private documentUploadService: DocumentUploadService,
     private bpDocumentUploadService: BPDocumentsUploadsService,
+    private bpSinageApplicationService: BPSignageApplicationService,
     private modalService: NgbModal,
     private BPManDocService: BPManDocService,
     private BPMandatoryStageDocumentService: BPMandatoryStageDocumentService,
@@ -171,6 +176,8 @@ export class BPViewProjectInfoComponent implements OnInit {
     private BPStagesService: BPStagesService,
     private BpTasksService: BpTasksService,
   ) { }
+
+
 
   // Properties
   LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);
@@ -248,6 +255,50 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectCell: string;
   isLoading = true;
 
+  //Sinage Application Details
+  SignageApplicationID: string;
+  SignageApplicationType: string;
+  SignageApplicantType: string;
+  SignageOrganisationName: string;
+  SignageUserID: string;
+  SignageApplicantName: string;
+  SignageApplicantSurname: string;
+  SignageApplicantCell: string;
+  SignageApplicantTelephone: string;
+  SignageApplicantFax: string;
+  SignageApplicantEmail: string;
+
+  // Signage Address and Advertisement Details
+  SignageAddressType: string;
+  SignageAddress: string;
+  SignageNatureOfAdvertisement: string;
+  SignageAreasOfControl: string;
+  SignageHeight: number;
+  SignageWidth: number;
+  SignageNoOfFaces: number;
+  SignageStartDate: Date;
+  SignageEndDate: Date;
+
+  // Signage Financial and Technical Details
+  SignageApplicationFee: number;
+  SignageMonthlyFee: number;
+  SignageVoltage: number;
+  SignageElectricityRequired: boolean;
+  SignageEnvironmentalImpactAssessment: boolean;
+  SignageAdvertisingSignRight: boolean;
+  SignageEncroachment: boolean;
+
+  // Signage Stages and Project Information
+  SignagePreviousStage: string;
+  SignageCurrentStage: string;
+  SignageProjectNumber: string;
+  SignageDateCreated: Date;
+  SignageDateUpdated: Date;
+  SignageCreatedById: string;
+
+  // Other variables and methods go here
+/*  showChecklist: boolean;*/
+
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
 
   panelOpenState: boolean = false;
@@ -265,7 +316,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     }
 
     this.applicationId = this.sharedService.getApplicationID();
-
+    this.ApplicationBeingViewedType = this.sharedService.getApplicationViewType();
     await Promise.all([
       this.getApplicationInfo(),
       this.GetAllCommentsForApplication(),
@@ -304,12 +355,124 @@ export class BPViewProjectInfoComponent implements OnInit {
   }
   showChecklist: boolean;
   getApplicationInfo() {
+    debugger;
+    this.bpApplicationType = this.ApplicationBeingViewedType;
+    // Call different methods based on the ApplicationBeingViewedType
+    switch (this.ApplicationBeingViewedType) {
+      case "Signage":
+        this.getSignageApplicationInfo();
+        break;
+      case "Demolition":
+        this.getDemolitionApplicationInfo();
+        break;
+      case "Banner":
+        this.getBannerApplicationInfo();
+        break;
+      case "Flag":
+        this.getFlagApplicationInfo();
+        break;
+      case "Town Planning":
+        this.getBuildingPLanApplication();
+        break;
+      case "Building Plan":
+        this.getBuildingPLanApplication();
+        break;
+      case "Land Survey":
+        this.getBuildingPLanApplication();
+        break;
+      default:
+        console.warn("Unknown application type:", this.ApplicationBeingViewedType);
+        break;
+    }
+   
+  }
 
+  getSignageApplicationInfo() {
+    debugger;
+    this.bpSinageApplicationService.getSignageApplicationByID(this.applicationId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+
+        const signageData = data.dateSet[0];
+        console.log("Application Data:", signageData);
+
+        // Signage Application and Applicant Information
+        this.SignageApplicationID = signageData.applicationID;
+        this.SignageApplicationType = signageData.applicationType;
+        this.SignageApplicantType = signageData.applicantType;
+        this.SignageOrganisationName = signageData.organisationName;
+        this.SignageUserID = signageData.userID;
+        this.firstName = signageData.applicantName;
+        this.surname = signageData.applicantSurname;
+        this.cellNo = signageData.applicantCell;
+        this.SignageApplicantTelephone = signageData.applicantTelephone;
+        this.SignageApplicantFax = signageData.applicantFax;
+        this.email = signageData.applicantEmail;
+
+        // Address and Advertisement Details
+        this.SignageAddressType = signageData.addressType;
+        this.SignageAddress = signageData.address;
+        this.SignageNatureOfAdvertisement = signageData.natureOfAdvertisement;
+        this.SignageAreasOfControl = signageData.areasOfControl;
+        this.SignageHeight = signageData.height;
+        this.SignageWidth = signageData.width;
+        this.SignageNoOfFaces = signageData.noOfFaces;
+        this.SignageStartDate = signageData.startDate;
+        this.SignageEndDate = signageData.endDate;
+
+        // Financial and Technical Details
+        this.SignageApplicationFee = signageData.applicationFee;
+        this.SignageMonthlyFee = signageData.monthlyFee;
+        this.SignageVoltage = signageData.voltage;
+        this.SignageElectricityRequired = signageData.electrictyRequired;
+        this.SignageEnvironmentalImpactAssessment = signageData.environmentalImpactAssessment;
+        this.SignageAdvertisingSignRight = signageData.advertisingSignRight;
+        this.SignageEncroachment = signageData.encroachment;
+
+        // Stages and Project Information
+        this.SignagePreviousStage = signageData.previousStage;
+        this.SignageCurrentStage = signageData.currentStage;
+        this.SignageProjectNumber = signageData.projectNumber;
+        this.SignageDateCreated = signageData.dateCreated;
+        this.SignageDateUpdated = signageData.dateUpdated;
+        this.SignageCreatedById = signageData.createdById;
+
+
+        // Show checklist and update map center
+        this.showChecklist = true;
+        this.updateCenter(parseFloat(signageData.latitude), parseFloat(signageData.longitude));
+
+      } else {
+        alert(data.responseMessage);
+      }
+
+      // Additional method calls
+      this.getAllDocumentForApplication();
+      this.getAllMandatoryChecklistItemsForCurrentStage();
+      this.getAllBPStages();
+
+      console.log("Response:", data);
+    }, error => {
+      console.log("Error:", error);
+    });
+  }
+  getDemolitionApplicationInfo() {
+
+  }
+  getBannerApplicationInfo() {
+
+  }
+  getFlagApplicationInfo() {
+
+  }
+  getBuildingPLanApplication() {
     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
+
         const current = data.dateSet[0];
         console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA", data.dateSet[0]);
+
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -354,7 +517,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.ExtentOfProperty = current.ExtentOfProperty;
         this.TitleRestrictions = current.TitleRestrictions;
         this.RegisteredDescription = current.RegisteredDescription;
-       
+
         this.showChecklist = true;
         this.updateCenter(parseFloat(this.latitude), parseFloat(this.longitude));
       }
@@ -369,6 +532,10 @@ export class BPViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
+
+
   getAllDocumentForApplication() {
 
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {

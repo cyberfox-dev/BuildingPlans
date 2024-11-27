@@ -21,7 +21,7 @@
     <!--<button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>-->
     <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
     <!-- Service Information Kyle 31/01/24-->
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openApplicationType(applicationOption)">Create New Application</button>
     <mat-menu #menu2="matMenu" xPosition="after">
       <!--THIS IS ACTUALLY LAND SURVEY--> 
       <button mat-menu-item [matMenuTriggerFor]="BPA">Building Plan</button>
@@ -677,11 +677,11 @@
 
     <!--All Application-->
     <ng-container *ngIf="selectedTabIndex === 8">
-      <table mat-table [dataSource]="dataSourceSA" class="mat-elevation-z8 ">
+      <table mat-table [dataSource]="dataSourceSA" class="mat-elevation-z8 " multiTemplateDataRows>
 
         <ng-container matColumnDef="lSNumber">
           <th mat-header-cell *matHeaderCellDef> Application Number </th>
-          <td mat-cell *matCellDef="let element"> <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey', 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
+          <td mat-cell *matCellDef="let element"> <p [ngClass]="{'BP':  element.bpApplicationType === 'Land Survey' || element.bpApplicationType === 'Demolition'|| element.bpApplicationType === 'Signage' , 'TP': element.bpApplicationType === 'Town Planning', 'WL': element.bpApplicationType === 'Wayleave'}">{{element.ProjectNumber}}</p></td>
         </ng-container>
 
         <ng-container matColumnDef="ERFNumber">
@@ -721,7 +721,7 @@
 
         <ng-container matColumnDef="dateCreated">
           <th mat-header-cell *matHeaderCellDef> Date Created </th>
-          <td mat-cell *matCellDef="let element">{{element.dateCreated}}</td>
+          <td mat-cell *matCellDef="let element">{{element.dateCreated | date}}</td>
         </ng-container>
 
         <ng-container matColumnDef="dateUpdated">
@@ -731,19 +731,52 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let i = index">
-            <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="blue" (click)=" ViewProject(element)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
             <!--<button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Activate Plan" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/building.svg" class="icon4"></button>-->
 
           </td>
           <td mat-cell *matCellDef="let element">  </td>
         </ng-container>
 
+
+        <ng-container matColumnDef="expand">
+          <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="expand row"
+                    (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/caret-up-solid.svg"
+                   class="icon" *ngIf="expandedElement === element">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/caret-down-solid.svg"
+                   class="icon" *ngIf="expandedElement !== element">
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Expanded Detail Row -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+            <div class="example-element-detail"
+                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-diagram">
+                <div class="example-element-position"> {{element.stageAge}} </div>
+                <div class="example-element-symbol">{{element.planAge}}</div>
+              </div>
+             <!-- <div class="example-element-description">
+                <button mat-raised-button color="blue" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
+                <button mat-raised-button color="warn2" matTooltip="Delete document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
+              </div>-->
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Header and Data Rows -->
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
       </table>
-
     </ng-container>
 
 
@@ -1967,25 +2000,126 @@
          <app-application-alerts></app-application-alerts>
 
          <!----Clarifications Alerts Kyle-->
-  <ng-template #archiveOption let-modal>
+  <ng-template #applicationOption let-modal>
     <div class="modal-header">
-      <h6>Select Type Of Archive Application</h6>
+      <h6>Create New Application</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
 
     <div class="modal-body">
-      <form>
-        <div class="container-fluid">
-          <div class="cont2">
-            <button mat-raised-button color="client" (click)="GoToBuildingApplication(true,null,false);modal.dismiss('Cross click')"> Building Plan Archive Application</button>
-            <button mat-raised-button color="client" (click)="goToDemolition(true);modal.dismiss('Cross click')"> Demolition Archive Application</button>
-          </div>
+      <div class="container">
+        <div class="top-text-wrapper">
+          <p class="selectApplication">Select the type of application you would like to create.</p>
+ 
+        </div>
+        <!-- Radio Card Options -->
+        <div class="grid-wrapper grid-col-auto">
+          <!-- Building Plan Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('buildingPlan')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/building plan.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Building Plan</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Demolition Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('demolition')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/demolition.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Demolition</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Signage Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('signage')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/signage.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Signage</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Banner/Poster Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('banner')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/banner.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Banner/ Poster</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Flag/Pole/Headline Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('flag')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/flagapplication.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Flag/ Pole/ Headline</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Cemetery Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('cemetery')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/grave.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Cemetery</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- TOwn Planning Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('tp')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/town planning.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Town Planning</p>
+              </div>
+            </div>
+          </label>
+
+          <!-- Wayleave Application -->
+          <label class="radio-card">
+            <input type="radio" name="radio-card" (change)="setSelectedApplication('Wayleave')" />
+            <div class="card-content-wrapper">
+              <span class="check-icon"></span>
+              <div class="card-content">
+                <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/map.svg" class="icon4" alt="Cemetery Image" />
+                <p class="idApp">Wayleave</p>
+              </div>
+            </div>
+          </label>
         </div>
 
-      </form>
+
+      </div>
     </div>
     <div class="modal-footer">
-
+      <button class="pushable" (click)="confirmSelection()">
+        <span class="shadow"></span>
+        <span class="edge"></span>
+        <span class="front"> Confirm </span>
+      </button>
     </div>
   </ng-template>
 

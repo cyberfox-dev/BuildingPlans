@@ -5,7 +5,7 @@ namespace BuildingPlans.Data.Entities
     public class BPDemolitionApplication:BaseEntity
     {
         [Key]
-        public int? DemolitionID { get; set; }
+        public int DemolitionID { get; set; }
         public string? MainMunicipality { get; set; }
         public string? ApplicantName { get; set; }
         public string? ApplicantSurname {  get; set; }

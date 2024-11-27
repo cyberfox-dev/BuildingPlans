@@ -300,12 +300,12 @@ export interface BPFunctionalAreas {
   templateUrl: './home.component.html',
   styleUrls: ["./home.component.scss"],
   animations: [
-    trigger('swipeAnimation', [
-      state('transparent', style({ transform: 'translateX(0)' })), // No translation
-      state('solid', style({ transform: 'translateX(100%)' })), // Full translation (off-screen)
-      transition('transparent <=> solid', animate('0.5s ease-in-out')), // Adjust duration and easing
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
-  ]
+  ],
 })
 
 
@@ -447,10 +447,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge', 'dateCreated', 'actions'];
+  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge', 'dateCreated', 'actions', 'expand'];
   displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
-  displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions'];
+  displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions','expand'];
   dataSourceBP = this.ApplicationsBP;
+  expandedElement = this.ApplicationsBP;
   scrutinyApplications: ApplicationsListBP[] = [];
   dataSourceSA = this.scrutinyApplications;
   originalDataSourceSA: ApplicationsListBP[] = []; //BPRegister Sindiswa 20062024 to enable the filtering of the list that's selected
@@ -585,7 +586,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       keyboard: false // Prevent pressing the ESC key to close the modal
     });
   }
+  selectedApplicationIndex: number | null = null;
+  toggleExpandRow(element: any) {
+    // Check if the selected element is the same as the currently expanded element
 
+    if (this.expandedElement === element) {
+      this.expandedElement = null; // Collapse the row
+      this.selectedApplicationIndex = null; // Reset the selected document index
+    } else {
+      this.expandedElement = element; // Expand the row
+      // Find the index of the selected element in your dataSource array
+      this.selectedApplicationIndex = this.dataSourceSA.indexOf(element);
+    }
+  }
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
       data: { message }, // Pass the message as data to the component
@@ -7632,116 +7645,94 @@ this.subscriptions.push(subscription);
   }
   // #endregion BPRegister Sindiswa 20 June 2024
   sharedList = [];
-  ViewProject(index) {
+  ViewProject(element: any) {
     let applicationId: any;
     debugger;
-    applicationId = this.dataSourceSA;
+
     switch (this.selectedTabIndex) {
       case 0:
-        applicationId = this.ApplicationsBP[index].applicationID;
+        applicationId = element.applicationID;
         this.sharedService.setApplicationID(applicationId);
-       
+        this.sharedService.setApplicationViewType(element.bpApplicationType);
         this.router.navigate(['bpview-project-info']);
-        //BPRegister Sindiswa 20062024
         break;
+
       case 1:
-        applicationId = this.AllTownPlanningApplications[index].applicationID;
-       
+        applicationId = element.applicationID;
         this.sharedService.setApplicationID(applicationId);
+        this.sharedService.setApplicationViewType(element.bpApplicationType);
         this.router.navigate(['bpview-project-info']);
         break;
 
       case 2:
-        applicationId = this.AllBPApplications[index].applicationID;
-       
+        applicationId = element.applicationID;
         this.sharedService.setApplicationID(applicationId);
+        this.sharedService.setApplicationViewType(element.bpApplicationType);
         this.router.navigate(['bpview-project-info']);
         break;
 
-      case 3:
-        break;
-      case 4:
-        break;
-      case 5:
-        break;
-      case 6:
-        break;
-      case 7:
-        break;
       case 8:
-        debugger;
-        if (this.AllApplications[index].bpApplicationType != "Wayleave") {
-
-          applicationId = this.AllApplications[index].applicationID;
-          this.sharedService.setCurrentStage(this.AllApplications[index].stage);
+        if (element.bpApplicationType !== "Wayleave") {
+          applicationId = element.applicationID;
+          this.sharedService.setCurrentStage(element.stage);
           this.sharedService.setApplicationID(applicationId);
+          this.sharedService.setApplicationViewType(element.bpApplicationType);
           this.router.navigate(['bpview-project-info']);
-        }
-        else {
-          applicationId = this.AllApplications[index].applicationID;
+        } else {
+          applicationId = element.applicationID;
           this.sharedService.setApplicationID(applicationId);
           this.applicationService.getApplicationsByApplicationID(applicationId).subscribe((data: any) => {
             if (data.responseCode == 1) {
-
-              const tempApplicationListShared = {} as ApplicationList;
               const current = data.dateSet[0];
+              const tempApplicationListShared = {
+                applicationID: current.applicationID,
+                clientName: current.fullName,
+                clientEmail: current.email,
+                clientAlternativeEmail: current.alternativeEmail,
+                clientAddress: current.physicalAddress,
+                clientRefNo: current.referenceNumber,
+                CompanyRegNo: current.companyRegNo,
+                TypeOfApplication: current.typeOfApplication,
+                NotificationNumber: current.notificationNumber,
+                WBSNumber: current.wbsNumber,
+                PhysicalAddressOfProject: current.physicalAddressOfProject,
+                DescriptionOfProject: current.descriptionOfProject,
+                NatureOfWork: current.natureOfWork,
+                ExcavationType: current.excavationType,
+                ExpectedStartDate: current.expectedStartDate,
+                ExpectedEndDate: current.expectedEndDate,
+                Location: current.location,
+                clientCellNo: current.phoneNumber,
+                CreatedById: current.createdById,
+                UserID: current.userID,
+                ApplicationStatus: current.applicationStatus,
+                CurrentStageName: current.currentStageName,
+                CurrentStageNumber: current.currentStageNumber,
+                ContractorAccountDetails: current.contractorAccountDetails,
+                NextStageName: current.nextStageName,
+                NextStageNumber: current.nextStageNumber,
+                PreviousStageName: current.previousStageName,
+                PreviousStageNumber: current.previousStageNumber,
+                DatePaid: current.datePaid,
+                wbsrequired: current.wbsRequired,
+                Coordinates: current.coordinates,
+                ProjectNumber: current.projectNumber || current.applicationID.toString(),
+                isPlanning: current.isPlanning,
+                permitStartDate: current.permitStartDate
+              };
 
-              tempApplicationListShared.applicationID = current.applicationID;
-              tempApplicationListShared.clientName = current.fullName;
-              tempApplicationListShared.clientEmail = current.email;
-              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-              tempApplicationListShared.clientAddress = current.physicalAddress;
-              tempApplicationListShared.clientRefNo = current.referenceNumber;
-              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-              tempApplicationListShared.NotificationNumber = current.notificationNumber;
-              tempApplicationListShared.WBSNumber = current.wbsNumber;
-              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-              tempApplicationListShared.NatureOfWork = current.natureOfWork;
-              tempApplicationListShared.ExcavationType = current.excavationType;
-              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-              tempApplicationListShared.Location = current.location;
-              tempApplicationListShared.clientCellNo = current.phoneNumber;
-              tempApplicationListShared.CreatedById = current.createdById;
-              tempApplicationListShared.UserID = current.userID;//
-              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-              tempApplicationListShared.CurrentStageName = current.currentStageName;
-              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-
-              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
-              tempApplicationListShared.NextStageName = current.nextStageName;
-              tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-              tempApplicationListShared.PreviousStageName = current.previousStageName;
-              tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-              tempApplicationListShared.DatePaid = current.datePaid;
-              tempApplicationListShared.wbsrequired = current.wbsRequired;
-              tempApplicationListShared.Coordinates = current.coordinates;
-              if (current.projectNumber != null) {
-                tempApplicationListShared.ProjectNumber = current.projectNumber;
-              } else {
-                tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-              }
-
-              tempApplicationListShared.isPlanning = current.isPlanning;
-              tempApplicationListShared.permitStartDate = current.permitStartDate;
               this.sharedList.push(tempApplicationListShared);
               this.sharedService.setViewApplicationIndex(this.sharedList);
               this.router.navigate(['/view-project-info']);
-            }
-            else {
+            } else {
               alert(data.responseMessage);
             }
-          })
-         
-          
+          });
         }
-      
         break;
     }
-  
   }
+
   DeleteBuildingApplication(index: any) {
     if (confirm("Are you sure you want to delete this Application")) {
       let applicationId = this.ApplicationsBP[index].applicationID;
@@ -7808,6 +7799,66 @@ this.subscriptions.push(subscription);
 
   openComplaints(complaint:any) {
     this.modalService.open(complaint, { centered: true, size: 'xl' });
+  }
+  openApplicationType(applicationOption: any) {
+    this.modalService.open(applicationOption, { centered: true, size: 'xl' });
+  }
+  // Store the selected application
+  setSelectedApplication(applicationType: string) {
+    this.selectedApplication = applicationType;
+  }
+  selectedApplication: string | null = null;
+  // Confirm the selection and trigger the corresponding method
+  confirmSelection() {
+    if (!this.selectedApplication) {
+      alert("Please select an application type before confirming.");
+      return;
+    }
+
+    switch (this.selectedApplication) {
+      case 'buildingPlan':
+        this.GoToBuildingApplication(false, 'ls', false);
+        this.modalService.dismissAll();
+        break;
+      case 'demolition':
+        this.goToDemolition(false);
+        this.modalService.dismissAll();
+        break;
+      case 'signage':
+        this.goToSignageApplication();
+        this.modalService.dismissAll();
+        break;
+      case 'banner':
+        this.goToBannerApplication(false);
+        this.modalService.dismissAll();
+        break;
+      case 'flag':
+        this.goToBannerApplication(true);
+        this.modalService.dismissAll();
+        break;
+      case 'flag':
+        this.goToBannerApplication(true);
+        this.modalService.dismissAll();
+        break;
+      case 'tp':
+        this.GoToBuildingApplication(false, 'tp', false);
+        this.modalService.dismissAll();
+        break;
+      case 'wayleave':
+        this.GoToBuildingApplication(false, null, true);
+        this.modalService.dismissAll();
+        break;
+      case 'cemetery':
+        this.GoToBuildingApplication(false, null, true);
+        this.modalService.dismissAll();
+        break;
+      default:
+        this.modalService.dismissAll();
+        break;
+    }
+
+    // Close the modal or perform any additional actions here
+    this.selectedApplication = null;  // Reset selection if needed
   }
 
   goToDemolition(isDemoArchive: boolean) {

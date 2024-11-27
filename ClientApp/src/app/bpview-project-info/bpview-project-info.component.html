@@ -16,7 +16,7 @@
         <h2 *ngIf="BPApplicationProjectNumber != null">View Project Details : {{BPApplicationProjectNumber}}</h2>
           </div>
         <div class="actBtn">
-          <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>
+         <!-- <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>-->
         </div>
       </div>
       <div class="bodyMain">
@@ -65,7 +65,7 @@
               <mat-tab label="Application Details">
                 <div class="applicationDeatails">
 
-
+                  <div *ngIf="bpApplicationType == 'Building Plan'">
                   <div class="card2">
                     <p class="detailsCardName">Application Details</p>
                   </div>
@@ -107,6 +107,62 @@
                     <p>Description Of Project - {{ DescriptionOfProject }}</p>
                     <p>Application Type - {{ bpApplicationType }}</p>
                   </div>
+                    </div>
+
+                  <div *ngIf="bpApplicationType == 'Signage'">
+                    <!-- General Application Details -->
+                    <div class="card2">
+                      <p class="detailsCardName">Application Details</p>
+                    </div>
+                    <p>Application Type: {{ bpApplicationType }}</p>
+                    <p *ngIf="SignageProjectNumber">Project Number: {{ SignageProjectNumber }}</p>
+                    <p>Application ID: {{ SignageApplicationID }}</p>
+                    <p>Applicant Type: {{ SignageApplicantType }}</p>
+                    <p>Organisation Name: {{ SignageOrganisationName }}</p>
+                    <p>User ID: {{ SignageUserID }}</p>
+                    <p>Applicant Name: {{ SignageApplicantName }} {{ SignageApplicantSurname }}</p>
+                    <p>Applicant Cell: {{ SignageApplicantCell }}</p>
+                    <p>Applicant Telephone: {{ SignageApplicantTelephone }}</p>
+                    <p>Applicant Fax: {{ SignageApplicantFax }}</p>
+                    <p>Applicant Email: {{ SignageApplicantEmail }}</p>
+
+                    <!-- Property Details Section -->
+                    <div class="card2">
+                      <p class="detailsCardName">Property Details of Development</p>
+                    </div>
+                    <p>Address Type - {{ SignageAddressType }}</p>
+                    <p>Address - {{ SignageAddress }}</p>
+                    <p>Nature of Advertisement - {{ SignageNatureOfAdvertisement }}</p>
+                    <p>Areas of Control - {{ SignageAreasOfControl }}</p>
+                    <p>Height - {{ SignageHeight }}</p>
+                    <p>Width - {{ SignageWidth }}</p>
+                    <p>Number of Faces - {{ SignageNoOfFaces }}</p>
+                    <p>Start Date - {{ SignageStartDate | date }}</p>
+                    <p>End Date - {{ SignageEndDate | date }}</p>
+
+                    <!-- Financial and Technical Details -->
+                    <div class="card2">
+                      <p class="detailsCardName">Financial and Technical Details</p>
+                    </div>
+                    <p>Application Fee - {{ SignageApplicationFee }}</p>
+                    <p>Monthly Fee - {{ SignageMonthlyFee }}</p>
+                    <p>Voltage - {{ SignageVoltage }}</p>
+                    <p>Electricity Required - {{ SignageElectricityRequired ? 'Yes' : 'No' }}</p>
+                    <p>Environmental Impact Assessment - {{ SignageEnvironmentalImpactAssessment ? 'Yes' : 'No' }}</p>
+                    <p>Advertising Sign Right - {{ SignageAdvertisingSignRight ? 'Yes' : 'No' }}</p>
+                    <p>Encroachment - {{ SignageEncroachment ? 'Yes' : 'No' }}</p>
+
+                    <!-- Signage Stages and Project Information -->
+                    <div class="card2">
+                      <p class="detailsCardName">Project and Stage Details</p>
+                    </div>
+                    <p>Previous Stage - {{ SignagePreviousStage }}</p>
+                    <p>Current Stage - {{ SignageCurrentStage }}</p>
+                    <p>Date Created - {{ SignageDateCreated | date }}</p>
+                    <p>Date Updated - {{ SignageDateUpdated | date }}</p>
+                    <p>Created By ID - {{ SignageCreatedById }}</p>
+                  </div>
+                   
                 </div>
               </mat-tab>
               <mat-tab label="Public Facing" *ngIf="this.CurrentUserProfile[0].isInternal == false">

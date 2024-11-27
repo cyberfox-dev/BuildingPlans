@@ -192,6 +192,7 @@ export class SharedService {
   fileName: string;
   currentStage: string;
   consentID: number;
+    ApplicationBeingViewedType: any;
 
   setCurrentStage(stage: string) {
     this.currentStage = stage;
@@ -440,6 +441,18 @@ export class SharedService {
       this.applicationID = 0;
     }
     return this.applicationID;
+  }
+  setApplicationViewType(data: any) {
+    this.ApplicationBeingViewedType = data;
+    console.log("setting application type..." + this.applicationID);
+  }
+
+  getApplicationViewType():any {
+    console.log("getting ..." + this.ApplicationBeingViewedType);
+    if (this.ApplicationBeingViewedType == undefined || this.ApplicationBeingViewedType == null) {
+      this.ApplicationBeingViewedType = '';
+    }
+    return this.ApplicationBeingViewedType;
   }
 
   setCreatedByID(data: any) {
