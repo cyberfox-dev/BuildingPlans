@@ -12,89 +12,182 @@
 
 
 
-  <div class="splash flex" id="splashlogo">
-    <div class="container2">
-      <img src="assets/building plans dark mode2.png" class="logo">
-      <h3>Engage Services Portal</h3>
-
-    </div>
-  </div>
-  <div class="cont2">
-    <div class="container-fluid">
-      <div class="container" id="container">
-        <div class="form-container sign-up-container">
-          <form action="#" [formGroup]="registerForm" autocomplete="off">
-
-            <h2>Create an account</h2>
-            <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required [readonly]="regFormReadOnly" />
 
 
-            <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
-            <!-- Conditionally display and thereafter validate BP Number input -->
-            <!--<input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" *ngIf="showBPNumber" [readonly]="regFormReadOnly" />-->
-
-            <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
-            <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
-
-            <!--<div class="col">
-              <input type="checkbox" id="myCheckbox" name="myCheckbox" (click)="onCheckboxClick()">
-              <label for="myCheckbox">I Am An Architect</label>
-            </div>-->
-
-            <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
-  
-            <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
-            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
-            <app-new-profile *ngIf="otpValid"></app-new-profile>
-
-              <!--Be sure to remove this paragraph when the app is finalized!!-->
-              <p>{{otp}}</p>
-</form>
-        </div>
-        <div class="form-container sign-in-container">
-          <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
-
-
-            <h2>Login</h2>
-            <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
-            <input class="input" type="password" formControlName="password" placeholder="Password" />
-            <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading">Forgot your password?</a>
-            <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
-            <div *ngIf="isLoading">
-              <!--   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
+  <div class="login-root">
+    <div class="box-root flex-flex flex-direction--column animationSlideDown" style="min-height: 100vh;flex-grow: 1;">
+      <div class="loginbackground box-background--white padding-top--64">
+        <div class="loginbackground-gridContainer">
+          <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+            <div class="box-root loginback" style="flex-grow: 1;">
             </div>
-          </form>
-          <div *ngIf="isLoading">
-            <!--  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
           </div>
-        </div>
-
-
-        <div class="overlay-container">
-          <div class="overlay">
-            <div class="overlay-panel overlay-left">
-              <h1>Already Have A  System Profile?</h1>
-              <button (click)="remove()" class="button2 ghost" id="login">Back To Login</button>
-            </div>
-            <div class="overlay-panel overlay-right">
-              <h1>Don't Have A System Profile?</h1>
-              <button (click)="add()" class="button2 ghost" id="signUp">Sign Up</button>
-              <p class="bprequired">
-                *Kindly ensure that all information provided is accurate, as any discrepancies may be regarded as fraudulent
-                <br>
-                <!--<p class="bprequired"><a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number.</p>
-  <p class="link"> </p>-->
-</div>
+          <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+            <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+            <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+            <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+            <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+            <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+            <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+            <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+            <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
           </div>
         </div>
       </div>
+      <div class="splash flex " id="splashlogo">
+        <div class="container2 ">
+          <img src="assets/building plans dark mode2.png" class="logo bounceIn">
+          <h3 >Engage Services Portal</h3>
 
-      <div class="alert alert-danger" *ngIf="error">
-        {{error}}
+        </div>
       </div>
 
+      <br *ngIf="logIN" />
+      <br *ngIf="logIN" />
+      <div class="box-root padding-top--24 flex-flex flex-direction--column bounceIn" style="flex-grow: 1; z-index: 9;">
+        <div class="formbg-outer">
+          <div class="formbg">
+            <div class="formbg-inner padding-horizontal--48 " *ngIf="logIN">
+              <h2>Login to your account</h2>
+              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+
+
+
+                <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
+                <input class="input" type="password" formControlName="password" placeholder="Password" />
+                <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading" class="oragngeText"><strong>Forgot your password?</strong></a>
+                <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button>
+
+                <div *ngIf="isLoading">
+                  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+                </div>
+              </form>
+            </div>
+            <div class="formbg-inner padding-horizontal--48 animationSlideDown" *ngIf="signIN">
+              <h1 class="padding-bottom--15">Create your account</h1>
+              <form action="#" [formGroup]="registerForm" autocomplete="off">
+                <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required [readonly]="regFormReadOnly" />
+
+
+                <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
+                <!--     Conditionally display and thereafter validate BP Number input-->
+                <div class="col">
+                  <mat-checkbox class="example-margin" [(ngModel)]="Architect">I am an Architect</mat-checkbox>
+
+                </div>
+                <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
+                <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
+
+                <button class="button2 OTP" (click)="openOTP(otpModal)" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+                <br />
+                <div class="footer-link padding-top--24" *ngIf="signIN">
+                  <span>Click to go back to <strong><a (click)="changeForm(false)" class="oragngeText">Login</a></strong></span>
+
+                </div>
+                <!--OTP-->
+                <!--    Be sure to remove this paragraph when the app is finalized!!-->
+
+              </form>
+            </div>
+          </div>
+          <br *ngIf="logIN" />
+          <div class="footer-link padding-top--24" *ngIf="logIN">
+            <span>Don't have an account? <strong><a (click)="changeForm(true)" class="oragngeText">Sign up</a></strong></span>
+
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
+  <!--  <div class="cont2">
+      <div class="container-fluid">
+        <div class="container" id="container">
+          <div class="form-container sign-up-container">
+            <form action="#" [formGroup]="registerForm" autocomplete="off">
+
+              <h2>Create an account</h2>
+              <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required [readonly]="regFormReadOnly" />
+
+
+              <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
+     Conditionally display and thereafter validate BP Number input
+    <input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" *ngIf="showBPNumber" [readonly]="regFormReadOnly" />
+    <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
+    <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
+    <div class="col">
+      <input type="checkbox" id="myCheckbox" name="myCheckbox" (click)="onCheckboxClick()">
+      <label for="myCheckbox">I Am An Architect</label>
+    </div>
+    <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+
+    <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
+    <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
+    <app-new-profile *ngIf="otpValid"></app-new-profile>
+    Be sure to remove this paragraph when the app is finalized!!
+    <p>{{otp}}</p>
+    </form>
+            </div>
+            <div class="form-container sign-in-container">
+              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+
+                <h2>Login</h2>
+                <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
+                <input class="input" type="password" formControlName="password" placeholder="Password" />
+                <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading">Forgot your password?</a>
+                <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button>
+    (click)="login()"
+    <div *ngIf="isLoading">
+       <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+    </form>
+    <div *ngIf="isLoading">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+    </div>
+
+
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Already Have A  System Profile?</h1>
+          <button (click)="remove()" class="button2 ghost" id="login">Back To Login</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Don't Have A System Profile?</h1>
+          <button (click)="add()" class="button2 ghost" id="signUp">Sign Up</button>
+          <p class="bprequired">
+            *Kindly ensure that all information provided is accurate, as any discrepancies may be regarded as fraudulent
+            <br>
+    <p class="bprequired"><a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number.</p>
+    <p class="link"> </p>
+    </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-danger" *ngIf="error">
+            {{error}}
+          </div>
+
+        </div>
+      </div>-->
 
 </body>
 
@@ -140,16 +233,16 @@
     <div class="container-fluid ">
 
       <!--External Applicant-->
-      <div class="external" >
+      <div class="external">
         <h5>Please enter your details as an External Applicant</h5>
         <div class="row">
           <!--/BPRegister Sindiswa 20062024 removed BP number-->
           <!--<div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
-            <label for="bpNoApplicant">BP Number</label>
-          </div>
-        </div>-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
@@ -207,20 +300,20 @@
           </div>
 
           <!--<div class="col-1 d-flex align-items-center">
-           <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
-         </div>-->
+            <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+          </div>-->
           <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         </div>
         <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
-        <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
-      </div>-->
+          <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+        </div>-->
         <!--end of icasadetails Sindiswa 10 January 2024-->
         <!--  <div class="form-floating mb-3 mt-3">
-        <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
-          <option selected value="0">Select a SubDepartment</option>
-          <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
-        </select>
-      </div>-->
+          <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+            <option selected value="0">Select a SubDepartment</option>
+            <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+          </select>
+        </div>-->
 
 
         <div class="row">
@@ -257,8 +350,8 @@
         <!--<div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">-->
-              <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-              <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
+        <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+        <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
               <label for="applicantTellNo">Physical Address *</label>
             </div>
           </div>
@@ -358,3 +451,38 @@
   <img src="assets/2840523.jpg" alt="" class="maintenanceM">
 
 </div>
+
+<ng-template #otpModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-basic-title" *ngIf="!otpValid">OTP Sent</h3>
+    <h3 class="modal-title" id="modal-basic-title" *ngIf="otpValid">OTP Verified</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismissAll();modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="position-relative">
+      
+      <div [hidden]="otpValid"> <span>A code has been sent to: <strong>{{email}}</strong> </span></div>
+      <br />
+      <h6 [hidden]="otpValid">Please enter the one time password to verify your account</h6>
+      <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2" [hidden]="otpValid">
+        <input class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" [(ngModel)]="first" [hidden]="otpValid"/>
+        <input class="m-2 text-center form-control rounded" type="text" id="second" maxlength="1" [(ngModel)]="second" [hidden]="otpValid"/>
+        <input class="m-2 text-center form-control rounded" type="text" id="third" maxlength="1" [(ngModel)]="third" [hidden]="otpValid"/>
+        <input class="m-2 text-center form-control rounded" type="text" id="fourth" maxlength="1" [(ngModel)]="fourth" [hidden]="otpValid"/>
+        <input class="m-2 text-center form-control rounded" type="text" id="fifth" maxlength="1" [(ngModel)]="fifth" [hidden]="otpValid"/>
+        <input class="m-2 text-center form-control rounded" type="text" id="sixth" maxlength="1" [(ngModel)]="sixth" [hidden]="otpValid"/>
+      </div>
+      <div class="mt-4">
+        <button id="validateBtn" class="button4" (click)="onVerifyOTPRegister()" [hidden]="otpValid">Validate</button>
+        <p [hidden]="otpValid">{{otp}}</p> 
+
+      </div>
+      <div class="alert alert-success animationSlideDown" *ngIf="otpValid">OTP Verified</div>
+      <app-new-profile *ngIf="otpValid"></app-new-profile>
+
+    </div>
+    
+  </div>
+</ng-template>

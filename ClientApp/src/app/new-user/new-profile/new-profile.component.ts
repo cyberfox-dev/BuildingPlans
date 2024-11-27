@@ -355,7 +355,7 @@ export class NewProfileComponent implements OnInit {
                     .subscribe((data: any) => {
 
                       if (data.responseCode == 1) {
-
+                     
                         //alert(data.responseMessage);
                       }
                       else {
@@ -457,7 +457,7 @@ export class NewProfileComponent implements OnInit {
                 .subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
-
+                 
                     //alert(data.responseMessage);
                   }
                   else {
@@ -503,9 +503,9 @@ export class NewProfileComponent implements OnInit {
             this.router.navigate(["/"]);
           }
           console.log("reponse", data);
-          //localStorage.removeItem('LoggedInUserInfo');
-          //localStorage.removeItem('userProfile');
-         /* this.router.navigate(["/"]);*/
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+          this.router.navigate(["/"]);
         }, error => {
           console.log("Error: ", error);
         })
@@ -606,9 +606,9 @@ export class NewProfileComponent implements OnInit {
           this.router.navigate(["/"]);
         }
         console.log("reponse", data);
-        //localStorage.removeItem('LoggedInUserInfo');
-        //localStorage.removeItem('userProfile');
-      /*  this.router.navigate(["/"]);*/
+        localStorage.removeItem('LoggedInUserInfo');
+        localStorage.removeItem('userProfile');
+        this.router.navigate(["/"]);
       }, error => {
         console.log("Error: ", error);
       })

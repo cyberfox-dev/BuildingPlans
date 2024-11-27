@@ -103,6 +103,9 @@ export class LoginComponent implements OnInit {
   AllConfig: ConfigList[] = [];
   public ServerType: string;
     otpValid: boolean = false;
+    logIN: boolean = true;
+    signIN: boolean = false;
+    email: any;
 
   constructor(
     private router: Router,
@@ -152,12 +155,42 @@ export class LoginComponent implements OnInit {
   }
 
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  otpArray: string[] = ['', '', '', '', '', '']; // Array to store OTP digits
+  isResendDisabled: boolean = false; // To disable the resend button
+  resendTimer: number = 30; // Cooldown timer for resending OTP
 
+
+  checkOtpValidity(): void {
+    this.otpValid = this.otpArray.every((digit) => digit !== '');
+  }
+
+  isOtpValid(): boolean {
+    return this.otpValid;
+  }
+
+  resendOTP(): void {
+    this.isResendDisabled = true;
+    this.resendTimer = 30; // Reset the timer
+    this.startResendTimer();
+    // Logic to resend OTP goes here
+    console.log('OTP resent to:', this.email);
+  }
+
+  startResendTimer(): void {
+    const interval = setInterval(() => {
+      if (this.resendTimer > 0) {
+        this.resendTimer--;
+      } else {
+        this.isResendDisabled = false;
+        clearInterval(interval);
+      }
+    }, 1000);
+  }
   // Assuming this.characters is initialized somewhere above
   generateOTP(length: number): Observable<string> {
-    const email = this.registerForm.controls["registerEmail"].value;
+    this.email = this.registerForm.controls["registerEmail"].value;
 
-    return this.userService.emailExists(email).pipe(
+    return this.userService.emailExists(this.email).pipe(
       tap(exists => {
         if (exists) {
           this.handleEmailExists();//It seems like this means that the email exists in wayleave system
@@ -165,7 +198,7 @@ export class LoginComponent implements OnInit {
         }
       }),
       map(() => this.createOTP(length)),
-      tap(otp => this.handleNewEmail(otp, email)),
+      tap(otp => this.handleNewEmail(otp, this.email)),
       catchError((error) => {
         this.handleErrorCheckingEmail(error);
         return of(''); // Return an empty string if there's an error
@@ -297,6 +330,23 @@ export class LoginComponent implements OnInit {
     return this.userPofileService.getUserProfileById(currentUser.appUserId);
   }
 
+  changeForm(check:any) {
+    this.logIN = false;
+    this.signIN = true;
+
+    if (check == true) {
+      this.logIN = false;
+      this.signIN = true;
+    }
+   else if (check == false) {
+      this.logIN = true;
+      this.signIN = false;
+    }
+  }
+  openOTP(otpModal: any) {
+    this.onSendiOTP();
+    this.modalService.open(otpModal, { centered: true, size: 'lg', backdrop: 'static' });
+  }
 
   getAllRolesForUserForAllAG(userId: number): void {
     debugger;
@@ -730,6 +780,13 @@ this.userService.login(email, password).pipe(
 
   }
 
+  first: string;
+  second: string;
+  third: string;
+  fourth: string;
+  fifth: string;
+  sixth: string;
+
   async onVerifyOTPRegister(
     clientFullName?: string | null,
     clientEmail?: string | null,
@@ -740,15 +797,20 @@ this.userService.login(email, password).pipe(
     PhyscialAddress?: string | null, //Create new account doesn't have?
     ApplicantIDUpload?: string | null, //Create new account doesn't have?
     ApplicantIDNumber?: string | null //Create new account doesn't have?
+
+
+
   ) {
+
+
 
     let onLoginForm = true;
     let clientRegisterPassword = this.registerForm.controls["registerPassword"].value;
-    let otpEntered = this.registerForm.controls["OTPField"].value;
+    /*let otpEntered = this.registerForm.controls["OTPField"].value;*/
 
     clientFullName = this.registerForm.controls["fullName"].value;
     clientEmail = this.registerForm.controls["registerEmail"].value;
-
+    let otpEntered = this.first + this.second + this.third + this.fourth + this.fifth + this.sixth;
     
 
     if (this.otp != otpEntered) {
@@ -781,6 +843,7 @@ this.userService.login(email, password).pipe(
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.sharedService.newUserProfileBp = BpNo;
         this.otpValid = true;
+  
         } else {
           this.sharedService.errorForRegister = true;
           alert(data.responseMessage);
@@ -791,6 +854,7 @@ this.userService.login(email, password).pipe(
     }
     console.log("Your password is: " + clientRegisterPassword);
   }
+  Architect: boolean = false;
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   DoChecksForRegister() {
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/

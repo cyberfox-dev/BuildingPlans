@@ -1,4 +1,12 @@
-<button class="button2 OTP" (click)="openNewUser(newUser)">Open</button>
+<!--<button class="button2 OTP" (click)="openNewUser(newUser)">Proceed to make profile</button>-->
+
+
+<button class="button3" (click)="openNewUser(newUser)">
+  Continue to create Profile
+</button>
+
+
+
 <!-- #region old code -->
 <!--<div class="nav">
   <div class="nav-header">
@@ -338,7 +346,6 @@
 <!--Final-->
 <!--</div>
 -->
-
 <!-- #endregion -->
 
 <ng-template #newUser let-modal>
@@ -421,11 +428,11 @@
         <div class="row">
           <!--/BPRegister Sindiswa 20062024 removed BP number-->
           <!--<div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
-        <label for="bpNoApplicant">BP Number</label>
-      </div>
-    </div>-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
@@ -483,20 +490,20 @@
           </div>
 
           <!--<div class="col-1 d-flex align-items-center">
-      <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
-    </div>-->
+            <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+          </div>-->
           <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         </div>
         <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
-    <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
-  </div>-->
+          <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+        </div>-->
         <!--end of icasadetails Sindiswa 10 January 2024-->
         <!--  <div class="form-floating mb-3 mt-3">
-    <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
-      <option selected value="0">Select a SubDepartment</option>
-      <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
-    </select>
-  </div>-->
+          <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+            <option selected value="0">Select a SubDepartment</option>
+            <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+          </select>
+        </div>-->
 
       </div>
       <!--END-->
@@ -526,6 +533,9 @@
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
+              >
+
+              ma
               <input type="email" class="form-control" [(ngModel)]="internalApplicantAlternativeEmail" name="internalApplicantAlternativeEmail" placeholder="Enter Email" #altEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
               <label for="applicantEmail">Alternative Email *</label>
               <div *ngIf="altEmail.invalid && (altEmail.dirty || altEmail.touched)" class="text-danger">
@@ -568,21 +578,21 @@
           </div>
           <!--end of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
           <!--<div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
-            <option selected value="0">Select a subdepartment *</option>
-            <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
-          </select>
-        </div>
-      </div>
-      <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
-            <option selected value="0">Select a zone *</option>
-            <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
-          </select>
-        </div>
-      </div>-->
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
+                <option selected value="0">Select a subdepartment *</option>
+                <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
+                <option selected value="0">Select a zone *</option>
+                <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+              </select>
+            </div>
+          </div>-->
         </div>
         >
 
@@ -614,6 +624,8 @@
             <!--Why is the PhoneNumberHidden?-->
             <!--Why is the PhoneNumberHidden?-->
             <div class="form-floating mb-3 mt-3">
+
+
               <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
               <label for="applicantTellNo" hidden>Tell No *</label>
             </div>
@@ -625,7 +637,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success"  (click)="onNewProfileCreate()">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="onNewProfileCreate()">Save</button>
   </div>
 </ng-template>
 
