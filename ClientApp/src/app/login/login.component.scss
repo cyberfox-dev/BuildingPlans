@@ -426,8 +426,8 @@ form {
     
 }
 .input {
-  background-color: #eee;
-  border: none;
+  background-color: #bdbdbd12;
+  border: 2px solid #ffffff75;
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
@@ -983,7 +983,6 @@ h8 {
   margin: 30px 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,.3);
   background: #BBB;
-
   color: white;
   border-radius: 50px;
   transition: all .5s ease;
