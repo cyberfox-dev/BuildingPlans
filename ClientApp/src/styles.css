@@ -173,6 +173,9 @@
   .fa-bars{
       color:black !important;
   }
+  .loginback {
+    background: #91b0b821 !important;
+  }
   .modal-content {
     background: #ffffffb5 !important;
     -webkit-backdrop-filter: blur(15px) !important;

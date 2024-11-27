@@ -21,7 +21,7 @@
     <!--<button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>-->
     <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
     <!-- Service Information Kyle 31/01/24-->
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openApplicationType(applicationOption)">Create New Application</button>
+    <button   class="animationSlideDown button5" (click)="openApplicationType(applicationOption)">Create New Application</button>
     <mat-menu #menu2="matMenu" xPosition="after">
       <!--THIS IS ACTUALLY LAND SURVEY--> 
       <button mat-menu-item [matMenuTriggerFor]="BPA">Building Plan</button>
@@ -2115,10 +2115,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="pushable" (click)="confirmSelection()">
-        <span class="shadow"></span>
-        <span class="edge"></span>
-        <span class="front"> Confirm </span>
+      <button class="button5" (click)="confirmSelection()">
+Confirm
       </button>
     </div>
   </ng-template>
