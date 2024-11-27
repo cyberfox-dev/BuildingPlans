@@ -32,7 +32,7 @@ import { NotificationCenterComponent } from 'src/app/notification-center/notific
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
-
+import { BugsService } from '../service/Bugs/bugs.service';
 
 
 export interface SubDepartmentList {
@@ -169,10 +169,13 @@ export class NavMenuComponent implements OnInit {
     devConfig: boolean = false;
     Config: boolean = false;
 
-  constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
+  constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog, private bugsService: BugsService) { }
 
 
  
+  bugDescription: string = "";
+  bugCategory: string;
+  bugComponent: string;
 
   selected = 'none';
   select = 0;
@@ -1390,6 +1393,31 @@ export class NavMenuComponent implements OnInit {
 
     sideBar.classList.toggle('active');
   }
+
+  openBugReport(bugs: any) {
+
+    this.modalService.open(bugs, { centered: true, size: 'l' });
+  }
+
+  onSaveBugReport() {
+
+    this.bugsService.addUpdateBug(0, this.bugDescription, false, null,this.bugComponent,this.bugCategory, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.bugCategory = '';
+        this.bugComponent = '';
+        this.bugDescription = '';
+        this.modalService.dismissAll();
+        alert(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Bug report error", error);
+    })
+  }
+  
 }
 
 

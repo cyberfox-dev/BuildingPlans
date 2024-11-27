@@ -612,6 +612,8 @@
     <Folder Include="ClientApp\src\app\service\NeighbourConsent\" />
     <Folder Include="ClientApp\src\app\service\DrawingCoOrdinates\" />
     <Folder Include="ClientApp\src\app\service\BPApplicationChecklists\" />
+    <Folder Include="ClientApp\src\app\service\Bugs\" />
+    <Folder Include="ClientApp\src\app\service\BPEmailMessagesService\" />
     <Folder Include="ClientApp\src\app\service\ZoneLink\" />
     <Folder Include="ClientApp\src\app\service\Zones\" />
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />

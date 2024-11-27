@@ -1127,3 +1127,18 @@ body {
   /* margin: .5rem 5px; */
   padding: 4px;
 }
+
+.bugCategory{
+    width:100%;
+    border : solid 1px grey;
+    border-radius : 15px ;
+    padding :5px ;
+}
+.btn-green {
+  background-color: #57eb57 !important;
+  color: #fff !important;
+  border-color: green;
+}
+.btn-green:hover {
+    background:green;
+}

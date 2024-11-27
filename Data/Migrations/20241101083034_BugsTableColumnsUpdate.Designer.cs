@@ -4,6 +4,7 @@ using BuildingPlans.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241101083034_BugsTableColumnsUpdate")]
+    partial class BugsTableColumnsUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -643,13 +645,13 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<string>("NatureOfEvent")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NextStage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NumberOfPosters")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreviousStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SizeOfPoster")
@@ -826,6 +828,9 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<string>("MainMunicipality")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NextStage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("OwnerContactNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -842,9 +847,6 @@ namespace BuildingPlans.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreviousStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PropertyUse")
@@ -1230,9 +1232,6 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<string>("PoleNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -1586,6 +1585,9 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<string>("NatureOfAdvertisement")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NextStage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NoOfFaces")
                         .HasColumnType("nvarchar(max)");
 
@@ -1593,9 +1595,6 @@ namespace BuildingPlans.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreviousStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("StartDate")
@@ -2396,37 +2395,6 @@ namespace BuildingPlans.Data.Migrations
                     b.HasKey("CoOrdinateID");
 
                     b.ToTable("DrawingCoOrdinates");
-                });
-
-            modelBuilder.Entity("BuildingPlans.Data.Entities.EmailMessages", b =>
-                {
-                    b.Property<int?>("EmailMessageID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("EmailMessageID"), 1L, 1);
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EmailMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("EmailMessageID");
-
-                    b.ToTable("EmailMessages");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.FAQ", b =>

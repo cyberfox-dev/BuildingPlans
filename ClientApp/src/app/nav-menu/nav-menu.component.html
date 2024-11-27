@@ -42,84 +42,92 @@
   </div>
   <div class="toolbar">
     <div class="topNav">
-    <ul>
+      <ul>
 
-      <mat-divider></mat-divider>
-      <li>
-        <a>
-          <i class="fa fa-circle-o" matTooltip="Dashbaord" (click)="goHome()"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">Dashbaord</span>
-        </a>
-        <span class="tooltip">Dashbaord</span>
-      </li>
-      <mat-divider></mat-divider>
-      <li>
-        <a >
-          <i class="fa fa-question" matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">FAQ</span>
-        </a>
-        <span class="tooltip">Frequently Asked Questions</span>
-      </li>
-      <mat-divider *ngIf="devConfig"></mat-divider>
-      <li *ngIf="devConfig">
-        <a >
-          <i class="fa fa-terminal" matTooltip="Dev Configs" (click)="goToCyberfoxCofig()"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">Dev Configs</span>
-        </a>
-        <span class="tooltip">Dev Configs</span>
-      </li>
-      <mat-divider></mat-divider>
-      <li >
-        <a >
-          <i class="fa fa-files-o" matTooltip="Document Repository" (click)="openRepositoryModal(repositoryModal)"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">Document Repository</span>
-        </a>
-        <span class="tooltip">Document Repository</span>
-      </li>
-      <mat-divider></mat-divider>
-      <li>
-        <a >
-          <i class="fa fa-comment-o" matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">Comment Builder</span>
-        </a>
-        <span class="tooltip">Comment Builder</span>
-      </li>
-      <mat-divider *ngIf="Config || devConfig"></mat-divider>
-      <li *ngIf="Config || devConfig ">
-        <a >
-          <i class="fa fa-wrench" matTooltip="Configurations" (click)="goToConfig()"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">Configurations</span>
-        </a>
-        <span class="tooltip">Configurations</span>
-      </li>
-      <mat-divider></mat-divider>
-      <li>
-        <a >
-          <i class="fa fa-cog" matTooltip="User Settings" (click)="goToSettings()"
-             matTooltipPosition="after"></i>
-          <span class="nav-item">User Settings</span>
-        </a>
-        <span class="tooltip">User Settings</span>
-      </li>
-
-
-      
-      <li class="logout-button bottom">
         <mat-divider></mat-divider>
-        <a>
-          <i class="fa fa-sign-out" matTooltip="Log Out" (click)="LogoutUser()"
-             matTooltipPosition="after"></i>
-          <span class="nav-item"> Log Out</span>
-        </a>
-        <span class="tooltip"> Log Out</span>
-      </li>
-    </ul>
+        <li>
+          <a>
+            <i class="fa fa-circle-o" matTooltip="Dashbaord" (click)="goHome()"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Dashbaord</span>
+          </a>
+          <span class="tooltip">Dashbaord</span>
+        </li>
+        <mat-divider></mat-divider>
+        <li>
+          <a>
+            <i class="fa fa-question-circle" matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">FAQ</span>
+          </a>
+          <span class="tooltip">Frequently Asked Questions</span>
+        </li>
+        <mat-divider *ngIf="devConfig"></mat-divider>
+        <li *ngIf="devConfig">
+          <a>
+            <i class="fa fa-terminal" matTooltip="Dev Configs" (click)="goToCyberfoxCofig()"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Dev Configs</span>
+          </a>
+          <span class="tooltip">Dev Configs</span>
+        </li>
+        <mat-divider></mat-divider>
+        <li>
+          <a>
+            <i class="fa fa-files-o" matTooltip="Document Repository" (click)="openRepositoryModal(repositoryModal)"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Document Repository</span>
+          </a>
+          <span class="tooltip">Document Repository</span>
+        </li>
+        <mat-divider></mat-divider>
+        <li>
+          <a>
+            <i class="fa fa-comment-o" matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Comment Builder</span>
+          </a>
+          <span class="tooltip">Comment Builder</span>
+        </li>
+        <mat-divider *ngIf="Config || devConfig"></mat-divider>
+        <li *ngIf="Config || devConfig ">
+          <a>
+            <i class="fa fa-wrench" matTooltip="Configurations" (click)="goToConfig()"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Configurations</span>
+          </a>
+          <span class="tooltip">Configurations</span>
+        </li>
+        <mat-divider></mat-divider>
+        <li>
+          <a>
+            <i class="fa fa-cog" matTooltip="User Settings" (click)="goToSettings()"
+               matTooltipPosition="after"></i>
+            <span class="nav-item">User Settings</span>
+          </a>
+          <span class="tooltip">User Settings</span>
+        </li>
+
+        <mat-divider></mat-divider>
+        <li>
+          <a>
+            <i class="fa fa-bug" matTooltip="Report a bug" (click)="openBugReport(bugs)" 
+               matTooltipPosition="after"></i>
+            <span class="nav-item">Report a bug</span>
+          </a>
+          <span class="tooltip">Report a bug</span>
+        </li>
+
+        <li class="logout-button bottom">
+          <mat-divider></mat-divider>
+          <a>
+            <i class="fa fa-sign-out" matTooltip="Log Out" (click)="LogoutUser()"
+               matTooltipPosition="after"></i>
+            <span class="nav-item"> Log Out</span>
+          </a>
+          <span class="tooltip"> Log Out</span>
+        </li>
+      </ul>
   </div>
 </div>
 
@@ -394,9 +402,10 @@
         </mat-expansion-panel>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="submit" class="btn btn-light "  (click)="modal.dismiss('Cross click')">Close</button>
       </div>
     </ng-template>
+
 
 
     <!----------------Audit Trail Kyle------------------->
@@ -407,6 +416,57 @@
     </ng-template>
 
 
+  <!-------------------------------Bug Reports ---------------------->
+    <ng-template #bugs let-modal>
+      <div class="modal-header">
+        <h1 class="modal-title" id="modal-basic-title">Report a bug</h1>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <p><em>Refreshign the page or clearing the browsing cache will automatically resolve most issues</em></p>
+        <br />
+        <p>Reports are not end-to-end encrypted, please do not send any sensitive information </p>
+
+
+        <mat-form-field class="bugCategory">
+          <mat-label>Where about did you experience the issue ?</mat-label>
+          <mat-select [(ngModel)]="bugComponent">
+            <mat-option value="Login">Login</mat-option>
+            <mat-option value="Dashboard">Dashboard</mat-option>
+            <mat-option value="View Project">View Project</mat-option>
+            <mat-option value="Configurations">Configurations</mat-option>
+            <mat-option value="User Settings">User Settings</mat-option>
+            <mat-option value="Application Submission">Application Submission</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field class="bugCategory">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="bugCategory">
+            <mat-option value="UI/UX"> UI/UX</mat-option>
+            <mat-option value="Functionality">Functionality</mat-option>
+            <mat-option value="Security">Security</mat-option>
+            <mat-option value="Crash/Error">Crash/Error </mat-option>
+            <mat-option value="Data Integrity">Data Integrity</mat-option>
+            <mat-option value="Other"> Other </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="bugCategory">
+          <mat-label>What happened?</mat-label>
+          <textarea matInput [(ngModel)]="bugDescription" style="min-height: 80px"  placeholder="Enter as much details as possible and include any error messages " id="myTextarea" maxlength="250"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="modal-footer">
+        <p>*Thank you for your feedback the issue will be addressed as soon as possible</p>
+        <button type="submit" class="btn btn-green" (click)="onSaveBugReport()">Submit</button>
+      </div>
+    </ng-template>
     <!--Side Nav-->
     <!--<ng-template #content let-offcanvas style="z-index: 9999999;">
       <div class="offcanvas-header animationFadeInRightToLeft">
