@@ -1430,9 +1430,10 @@ h6 {
   }
   //buttons
 
-  .cont2 {
-    display: flex;
-  }
+.cont2 {
+  display: flex;
+  justify-content: space-around;
+}
 .cont889 {
   display: flex;
   flex-direction: row;
