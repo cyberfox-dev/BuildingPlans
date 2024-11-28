@@ -167,6 +167,10 @@
   .mat-expansion-panel {
     background: #425166;
   }
+
+  .icon4{
+      filter: invert(1) !important;
+  }
 }
 
 @media(prefers-color-scheme:light) {
