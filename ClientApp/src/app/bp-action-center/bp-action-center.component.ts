@@ -1779,7 +1779,7 @@ export class BpActionCenterComponent implements OnInit {
 
   getReviewerForLink() {
 
-/*    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
     // this.ReviewerUserList = []; // Initialize the new list
 
     for (var i = 0; i < this.reviewerUsers.length; i++) {
@@ -1796,12 +1796,12 @@ export class BpActionCenterComponent implements OnInit {
 
 
       this.ReviewerUserList.push(tempreviewer);
-    }*/
+    }
 
   }
   getLSReviewerForLink() {
 
-/*    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
     // this.ReviewerUserList = []; // Initialize the new list
 
     for (var i = 0; i < this.ReviewerUserList.length; i++) {
@@ -1817,7 +1817,7 @@ export class BpActionCenterComponent implements OnInit {
 
 
       this.ReviewerUserList.push(tempreviewer);
-    }*/
+    }
 
   }
   /*JJS 07-03-24 GIS Reviewer*/
