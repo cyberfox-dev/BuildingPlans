@@ -905,12 +905,13 @@
   <!--choose existing-->
   <ng-template #user let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">Choose the external client</h6>
+      <h6 class="modal-title" id="modal-basic-title">Select the client</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
 
       <div class="container-fluid">
+        <p>Below is a list of external users on the system. Select the user you are applying for.</p>
         <mat-form-field>
           <mat-label>Filter</mat-label>
           <!--<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>-->
@@ -951,7 +952,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="btn btn-outline-success" (click)="onCreateBuildingApplication();closeModalFromModal();modal.close('Save click')">Save</button>
+      <button type="submit" class="btn btn-outline-success" (click)="onCreateBuildingApplication();closeModalFromModal();modal.close('Save click')">Start Application</button>
     </div>
   </ng-template>
 
