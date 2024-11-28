@@ -7814,11 +7814,12 @@ this.subscriptions.push(subscription);
       alert("Please select an application type before confirming.");
       return;
     }
-
+    debugger;
     switch (this.selectedApplication) {
-      case 'buildingPlan':
-        this.GoToBuildingApplication(false, 'ls', false);
+      case 'ls':
         this.modalService.dismissAll();
+        this.GoToBuildingApplication(false, 'ls', false);
+      
         break;
       case 'demolition':
         this.goToDemolition(false);
@@ -7841,15 +7842,17 @@ this.subscriptions.push(subscription);
         this.modalService.dismissAll();
         break;
       case 'tp':
+        this.modalService.dismissAll();
         this.GoToBuildingApplication(false, 'tp', false);
-        this.modalService.dismissAll();
+       
         break;
-      case 'wayleave':
-        this.GoToBuildingApplication(false, null, true);
+      case 'Wayleave':
         this.modalService.dismissAll();
+        this.GoToBuildingApplication(false, null, true);
+        
         break;
       case 'cemetery':
-        this.GoToBuildingApplication(false, null, true);
+
         this.modalService.dismissAll();
         break;
       default:

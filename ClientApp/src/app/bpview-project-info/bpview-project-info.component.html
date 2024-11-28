@@ -65,49 +65,53 @@
               <mat-tab label="Application Details">
                 <div class="applicationDeatails">
 
-                  <div *ngIf="bpApplicationType == 'Building Plan'">
-                  <div class="card2">
-                    <p class="detailsCardName">Application Details</p>
-                  </div>
-                  <p>Application Type: {{bpApplicationType}}</p>
-                  <p>LS Number: {{ lsNumber }}</p>
-                  <p *ngIf="BPApplicationProjectNumber">Project Number: {{ BPApplicationProjectNumber }}</p>
+                  <div *ngIf="bpApplicationType != 'Signage'">
+                    <div class="applicationDeatails">
 
-                  <div class="card2">
-                    <p class="detailsCardName">Property Details Of Development</p>
-                  </div>
-                  <p>Property Description - {{ propertyDescription }}</p>
-                  <p>Premises Name - {{ premisesName }}</p>
-                  <p>Type Of Address - {{ typeOfAddress }}</p>
-                  <p>Number Of Units - {{ noOfUnits }}</p>
-                  <p>Unit Number - {{ unitNumber }}</p>
-                  <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
-                  <p>Portion Number - {{ portionNumber }}</p>
-                  <p>Physical Address Of Project - {{ physicalAddress }}</p>
-                  <p>Latitude - {{ latitude }}</p>
-                  <p>Longitude - {{ longitude }}</p>
-                  <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
 
-                  <div class="card2">
-                    <p class="detailsCardName">Plan Details</p>
-                  </div>
-                  <p>Type Of Development - {{ typeOfDev }}</p>
-                  <p>Property Value - {{ propertyValue }}</p>
-                  <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
-                  <p>Building Plan For - {{ buildingPlanFor }}</p>
-                  <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
-                  <div *ngIf="bpApplicationType == 'Town Planning'">
-                    <p>Title Restrictions - {{ TitleRestrictions }}</p>
-                    <p>Extent Of Property - {{ ExtentOfProperty }}</p>
-                    <p>TitleDeedNo - {{ TitleDeedNo }}</p>
-                    <p>Registered Description - {{ RegisteredDescription }}</p>
-                    <p>Company Name - {{ NameOfCompany }}</p>
-                    <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
-                    <p>isCombined - {{ isCombinedApplication }}</p>
-                    <p>Description Of Project - {{ DescriptionOfProject }}</p>
-                    <p>Application Type - {{ bpApplicationType }}</p>
-                  </div>
+                      <div class="card2">
+                        <p class="detailsCardName">Application Details</p>
+                      </div>
+                      <p>Application Type: {{bpApplicationType}}</p>
+                      <p>LS Number: {{ lsNumber }}</p>
+                      <p *ngIf="BPApplicationProjectNumber">Project Number: {{ BPApplicationProjectNumber }}</p>
+
+                      <div class="card2">
+                        <p class="detailsCardName">Property Details Of Development</p>
+                      </div>
+                      <p>Property Description - {{ propertyDescription }}</p>
+                      <p>Premises Name - {{ premisesName }}</p>
+                      <p>Type Of Address - {{ typeOfAddress }}</p>
+                      <p>Number Of Units - {{ noOfUnits }}</p>
+                      <p>Unit Number - {{ unitNumber }}</p>
+                      <p *ngIf="bpApplicationType != 'Town Planning'">Erf Number - {{ erfNumber }}</p>
+                      <p>Portion Number - {{ portionNumber }}</p>
+                      <p>Physical Address Of Project - {{ physicalAddress }}</p>
+                      <p>Latitude - {{ latitude }}</p>
+                      <p>Longitude - {{ longitude }}</p>
+                      <p *ngIf="bpApplicationType != 'Town Planning'">SG Code - {{ sGCode }}</p>
+
+                      <div class="card2">
+                        <p class="detailsCardName">Plan Details</p>
+                      </div>
+                      <p>Type Of Development - {{ typeOfDev }}</p>
+                      <p>Property Value - {{ propertyValue }}</p>
+                      <p *ngIf="bpApplicationType != 'Town Planning'">Occupation Classification - {{ occupationClassification }}</p>
+                      <p>Building Plan For - {{ buildingPlanFor }}</p>
+                      <p *ngIf="bpApplicationType != 'Town Planning'">OmnibusServitude - {{ OmnibusServitude }}</p>
+                      <div *ngIf="bpApplicationType == 'Town Planning'">
+                        <p>Title Restrictions - {{ TitleRestrictions }}</p>
+                        <p>Extent Of Property - {{ ExtentOfProperty }}</p>
+                        <p>TitleDeedNo - {{ TitleDeedNo }}</p>
+                        <p>Registered Description - {{ RegisteredDescription }}</p>
+                        <p>Company Name - {{ NameOfCompany }}</p>
+                        <p>Reg Number Of Company - {{ RegNoOfCompany }}</p>
+                        <p>isCombined - {{ isCombinedApplication }}</p>
+                        <p>Description Of Project - {{ DescriptionOfProject }}</p>
+                        <p>Application Type - {{ bpApplicationType }}</p>
+                      </div>
                     </div>
+                  </div>
 
                   <div *ngIf="bpApplicationType == 'Signage'">
                     <!-- General Application Details -->
