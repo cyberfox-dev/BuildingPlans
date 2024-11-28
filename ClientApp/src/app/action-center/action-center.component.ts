@@ -1192,7 +1192,7 @@ export class ActionCenterComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, "PTW").subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, "System Generated Pack", "PTW").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         this.moveToMonitoring();
@@ -7488,7 +7488,7 @@ export class ActionCenterComponent implements OnInit {
     /*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID,this.CurrentUser.appUserId,"System Generated Pack","Approval Pack").subscribe((data: any) => {
       if (data.responseCode == 1) {
-        /* this.moveToPermitToWorkStage();*/
+         this.moveToPermitToWorkStage();
         this.router.navigate(["/home"]);
       }
 
@@ -7731,7 +7731,7 @@ export class ActionCenterComponent implements OnInit {
     this.financialService.addUpdateFinancial(0, "Wayleave Invoice", "Generated Pack", documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack").subscribe((data: any) => {
       if (data.responseCode == 1) {
         /*  this.router.navigate(["/home"]);*/
-        this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, null, null, null, null, "Unpaid(Pending)").subscribe((data: any) => {
+        this.applicationsService.updateApplicationStage(this.ApplicationID, null, null, "Verifica", null, null, null, "Unpaid(Pending)").subscribe((data: any) => {
           if (data.responseCode == 1) {
             this.openSnackBar("Invoice Created");
             this.modalService.dismissAll();
