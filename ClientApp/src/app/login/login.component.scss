@@ -47,9 +47,9 @@ span {
 
 a {
   color: orange;
-  font-size: 14px;
+  font-size: 17px;
   margin: 15px 0;
-  cursor:pointer;
+  cursor: pointer;
 }
 .submit {
   border-radius: 20px;
@@ -216,7 +216,7 @@ a {
 }
 
 .box-background--gray100 {
-  background-color: #e3e8ee;
+  background-color: #1a1e2447;
 }
 
 .box-background--cyan200 {
@@ -240,7 +240,7 @@ a {
 }
 
 .padding-horizontal--48 {
-  padding: 28px;
+  padding: 15px 0px;
 }
 
 .padding-bottom--15 {
@@ -260,10 +260,9 @@ a {
 .formbg {
   margin: 0px auto;
   width: 100%;
-  width: 448px;
+  width: 570px;
   background: rgba(255, 255, 255, 0);
   border-radius: 49px;
-  /* box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px; */
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.06);
@@ -339,7 +338,7 @@ a.ssolink {
 }
 
 .footer-link span {
-  font-size: 14px;
+  font-size: 17px;
   text-align: center;
 }
 
@@ -607,14 +606,13 @@ h1 {
 h2 {
   font-weight: bold;
   margin-bottom: 37px;
-  font-size: 28px;
+  font-size: 19px;
   font-family: "Nunito";
   font-style: normal;
   font-weight: bolder;
   font-display: swap;
   color: #343a40;
   animation: card-fade 2s ease 1 normal;
-
 }
 
 
@@ -752,12 +750,12 @@ h2 {
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
   border-radius: 15px;
-  padding: 4px;
+  padding: 15px;
   align-items: center;
   margin: 0 auto;
-  margin-top: 64px;
-  margin-bottom: 31px !important;
-  width: 700px;
+  margin-top: 50px;
+  margin-bottom: -2px !important;
+  width: 748px;
   justify-content: center;
 }
 
@@ -773,7 +771,41 @@ h2 {
   transform: rotate(0deg) scale(1) translateZ(0);
   transition: all 0.4s cubic-bezier(0.8, 1.8, 0.75, 0.75);
 }
+.logo3 {
+  margin-top: 5px;
+  display: flex;
+  margin: 0;
+  padding: 10px;
+  justify-content: left;
+  width: 4em;
+  height: 100%;
 
+  transform: rotate(0deg) scale(1) translateZ(0);
+  transition: all 0.4s cubic-bezier(0.8, 1.8, 0.75, 0.75);
+}
+
+.logo6 {
+  height: 100%;
+  width: 9vh;
+  margin: 5px;
+}
+.header {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: bolder;
+  font-display: swap;
+  font-size: 30px;
+  color: #343a40;
+  animation: card-fade 2s ease 1 normal;
+  margin: 0;
+}
+.logo4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  padding-top: 16px;
+}
 
 .bounceIn {
   animation: bounceIn 0.6s;
@@ -825,7 +857,7 @@ h3 {
   font-style: normal;
   font-weight: bolder;
   font-display: swap;
-  font-size: 28px;
+  font-size: 40px;
   color: #343a40;
   animation: card-fade 2s ease 1 normal;
   margin: 0;
@@ -1439,5 +1471,62 @@ img {
 
 .button4:active:before {
   background: #3a0ca3;
+  transition: background 0s;
+}
+
+
+.button5 {
+  color: #005870;
+  font-family: inherit;
+  display: inline-block;
+  width: 11em;
+  height: 3em;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid #005870;
+  background: rgba(218, 218, 218, 0);
+  transition: color 0.5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 18px;
+  font-weight: 700;
+  color: #005870;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.button5:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: #005870;
+  height: 350px;
+  width: 600px;
+  border-radius: 50%;
+}
+
+.button5:hover {
+  color: #fcfcfc;
+}
+
+.button5:before {
+  top: 100%;
+  left: 100%;
+  transition: all 0.7s;
+}
+
+.button5:hover:before {
+  top: -76px;
+  left: -182px;
+}
+
+.button5:disabled{
+    cursor:not-allowed;
+}
+.button5:disabled:before {
+  background: #0000001a;
+}
+.button5:active:before {
   transition: background 0s;
 }

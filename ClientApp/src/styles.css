@@ -1,276 +1,300 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~quill/dist/quill.bubble.css';
 
+.mat-table {
+  background: #ffffff00 !important;
+}
 .sideNavIcons:hover {
   background-color: #8787872e;
 }
-@media(prefers-color-scheme:dark) {
-  form {
-
-  }
-    *{
-        color:white !important;
-    }
-  .fa-bars {
-    color: white !important;
-  }
-  .loginback {
-    background-image: linear-gradient(#2b323c 0%, #2b323c 33%) !important;
-
-  }
-  .example-sidenav {
-    background-color: #2f3a49 !important;
-  }
-  .box-background--white {
-
-    background-color: #22272f !important;
-  }
-
-
-  .wayleaveAlert {
-    background-color: #526277;
-    border-color: #0000007d;
-    backdrop-filter: blur(10px);
-   
-  }
-  .createButton {
-    background-color: #ff9900 !important;
-  }
-  .wayleaveCard {
-    background-color: #4393d7 !important;
-    border-color: #4393d7 !important;
-  }
-  .loading-screen {
-    background-color: #22272f;
-  }
-  .nav {
-    background-color: #2f3a49;
-  }
-  body {
-    background: #323e4e00;
-    color: white !important;
-  }
-  :root {
-
-    color: white !important;
-  }
-  .container {
-
-  }
-  .backgroundWLMS {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-image: url('assets/pietermaritzburg-modified-12.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: none;
-    padding: 0;
-    margin: 0;
-    outline: none;
-    box-shadow: none;
-    background-clip: content-box;
-  }
-
-  .innerDiv {
-    padding-left: 102px;
-    padding-right: 19px;
-  }
-  .offcanvas-menu {
-    background-color: #323e53 !important;
-  }
-
-
-  table {
-    border-spacing: 0;
-    background: #425166 !important;
-    color: white !important;
-  }
-
-  input {
-
-    color: white !important;
-    border-color: #1b222b8c !important;
-  }
-
-  .mat-input {
-    font: inherit;
-    background: rgb(50 62 78) !important;
-    color: currentColor;
-    border: none;
-    outline: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    max-width: 100%;
-    vertical-align: bottom;
-    text-align: inherit;
-    box-sizing: content-box;
-    caret-color: rgb(50 62 78) !important;
-  }
-
-  .mat-menu-panel {
-    background: #323e4e !important
-  }
-
-  .modal-content {
-    background: #323e4e !important
-  }
-
-
-
-  .offcanvas {
-    background: #323e4e !important
-  }
-
-  mat-dialog-container#mat-dialog-0 {
-    background: #323e4e !important
-  }
-
-  .button:hover {
-    background: #3e4c5f !important
-  }
-
-  tr:hover {
-    background: #3e4c5f !important
-  }
-
-  .mat-select-panel {
-    background: #576b86;
-  }
-
-  .mat-toolbar {
-    background: #323e4e !important;
-  }
-
-  .mat-checkbox-checked {
-    background-color: #323e4e00 !important;
-  }
-
-  .mat-paginator-container {
-    background: #323e4e !important;
-  }
-
-  .card {
-    box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
-    margin: 20px;
-    border-color: #0f8187;
-    background-color: #0f8187;
-    margin-bottom: 50px;
-    margin-top: 50px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .mat-expansion-panel {
-    background: #425166;
-  }
-
-  .icon4{
-      filter: invert(1) !important;
-  }
+/* General Styles - Shared across themes */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media(prefers-color-scheme:light) {
-  .fa-bars{
-      color:black !important;
-  }
-  .loginback {
-    background: #91b0b821 !important;
-  }
-  .modal-content {
-    background: #ffffffb5 !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    backdrop-filter: blur(15px) !important;
-    /* color: black; */
-  }
-  .card {
-    box-shadow: 0 4px 8px 0 #26262661, 0 6px 20px 0 #71717100 !important;
-    background-color: #00587038 !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-  }
-  .example-sidenav-content {
-    background-color: rgb(255 255 255 / 0%) !important;
-  }
-  .example-sidenav {
-    background-color: white;
-  }
-  .loading-screen {
-    background-color: white;
-  }
-  .nav {
-    background-color: white;
-  }
-  :root {
-    --base: #d7d7d7;
-    --text: black !important;
-    color: black !important;
-  }
+.container {
+  margin: 20px;
+  padding: 20px;
+}
 
-  .container {
-
-  }
-
-  .backgroundWLMS {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-image: url('assets/city.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: none;
-    padding: 0;
-    margin: 0;
-    outline: none;
-    box-shadow: none;
-    background-clip: content-box;
-  }
-  .innerDiv {
+.innerDiv {
     padding-left: 102px;
     padding-right: 19px;
-/*    background: #ffffff36;*/
-  }
-  body {
-    background: #ffffff00;
-    color:black !important;
-  }
-  .mat-tab-labels {
-    /*   general comments, Notes, Internal Comments*/
- 
-  }
+    height: 100% !important;
+}
+
+.card {
+  margin: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-item {
+  margin-right: auto;
+  padding: 10px;
+}
+
+.tooltip {
+  margin-left: 10px;
+}
+
+/* Dark Mode Styles */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --base: #323e4e;
+  --text: #fff;
+  body
+
+{
+  background: #323e4e;
+  color: white !important;
+}
+
+.fa-bars {
+  color: white !important;
 }
 .mat-table {
   background: #ffffff00 !important;
-  box-shadow: none !important;
+  color: white !important;
 }
-input.form-control {
-  background: #ffffff3b !important;
+form {
 }
 
-.light {
-  --base: #d7d7d7;
-  --text: #323e4e00;
+* {
+  color: white !important;
 }
-.dark {
-  --base: #323e4e;
-  --text: #fff;
+
+.fa-bars {
+  color: white !important;
 }
+
+.loginback {
+  background-image: linear-gradient(#2b323c 0%, #2b323c 33%) !important;
+}
+
+.example-sidenav {
+  background-color: #2f3a49 !important;
+}
+
+.box-background--white {
+  background-color: #22272f !important;
+}
+
+
+.wayleaveAlert {
+  background-color: #526277;
+  border-color: #0000007d;
+  backdrop-filter: blur(10px);
+}
+
+.createButton {
+  background-color: #ff9900 !important;
+}
+
+.wayleaveCard {
+  background-color: #4393d7 !important;
+  border-color: #4393d7 !important;
+}
+
+.loading-screen {
+  background-color: #22272f;
+}
+
+.nav {
+  background-color: #2f3a49;
+}
+
+body {
+  background: #323e4e00;
+  color: white !important;
+}
+
+:root {
+  color: white !important;
+}
+
+.container {
+}
+
+.backgroundWLMS {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-image: url('assets/pietermaritzburg-modified-12.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+  background-clip: content-box;
+}
+
+.innerDiv {
+  padding-left: 102px;
+  padding-right: 19px;
+}
+
+.offcanvas-menu {
+  background-color: #323e53 !important;
+}
+
+
+table {
+  border-spacing: 0;
+  background: #425166 !important;
+  color: white !important;
+}
+
+input {
+  color: white !important;
+  border-color: #1b222b8c !important;
+}
+
+.mat-input {
+  font: inherit;
+  background: rgb(50 62 78) !important;
+  color: currentColor;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  vertical-align: bottom;
+  text-align: inherit;
+  box-sizing: content-box;
+  caret-color: rgb(50 62 78) !important;
+}
+
+.mat-menu-panel {
+  background: #323e4e !important
+}
+
+.modal-content {
+  background: #323e4e !important
+}
+
+
+
+.offcanvas {
+  background: #323e4e !important
+}
+
+mat-dialog-container#mat-dialog-0 {
+  background: #323e4e !important
+}
+
+.button:hover {
+  background: #3e4c5f !important
+}
+
+tr:hover {
+  background: #3e4c5f !important
+}
+
+.mat-select-panel {
+  background: #576b86;
+}
+
+.mat-toolbar {
+  background: #323e4e !important;
+}
+
+.mat-checkbox-checked {
+  background-color: #323e4e00 !important;
+}
+
+.mat-paginator-container {
+  background: #323e4e !important;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
+  margin: 20px;
+  border-color: #0f8187;
+  background-color: #0f8187;
+  margin-bottom: 50px;
+  margin-top: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-expansion-panel {
+  background: #425166;
+}
+
+.icon4 {
+  filter: invert(1) !important;
+}
+
+}
+
+/* Light Mode Styles */
 [data-theme="light"] {
-    color-scheme:light;
+  color-scheme: light;
   --base: #d7d7d7;
   --text: #323e4e00;
+
+  body{
+  background: #ffffff;
+  color: black !important;
 }
-[data-theme="dark"] {
-  color-scheme:dark;
-  --base: #323e4e;
-  --text: #fff;
+
+.fa-bars {
+  color: black !important;
 }
+
+.loginback {
+  background: #91b0b821 !important;
+}
+
+.modal-content {
+  background: #ffffffb5 !important;
+  backdrop-filter: blur(15px) !important;
+}
+
+
+.card {
+  background-color: #00587038 !important;
+  box-shadow: 0 4px 8px 0 #26262661, 0 6px 20px 0 #71717100 !important;
+}
+
+.example-sidenav {
+  background-color: white;
+}
+
+.mat-table {
+  background: #ffffff00 !important;
+  color: #8787872e !important;
+}
+
+.loading-screen {
+  background-color: white;
+}
+
+.nav {
+  background-color: white;
+}
+
+.backgroundWLMS {
+  background-image: url('assets/city.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+
+}
+
 
 html {
   color-scheme: dark light;
@@ -619,7 +643,7 @@ tr:hover {
   font-weight: 900;
   font-size: 21px;
   padding: 0 !important;
-  margin-left: 10px !important;
+  margin-left: 13px !important;
   scale: 1;
   margin: 0 auto;
   width: 28px;
@@ -846,4 +870,11 @@ li .tooltip{
 
 .pushable:focus:not(:focus-visible) {
   outline: none;
+}
+
+.user{
+    cursor:pointer !important;
+}
+.loginback {
+  background: #bfbfbf12;
 }

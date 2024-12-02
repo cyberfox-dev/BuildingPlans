@@ -1637,6 +1637,8 @@ this.userService.login(email, password).pipe(
 
     this.sharedService.setIsArchitect(this.isArchitect);
   }
+
+
 }
 
 
