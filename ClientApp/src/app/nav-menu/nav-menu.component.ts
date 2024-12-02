@@ -304,7 +304,7 @@ export class NavMenuComponent implements OnInit {
     if (savedTheme) {
       this.isDarkMode = savedTheme === 'dark';
     } else {
-      this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: light)').matches;
     }
     this.updateTheme();
   }

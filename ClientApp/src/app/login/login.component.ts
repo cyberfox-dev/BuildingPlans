@@ -136,7 +136,7 @@ export class LoginComponent implements OnInit {
       registerPassword: ['', Validators.required],
       reenterPassword: ['', Validators.required],
       fullName: ['', Validators.required],
-      OTPField: ['', Validators.required],
+/*      OTPField: ['', Validators.required],*/
     });
 
     this.showBPNumber = true; // Set showBPNumber to true initially

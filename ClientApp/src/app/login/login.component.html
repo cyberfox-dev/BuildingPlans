@@ -125,7 +125,7 @@
                 </mat-form-field>
 
 
-                <button class="button2 OTP" (click)="openOTP(otpModal)" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+                <button class="button2 OTP" (click)="openOTP(otpModal)" *ngIf="showDuplicatePassInput sendOTPBtn" [disabled]="!registerForm.valid">Validate and send OTP</button>
                 <br />
                 <div class="footer-link padding-top--24" *ngIf="signIN">
                   <span>Click to go back to <strong><a (click)="changeForm(false)" class="oragngeText">Login</a></strong></span>

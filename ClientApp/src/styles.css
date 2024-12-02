@@ -64,6 +64,9 @@ body {
 }
 form {
 }
+.loading-screen {
+  background: #323e4e !important;
+}
 
 * {
   color: white !important;
@@ -254,7 +257,7 @@ tr:hover {
 }
 
 .loginback {
-  background: #91b0b821 !important;
+  background: #ffffff !important;
 }
 
 .modal-content {
@@ -266,6 +269,10 @@ tr:hover {
 .card {
   background-color: #00587038 !important;
   box-shadow: 0 4px 8px 0 #26262661, 0 6px 20px 0 #71717100 !important;
+}
+
+.loading-screen {
+  background-color: white !important;
 }
 
 .example-sidenav {
