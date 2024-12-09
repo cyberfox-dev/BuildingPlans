@@ -276,7 +276,9 @@ export class BuildingApplicationComponent implements OnInit {
     this.GetAllOccupationClassificationsForBuildingPlan();
     this.applicationID = this.sharedService.getApplicationID();
     this.GetClientInfo();
-    
+    this.architectName = this.CurrentUserProfile[0].fullName;
+    this.architectEmail = this.CurrentUserProfile[0].email;
+    this.architectCell = this.CurrentUserProfile[0].phoneNumber;
   }
 
   openClassification() {

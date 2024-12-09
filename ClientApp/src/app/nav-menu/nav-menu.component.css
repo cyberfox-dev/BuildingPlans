@@ -1056,7 +1056,7 @@ body {
 .dp {
   margin-top: 4px !important;
   font-weight: 900;
-  font-size: 12px;
+  font-size: 13px;
   margin-left: 6px !important;
   width: 28px;
   font-family: 'Nunito' !important;
@@ -1066,7 +1066,7 @@ body {
   height: 50px;
   border-radius: 100%;
   margin-top: 15px;
-  background: #4393d752;
+  background: #0058703b;
   scale: 1;
   margin-left: 9px;
   margin-bottom: 12px;
@@ -1078,7 +1078,7 @@ body {
   border-radius: 100%;
   margin-left: 12px;
   margin-bottom: -11px;
-  background: #4393d724;
+  background: #0058703b;
   padding: 0 !important;
   scale: 1.6;
   box-shadow: inset 0px 0px 3px 1px #00000026;

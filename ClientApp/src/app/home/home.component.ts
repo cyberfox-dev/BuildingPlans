@@ -663,7 +663,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   @ViewChild(MatTable) linkUsersTable: MatTable<any> | undefined;
-  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  displayedColumnsLinkUsers: string[] = ['fullName', 'actions'];
   dataSourceLinkUsers = this.ClientUserList;
 
   @ViewChild(MatTable) linkAllUsersTable: MatTable<any> | undefined;

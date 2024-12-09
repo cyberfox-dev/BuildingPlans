@@ -26,18 +26,20 @@
   <div class="top">
     <div class="logo">
 
-      <span class="ProjectHeading">Building Plans</span>
+      <span class="ProjectHeading">Engage Portal</span>
     </div>
     <img class="user-img" src="assets/building plans dark mode2.png" id="menu" (click)="opensideNav()" />
 
   </div>
 
   <div class="user">
-    <div alt="me" class="userIMG2">
+    <div alt="me" class="userIMG2" (click)="toggleTheme()" [matTooltip]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+               matTooltipPosition="after">
       <p class="dp">{{dp}}</p>
     </div>
     <div>
-      <p class="bold">{{this.CurrentUser.fullName}}</p>
+      <p class="bold" (click)="toggleTheme()" [matTooltip]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+               matTooltipPosition="after">{{this.CurrentUser.fullName}}</p>
     </div>
   </div>
   <div class="toolbar">
@@ -111,12 +113,15 @@
         <mat-divider></mat-divider>
         <li>
           <a>
-            <i class="fa fa-bug" matTooltip="Report a bug" (click)="openBugReport(bugs)" 
+            <i class="fa fa-bug" matTooltip="Report a bug" (click)="openBugReport(bugs)"
                matTooltipPosition="after"></i>
             <span class="nav-item">Report a bug</span>
           </a>
           <span class="tooltip">Report a bug</span>
         </li>
+
+
+
 
         <li class="logout-button bottom">
           <mat-divider></mat-divider>

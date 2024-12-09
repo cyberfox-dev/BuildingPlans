@@ -123,7 +123,8 @@ h2 {
 }
 .applicationDeatails {
   padding: 18px;
-  overflow: auto !important;
+  overflow: initial !important;
+  max-height: 39vh;
   max-height: 39vh;
 }
 :host ::ng-deep .mat-tab-label {
@@ -262,7 +263,7 @@ h2 {
   width: 100%;
   /* padding: 0px 0px 0px 8px; */
   height: 234px;
-  overflow: auto !important;
+  overflow: hidden !important;
 }
 .MiddleView {
   display: flex;

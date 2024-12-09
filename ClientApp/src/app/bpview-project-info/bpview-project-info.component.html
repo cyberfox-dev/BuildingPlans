@@ -16,7 +16,7 @@
         <h2 *ngIf="BPApplicationProjectNumber != null">View Project Details : {{BPApplicationProjectNumber}}</h2>
           </div>
         <div class="actBtn">
-         <!-- <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>-->
+          <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()"></app-bp-action-center>
         </div>
       </div>
       <div class="bodyMain">
@@ -25,8 +25,8 @@
 
 
         <div class="PropertyOwnerDetails animationSlideUp">
-          <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
-          <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
+          <h3 >Property Owner Details</h3>
+         
 
           <p class="Name">{{firstName}} {{surname}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{email}}</p>
@@ -36,7 +36,8 @@
           </div>
         </div>
         <div class="PropertyOwnerDetails animationSlideUp">
-          <h3>Property Owner Details</h3>
+          <h3 *ngIf="bpApplicationType != 'Town Planning'">Architect Details</h3>
+          <h3 *ngIf="bpApplicationType == 'Town Planning'">Town Planner Details</h3>
           <p class="Name">{{architectName}}</p>
           <p class="Email"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/at.svg" class="icon3"> {{altEmail}}</p>
           <p class="CellNo"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/phone.svg" class="icon3"> {{altCellNo}}</p>
@@ -63,7 +64,7 @@
                 </google-map>
               </mat-tab>
               <mat-tab label="Application Details">
-                <div class="applicationDeatails">
+       
 
                   <div *ngIf="bpApplicationType != 'Signage'">
                     <div class="applicationDeatails">
@@ -110,7 +111,7 @@
                         <p>Description Of Project - {{ DescriptionOfProject }}</p>
                         <p>Application Type - {{ bpApplicationType }}</p>
                       </div>
-                    </div>
+                
                   </div>
 
                   <div *ngIf="bpApplicationType == 'Signage'">
@@ -791,7 +792,7 @@
           </div>
         </div>
 
-        <p class="projectTimeLine" *ngIf="this.CurrentUserProfile[0].isInternal == true">Project TimeLine</p>
+        <p class="projectTimeLine" >Project TimeLine</p>
         <div class="generalcomments" *ngIf="this.CurrentUserProfile[0].isInternal == true">
 
           <div *ngFor="let comment of CommentsList ; let i = index">
@@ -820,7 +821,7 @@
         </div>
 
       </mat-tab>
-      <mat-tab label="Tasks">
+      <mat-tab label="Tasks" *ngIf="this.CurrentUserProfile[0].isInternal == true && currentStage == 'Building Inspector'">
         <app-bptasks></app-bptasks>
       </mat-tab>
     </mat-tab-group>
@@ -1051,12 +1052,12 @@
           </div>
         </div>
       </mat-tab>
-      <mat-tab label="Public Facing" *ngIf="this.CurrentUserProfile[0].isInternal == true">
+<!--      <mat-tab label="Public Facing" *ngIf="this.CurrentUserProfile[0].isInternal == true">
         <button mat-raised-button color="blue" (click)="openInternalComment(newInternalComment)" matTooltip="View Application Details"><img class="icon5" src="../../assets/fontawesome-free-6.4.2-web/svgs/solid/comment.svg"> Create New Internal Comment</button>
         <div *ngIf="InternalCommentsList.length === 0">
           <h5>Nothing here yet</h5>
         </div>
-      </mat-tab>
+      </mat-tab>-->
 
     </mat-tab-group>
 

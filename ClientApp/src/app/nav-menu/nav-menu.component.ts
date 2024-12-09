@@ -168,6 +168,7 @@ export class NavMenuComponent implements OnInit {
     dp: any;
     devConfig: boolean = false;
     Config: boolean = false;
+  isDarkMode: boolean = false;
 
   constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog, private bugsService: BugsService) { }
 
@@ -298,6 +299,25 @@ export class NavMenuComponent implements OnInit {
 
     console.log("This is the quantity", this.notificationsQuantity);
     console.log("This is the notifications boolean", this.hasNotifications);
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      this.isDarkMode = savedTheme === 'dark';
+    } else {
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: light)').matches;
+    }
+    this.updateTheme();
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.updateTheme();
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+  }
+
+  updateTheme(): void {
+    const theme = this.isDarkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
   onPageChange(event: PageEvent) {

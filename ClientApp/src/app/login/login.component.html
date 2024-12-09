@@ -51,7 +51,7 @@
       <div class="splash flex " id="splashlogo">
         <div class="container2 ">
           <img src="assets/building plans dark mode2.png" class="logo bounceIn">
-          <h3 >Engage Services Portal</h3>
+          <h3 >Engage Services Portal (ESP)</h3>
 
         </div>
       </div>
@@ -61,17 +61,35 @@
       <div class="box-root padding-top--24 flex-flex flex-direction--column bounceIn" style="flex-grow: 1; z-index: 9;">
         <div class="formbg-outer">
           <div class="formbg">
+
+            <div class="logo4" >
+              <img src="assets/Msunduzi-logo-new2.png" class="logo6 bounceIn">
+              <p class="header">Msunduzi Municipality</p>
+            </div>
             <div class="formbg-inner padding-horizontal--48 " *ngIf="logIN">
               <h2>Login to your account</h2>
               <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
 
 
 
+                <mat-form-field appearance="outline">
+                  <mat-label>Login</mat-label>
+                  <input matInput placeholder="john@gmail.com" formControlName="email">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Password</mat-label>
 
-                <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
-                <input class="input" type="password" formControlName="password" placeholder="Password" />
+                  <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                  <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </button>
+                </mat-form-field>
+                <!--                <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
+
+                  <input class="input" type="password" formControlName="password" placeholder="Password" />-->
                 <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading" class="oragngeText"><strong>Forgot your password?</strong></a>
-                <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button>
+                <button *ngIf="!isLoading"  [disabled]="!loginForm.valid" class="button5">Login</button>
+              
 
                 <div *ngIf="isLoading">
                   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
@@ -79,21 +97,35 @@
               </form>
             </div>
             <div class="formbg-inner padding-horizontal--48 animationSlideDown" *ngIf="signIN">
-              <h1 class="padding-bottom--15">Create your account</h1>
-              <form action="#" [formGroup]="registerForm" autocomplete="off">
-                <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required [readonly]="regFormReadOnly" />
+              <h2>Create your account</h2>
+              <form [formGroup]="registerForm" autocomplete="off">
+                <mat-form-field appearance="outline">
+                  <mat-label>Name & Surname</mat-label>
+                  <input matInput placeholder="Name & Surname" formControlName="fullName">
+                </mat-form-field>
 
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Email" formControlName="registerEmail">
+                </mat-form-field>
 
-                <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
                 <!--     Conditionally display and thereafter validate BP Number input-->
-                <div class="col">
-                  <mat-checkbox class="example-margin" [(ngModel)]="Architect">I am an Architect</mat-checkbox>
+                <!--                <div class="col">
+    <mat-checkbox class="example-margin" [(ngModel)]="Architect">I am an Architect</mat-checkbox>
 
-                </div>
-                <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
-                <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
+  </div>-->
 
-                <button class="button2 OTP" (click)="openOTP(otpModal)" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+                <mat-form-field appearance="outline">
+                  <mat-label>Password</mat-label>
+                  <input matInput placeholder="Password" formControlName="registerPassword">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Re-enter password</mat-label>
+                  <input matInput placeholder="Re-enter password" formControlName="reenterPassword">
+                </mat-form-field>
+
+
+                <button class="button2 OTP" (click)="openOTP(otpModal)" *ngIf="showDuplicatePassInput sendOTPBtn" [disabled]="!registerForm.valid">Validate and send OTP</button>
                 <br />
                 <div class="footer-link padding-top--24" *ngIf="signIN">
                   <span>Click to go back to <strong><a (click)="changeForm(false)" class="oragngeText">Login</a></strong></span>
@@ -107,7 +139,7 @@
           </div>
           <br *ngIf="logIN" />
           <div class="footer-link padding-top--24" *ngIf="logIN">
-            <span>Don't have an account? <strong><a (click)="changeForm(true)" class="oragngeText">Sign up</a></strong></span>
+            <span><strong>Don't have an account? <a (click)="changeForm(true)" class="oragngeText">Sign up</a></strong></span>
 
           </div>
 
