@@ -71,13 +71,13 @@
             </div>
             <div class="formbg-inner padding-horizontal--48 " *ngIf="logIN">
               <h2>Login to your account</h2>
-              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="off">
+              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()" >
 
 
 
                 <mat-form-field appearance="outline">
                   <mat-label>Login</mat-label>
-                  <input matInput placeholder="john@gmail.com" formControlName="email" autocomplete="off">
+                  <input matInput placeholder="john@gmail.com" formControlName="email" >
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                   <mat-label>Password</mat-label>

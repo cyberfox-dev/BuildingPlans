@@ -810,7 +810,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       /*      this.initializeApp();*/
       //this.function();
   
-
+    this.getAllDraftApplications();
     //this.defaultPageSize = 10;
   }
 /*  dataSourceLinkUsers = new MatTableDataSource<ClientUserList>([]);*/
@@ -7121,7 +7121,7 @@ this.subscriptions.push(subscription);
       }
       else {
         /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
-        this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,null).subscribe((data: any) => {
           if (data.responseCode == 1) {
 
             const current = data.dateSet;
@@ -8066,7 +8066,7 @@ this.subscriptions.push(subscription);
   //Home Tabs Kyle 27-05 - 24
   onChangeDataSource(event: any) {
     debugger;
-    
+    this.showDrafts = false; 
     this.selectedTabIndex = event.options[0].value;
     console.log("SelecteedTabIndex",event.options[0].value);
     switch (this.selectedTabIndex) {
@@ -8101,9 +8101,14 @@ this.subscriptions.push(subscription);
         this.getAllSystemApplications();
 
         break;
+      case 10:
+        this.dataSourceSA = this.draftApplications;
+        this.selectedTabIndex = 0;
+        this.showDrafts = true;
     }
   }
 
+  showDrafts: boolean = false; 
   getAllApplications() {
 
 
@@ -8242,8 +8247,64 @@ this.subscriptions.push(subscription);
    
 
     }
+  draftApplications: ApplicationsListBP[] = [];
+  getAllDraftApplications() {
+    this.bpApplicationService.getAllDraftApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
 
- 
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+
+          if (current.physicalAddress == undefined) {
+            tempApplication.propertyAddress = current.physicalAddress;
+          }
+          else {
+
+            var address = current.physicalAddress.split(',');
+            tempApplication.propertyAddress = address[0] + " " + address[1];
+          }
+
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.ProjectNumber = current.lsNumber;
+          tempApplication.erfNumber = current.erfNumber;
+          tempApplication.stage = current.stage;
+          tempApplication.ownerName = current.firstName + " " + current.surname;
+
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+          const currentDate = new Date();
+          const dateCreated = new Date(tempApplication.dateCreated);
+          const timeDiff = currentDate.getTime() - dateCreated.getTime();
+          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+          tempApplication.planAge = daysDiff;
+          tempApplication.bpApplicationType = current.bpApplicationType;
+          /*cal stage age*/
+          const stageDateCreated = new Date(tempApplication.dateCreated);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplication.stageAge = stageDateDiff;
+          tempApplication.status = current.status;
+          tempApplication.justForFilteringByDate = current.dateCreated;
+          tempApplication.BPApplicationID = current.bpApplicationID;
+
+          this.draftApplications.push(tempApplication);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Draft Applications Error", error);
+    })
+  }
+
+  onDraftApplicationClick() {
+    this.dataSourceSA = this.draftApplications;
+    this.selectedTabIndex = 1;
+
+    
+  }
 }
 
 

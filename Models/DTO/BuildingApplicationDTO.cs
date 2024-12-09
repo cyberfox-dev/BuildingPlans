@@ -58,7 +58,7 @@ namespace BuildingPlans.Models.DTO
         public string? TitleDeedNo { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? ValueOfProperty { get; set; }
-
+        public bool? isDraft { get; set; }
 
         //For Wayleave
         public string? SizeOfApplication { get; set; }

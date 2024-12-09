@@ -61,12 +61,14 @@ namespace BuildingPlans.Data.Entities
         public string? TitleDeedNo { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? ValueOfProperty { get; set; }
-
+        public bool? isDraft { get; set; }
 
         //For Wayleave
         public string? SizeOfApplication { get; set; }
         public string? TypeOfExcavation { get; set; }
         public string? NatureOfWorks { get; set; }
+
+       
 
     }
 }

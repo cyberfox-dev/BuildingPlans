@@ -679,7 +679,7 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 var query2 = await (from bp in _context.BuildingApplications
-                                    where bp.LSNumber != null && bp.LSNumber != "" && bp.isActive == true
+                                    where bp.LSNumber != null && bp.LSNumber != "" && bp.isActive == true && bp.isDraft != true
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = bp.ApplicationID,
@@ -700,7 +700,7 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 var query3 = await (from sign in _context.BPSignageApplication
-                                    where sign.isActive == true
+                                    where sign.isActive == true && sign.UserID != null 
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = sign.ApplicationID,
@@ -717,7 +717,7 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 var query4 = await (from flag in _context.BPFlagApplication
-                                    where flag.isActive == true
+                                    where flag.isActive == true && flag.UserID != null 
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = flag.ApplicationID,
@@ -733,7 +733,7 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 var query5 = await (from banner in _context.BPBannerApplication
-                                    where banner.isActive == true
+                                    where banner.isActive == true && banner.UserID != null
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = banner.ApplicationID,
@@ -750,7 +750,7 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 var query6 = await (from demolition in _context.BPDemolitionApplication
-                                    where demolition.isActive == true
+                                    where demolition.isActive == true 
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = demolition.DemolitionID,

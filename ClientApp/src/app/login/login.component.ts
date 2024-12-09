@@ -156,7 +156,7 @@ export class LoginComponent implements OnInit {
         this.showBPNumber = true;
       }
     });
-    this.registerForm.reset();
+   /* this.registerForm.reset();*/
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       this.isDarkMode = savedTheme === 'dark';

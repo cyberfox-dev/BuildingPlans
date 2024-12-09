@@ -115,6 +115,7 @@ namespace BuildingPlans.Controllers
                            TitleRestrictions = model.TitleRestrictions,
                            TypeOfExcavation = model.TypeOfExcavation,
                            ValueOfProperty = model.ValueOfProperty,
+                           isDraft = model.isDraft,
 
                         };
                         await _context.BuildingApplications.AddAsync(tempBuildingApplication);
@@ -329,6 +330,10 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.NatureOfWorks = model.NatureOfWorks;
                         }
+                        if(model.isDraft != null)
+                        {
+                            tempBuildingApplication.isDraft = model.isDraft;
+                        }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
 
                         _context.Update(tempBuildingApplication);
@@ -352,7 +357,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
+                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null && buildingApplication.isDraft != true
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -405,6 +410,7 @@ namespace BuildingPlans.Controllers
                         isCombinedApplication = buildingApplication.isCombinedApplication,
                         NameOfCompany = buildingApplication.NameOfCompany,
                         RegNoOfCompany = buildingApplication.RegNoOfCompany,
+                        isDraft = buildingApplication.isDraft,
                     }
                     ).ToListAsync();
 
@@ -476,6 +482,7 @@ namespace BuildingPlans.Controllers
                         isCombinedApplication = buildingApplication.isCombinedApplication,
                         NameOfCompany = buildingApplication.NameOfCompany,
                         RegNoOfCompany = buildingApplication.RegNoOfCompany,
+                        isDraft = buildingApplication.isDraft,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
@@ -493,7 +500,7 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = await (from buildingApplication in _context.BuildingApplications
-                                    where buildingApplication.isActive == true && buildingApplication.ArchitectName == model.ArchitectName
+                                    where buildingApplication.isActive == true && buildingApplication.ArchitectName == model.ArchitectName && buildingApplication.isDraft != true
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = buildingApplication.ApplicationID,
@@ -532,6 +539,7 @@ namespace BuildingPlans.Controllers
                                         DateUpdated = buildingApplication.DateUpdated,
                                         OmnibusServitude = buildingApplication.OmnibusServitude,
                                         BPApplicationID = buildingApplication.BPApplicationID,
+                                        isDraft = buildingApplication.isDraft,
 
 
                                     }).ToListAsync();
@@ -549,7 +557,7 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = await (from buildingApplication in _context.BuildingApplications
-                                    where model.UserID == buildingApplication.UserID || model.UserID == buildingApplication.CreatedById
+                                    where model.UserID == buildingApplication.UserID || model.UserID == buildingApplication.CreatedById && buildingApplication.isDraft != true
                                     select new BuildingApplicationDTO()
                                     {
                                         ApplicationID = buildingApplication.ApplicationID,
@@ -590,6 +598,7 @@ namespace BuildingPlans.Controllers
                                         Stage = buildingApplication.Stage,
                                         Status = buildingApplication.Status,
                                         BPApplicationID = buildingApplication.BPApplicationID,
+                                        isDraft = buildingApplication.isDraft,
 
                                     }).ToListAsync();
 
@@ -704,6 +713,7 @@ namespace BuildingPlans.Controllers
                                         OmnibusServitude = buildingApplication.OmnibusServitude,
                                         Stage = buildingApplication.Stage,
                                         BPApplicationID = buildingApplication.BPApplicationID,
+                                        isDraft = buildingApplication.isDraft,
 
                                     }).ToListAsync();
 
@@ -723,7 +733,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationID == null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationID == null && buildingApplication.isDraft != true
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -766,6 +776,7 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        isDraft = buildingApplication.isDraft,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
@@ -785,7 +796,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Land Survey" && buildingApplication.FirstName != null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Land Survey" && buildingApplication.FirstName != null && buildingApplication.isDraft != true
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -829,6 +840,7 @@ namespace BuildingPlans.Controllers
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
                         BPApplicationType = buildingApplication.BPApplicationType,
+                        isDraft = buildingApplication.isDraft,
                     }
                     ).ToListAsync();
 
@@ -847,7 +859,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Town Planning" && buildingApplication.FirstName != null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Town Planning" && buildingApplication.FirstName != null && buildingApplication.isDraft != true
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -900,7 +912,7 @@ namespace BuildingPlans.Controllers
                         isCombinedApplication = buildingApplication.isCombinedApplication,
                         NameOfCompany = buildingApplication.NameOfCompany,
                         RegNoOfCompany = buildingApplication.RegNoOfCompany,
-                        
+                        isDraft = buildingApplication.isDraft,
                     }
                     ).ToListAsync();
 
@@ -919,7 +931,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Building Plans" && buildingApplication.FirstName != null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Building Plans" && buildingApplication.FirstName != null && buildingApplication.isDraft != true 
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -962,6 +974,7 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        isDraft = buildingApplication.isDraft,
                     }
                     ).ToListAsync();
 
@@ -980,7 +993,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.FirstName != null
+                    where buildingApplication.isActive == true && buildingApplication.FirstName != null && buildingApplication.isDraft != true
                     orderby buildingApplication.DateCreated descending
                     select new BuildingApplicationDTO()
                     {
@@ -1035,9 +1048,84 @@ namespace BuildingPlans.Controllers
                         isCombinedApplication = buildingApplication.isCombinedApplication,
                         NameOfCompany = buildingApplication.NameOfCompany,
                         RegNoOfCompany = buildingApplication.RegNoOfCompany,
+                        isDraft = buildingApplication.isDraft,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+        [HttpGet("GetAllDraftApplications")]
+        public async Task<object> GetAllDraftApplications()
+        {
+            try
+            {
+                var result = await (from buildingApplication in _context.BuildingApplications
+                                    where buildingApplication.isActive == true && buildingApplication.isDraft == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = buildingApplication.ApplicationID,
+                                        LSNumber = buildingApplication.LSNumber,
+                                        UserID = buildingApplication.UserID,
+                                        FirstName = buildingApplication.FirstName,
+                                        Surname = buildingApplication.Surname,
+                                        EmailAddress = buildingApplication.EmailAddress,
+                                        CellNumber = buildingApplication.CellNumber,
+                                        AltEmail = buildingApplication.AltEmail,
+                                        AltCellNumber = buildingApplication.AltCellNumber,
+                                        IDNumber = buildingApplication.IDNumber,
+                                        PropertyDescription = buildingApplication.PropertyDescription,
+                                        PremisesName = buildingApplication.PremisesName,
+                                        AddressType = buildingApplication.AddressType,
+                                        ErfNumber = buildingApplication.ErfNumber,
+                                        PortionNumber = buildingApplication.PortionNumber,
+                                        NoOfUnits = buildingApplication.NoOfUnits,
+                                        UnitNumber = buildingApplication.UnitNumber,
+                                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                                        Latitude = buildingApplication.Latitude,
+                                        Longitude = buildingApplication.Longitude,
+                                        ArchitectName = buildingApplication.ArchitectName,
+                                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                                        TotalArea = buildingApplication.TotalArea,
+                                        OccupationClassification = buildingApplication.OccupationClassification,
+                                        PlanFees = buildingApplication.PlanFees,
+                                        PropertyValue = buildingApplication.PropertyValue,
+                                        StreetAddress = buildingApplication.StreetAddress,
+                                        Suburb = buildingApplication.Suburb,
+                                        City = buildingApplication.City,
+                                        PostalCode = buildingApplication.PostalCode,
+                                        SGCode = buildingApplication.SGCode,
+                                        DateCreated = buildingApplication.DateCreated,
+                                        DateUpdated = buildingApplication.DateUpdated,
+                                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                                        Stage = buildingApplication.Stage,
+                                        Status = buildingApplication.Status,
+                                        StageNumber = buildingApplication.StageNumber,
+                                        CreatedById = buildingApplication.CreatedById,
+
+                                        BPApplicationID = buildingApplication.BPApplicationID,
+                                        TitleRestrictions = buildingApplication.TitleRestrictions,
+                                        ExtentOfProperty = buildingApplication.ExtentOfProperty,
+                                        TitleDeedNo = buildingApplication.TitleDeedNo,
+                                        RegisteredDescription = buildingApplication.RegisteredDescription,
+                                        ApplicationType = buildingApplication.ApplicationType,
+                                        BPApplicationType = buildingApplication.BPApplicationType,
+                                        DescriptionOfProject = buildingApplication.DescriptionOfProject,
+                                        isCombinedApplication = buildingApplication.isCombinedApplication,
+                                        NameOfCompany = buildingApplication.NameOfCompany,
+                                        RegNoOfCompany = buildingApplication.RegNoOfCompany,
+                                        isDraft = buildingApplication.isDraft,
+
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Draft Building Applications", result));
             }
             catch (Exception ex)
             {
