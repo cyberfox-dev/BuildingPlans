@@ -265,7 +265,7 @@ namespace BuildingPlans.Service
             {
 
 
-                if (tempApplicationTable.CurrentStageName == CurrentStageName)
+                if (tempApplicationTable.CurrentStageName == CurrentStageName || CurrentStageName == null)
                 {
                     //tempApplicationTable.PreviousStageName = PreviousStageName;
                     //tempApplicationTable.PreviousStageNumber = PreviousStageNumber;

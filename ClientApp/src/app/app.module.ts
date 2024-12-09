@@ -134,7 +134,7 @@ import { CreateNewApplicationComponent } from './create-new-application/create-n
 import { BPTasksComponent } from './bptasks/bptasks.component';
 import { BPApplicationChecklistComponent } from './bpapplication-checklist/bpapplication-checklist.component';
 import { BPFunctionalAreaComponent } from './bpfunctional-area/bpfunctional-area.component'
-
+import { BugsConfigComponent } from './bugs-config/bugs-config.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -253,6 +253,7 @@ import { BPFunctionalAreaComponent } from './bpfunctional-area/bpfunctional-area
     CreateNewApplicationComponent,
     BPApplicationChecklistComponent,
     BPFunctionalAreaComponent,
+    BugsConfigComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -366,7 +367,7 @@ import { BPFunctionalAreaComponent } from './bpfunctional-area/bpfunctional-area
     BpMandoryDocumentsComponent,
     CreateNewApplicationComponent,
     BPApplicationChecklistComponent,
-
+    BugsConfigComponent,
   
   ],
   bootstrap: [AppComponent]

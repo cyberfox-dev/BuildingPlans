@@ -226,35 +226,65 @@ export class DocumentsComponentComponent implements OnInit {
         });
     }
     else {
+      if (this.isSystemPacks != true) {
+        // Make an HTTP GET request to fetch the document
+        fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+          .then(response => {
+            if (response.ok) {
+              // The response status is in the 200 range
 
-      // Make an HTTP GET request to fetch the document
-      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
-        .then(response => {
-          if (response.ok) {
-            // The response status is in the 200 range
+              return response.blob(); // Extract the response body as a Blob
 
-            return response.blob(); // Extract the response body as a Blob
+            } else {
+              throw new Error('Error fetching the document');
+            }
+          })
+          .then(blob => {
+            // Create a URL for the Blob object
+            const documentURL = URL.createObjectURL(blob);
 
-          } else {
-            throw new Error('Error fetching the document');
-          }
-        })
-        .then(blob => {
-          // Create a URL for the Blob object
-          const documentURL = URL.createObjectURL(blob);
+            window.open(documentURL, '_blank');
 
-          window.open(documentURL, '_blank');
+            // Download the document
+            const link = document.createElement('a');
+            link.href = documentURL;
+            link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+            link.click();
+          })
+          .catch(error => {
+            console.log(error);
+            // Handle the error appropriately
+          });
+      }
+      else if (this.isSystemPacks == true) {
+        fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.packsList[index].DocumentName}`)
+          .then(response => {
+            if (response.ok) {
+              // The response status is in the 200 range
 
-          // Download the document
-          const link = document.createElement('a');
-          link.href = documentURL;
-          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
-          link.click();
-        })
-        .catch(error => {
-          console.log(error);
-          // Handle the error appropriately
-        });
+              return response.blob(); // Extract the response body as a Blob
+
+            } else {
+              throw new Error('Error fetching the document');
+            }
+          })
+          .then(blob => {
+            // Create a URL for the Blob object
+            const documentURL = URL.createObjectURL(blob);
+
+            window.open(documentURL, '_blank');
+
+            // Download the document
+            const link = document.createElement('a');
+            link.href = documentURL;
+            link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+            link.click();
+          })
+          .catch(error => {
+            console.log(error);
+            // Handle the error appropriately
+          });
+      }
     }
 
 
@@ -336,6 +366,7 @@ export class DocumentsComponentComponent implements OnInit {
           this.DocumentsListTable?.renderRows();
           console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList);
           console.log("SytemPacks : ", this.packsList);
+          console.log("Documents DataSet : ", data.dateSet);
         }
         else {
           alert(data.responseMessage);

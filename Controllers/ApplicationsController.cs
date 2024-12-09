@@ -670,7 +670,10 @@ namespace BuildingPlans.Controllers
                                         Stage = wayleave.CurrentStageName,
                                         Status = wayleave.ApplicationStatus,
                                         DateCreated = wayleave.DateCreated,
-                                        DateUpdated = wayleave.DateUpdated
+                                        DateUpdated = wayleave.DateUpdated,
+                                        Latitude = wayleave.Coordinates.Substring(0,wayleave.Coordinates.IndexOf(",")),
+                                        Longitude = wayleave.Coordinates.Substring(wayleave.Coordinates.IndexOf(",") +1 ),
+                                        CreatedById = wayleave.CreatedById,
                                         
 
                                     }).ToListAsync();
@@ -689,8 +692,11 @@ namespace BuildingPlans.Controllers
                                         Stage = bp.Stage,
                                         Status = bp.Status,
                                         DateCreated = bp.DateCreated,
-                                        DateUpdated = bp.DateUpdated
-
+                                        DateUpdated = bp.DateUpdated,
+                                        Latitude = bp.Latitude,
+                                        Longitude = bp.Longitude,
+                                        CreatedById = bp.CreatedById
+                                        
                                     }).ToListAsync();
 
                 var query3 = await (from sign in _context.BPSignageApplication
@@ -705,7 +711,9 @@ namespace BuildingPlans.Controllers
                                         Stage = sign.CurrentStage,
                                         DateCreated = sign.DateCreated,
                                         DateUpdated = sign.DateUpdated,
-                                        LSNumber = sign.ProjectNumber
+                                        LSNumber = sign.ProjectNumber,
+                                        CreatedById = sign.CreatedById
+
                                     }).ToListAsync();
 
                 var query4 = await (from flag in _context.BPFlagApplication
@@ -719,7 +727,9 @@ namespace BuildingPlans.Controllers
                                         Surname = flag.ApplicantSurname,
                                         DateCreated = flag.DateCreated,
                                         DateUpdated = flag.DateUpdated,
-                                        LSNumber = flag.ProjectNumber
+                                        LSNumber = flag.ProjectNumber,
+                                        CreatedById = flag.CreatedById
+
                                     }).ToListAsync();
 
                 var query5 = await (from banner in _context.BPBannerApplication
@@ -734,7 +744,9 @@ namespace BuildingPlans.Controllers
                                         Stage = banner.CurrentStage,
                                         DateCreated = banner.DateCreated,
                                         DateUpdated = banner.DateUpdated,
-                                        LSNumber = banner.ProjectNumber
+                                        LSNumber = banner.ProjectNumber,
+                                        CreatedById = banner.CreatedById
+
                                     }).ToListAsync();
 
                 var query6 = await (from demolition in _context.BPDemolitionApplication
@@ -750,7 +762,8 @@ namespace BuildingPlans.Controllers
                                         Status = demolition.CurrentStage,
                                         DateCreated = demolition.DateCreated,
                                         DateUpdated = demolition.DateUpdated,
-                                        LSNumber = demolition.ProjectNumber
+                                        LSNumber = demolition.ProjectNumber,
+                                        CreatedById = demolition.CreatedById
                                     }).ToListAsync();
                 result =  query1
                     .Concat(query2)

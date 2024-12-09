@@ -274,6 +274,9 @@ export interface ApplicationsListBP {
   dateUpdated: any;
   justForFilteringByDate: any;
   BPApplicationID: string;
+  Latitude: string;
+  Longitude: string;
+  Originator: string; 
 }
 
 export interface ArchitectClients {
@@ -358,7 +361,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
-  selectedTabIndex: number;
+  selectedTabIndex: number ;
 
 
   filterValue = '';
@@ -447,7 +450,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge', 'dateCreated', 'actions', 'expand'];
+  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge', 'dateCreated', 'actions'];
+  displayedColumnsAll: string[] = ['lSNumber', 'ownerName', 'propertyAddress2', 'ERFNumber', 'stage', 'status', 'dateCreated', 'actions', 'expand'];
   displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
   displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions','expand'];
   dataSourceBP = this.ApplicationsBP;
@@ -8062,7 +8066,9 @@ this.subscriptions.push(subscription);
   //Home Tabs Kyle 27-05 - 24
   onChangeDataSource(event: any) {
     debugger;
+    
     this.selectedTabIndex = event.options[0].value;
+    console.log("SelecteedTabIndex",event.options[0].value);
     switch (this.selectedTabIndex) {
       case 0:
 /*        this.GetAllPreInvoiceScrutinyApplications();*/
@@ -8091,8 +8097,8 @@ this.subscriptions.push(subscription);
         break;
       case 8:
         
-        /* this.GetAllApplications();*/ //Put this back
-        this.getAllSystemApplications(); // this is a test method remove this
+      
+        this.getAllSystemApplications();
 
         break;
     }
@@ -8106,7 +8112,7 @@ this.subscriptions.push(subscription);
  
   getAllPreInvoiceScurtinyApplications() {
 
-    this.bpApplicationService.getAllPreInvoiceScrutinyApplications().subscribe((data: any) => {
+    this.bpApplicationService.getAllPreInvoiceScrutinyApplications().subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           
@@ -8122,7 +8128,11 @@ this.subscriptions.push(subscription);
             tempApplication.status = current.status;
             tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
             tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+            tempApplication.bpApplicationType = "Land Survey";
+            tempApplication.Latitude = current.latitude;
+            tempApplication.Longitude = current.longitude;
 
+        
            
             this.scrutinyApplications.push(tempApplication);
           }
@@ -8145,12 +8155,13 @@ this.subscriptions.push(subscription);
     this._bottomSheet.open(CreateNewApplicationComponent);
   }
   
-  getAllSystemApplications() {
+   getAllSystemApplications() {
     debugger;
     this.AllApplications.splice(0, this.AllApplications.length);
-    this.applicationService.getAllSystemApplications().subscribe((data: any) => {
+    this.applicationService.getAllSystemApplications().subscribe(async(data: any) => {
       debugger; 
       if (data.responseCode == 1) {
+        console.log("All applications data", data.dateSet);
         for (let i = 0; i < data.dateSet.length; i++) {
           debugger;
           const current = data.dateSet[i];
@@ -8161,8 +8172,14 @@ this.subscriptions.push(subscription);
             tempApplication.erfNumber = current.erfNumber;
             tempApplication.stage = current.stage;
           tempApplication.ownerName = current.firstName + current.surname;
+          tempApplication.Latitude = current.latitude;
+          tempApplication.Longitude = current.longitude;
 
-          
+          if (current.createdById != null) {
+            const originator: string = await this.getOriginatorName(current.createdById);
+            tempApplication.Originator = originator;
+          }
+        
 
           const address = current.physicalAddress
             ? (current.physicalAddress.includes(",") ? current.physicalAddress.split(",") : [current.physicalAddress])
@@ -8201,11 +8218,32 @@ this.subscriptions.push(subscription);
         console.log("All Applications", this.AllApplications);
         this.dataSourceBP = this.AllApplications;
         this.dataSourceSA = this.AllApplications;
+        this.applicationsTable?.renderRows();
       }
     })
   }
 
+  async getOriginatorName(userID:string) :Promise<string>{
+    try {
+      debugger;
+      const data: any = await this.userPofileService.getUserProfileById(userID).toPromise();
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        return current.fullName;
+      }
+      else {
+        throw new Error(data.responseMessage);
+      }
+    }
+    catch (error: any) {
+      console.log("Error:", error);
+      throw error;
+    }
+   
 
+    }
+
+ 
 }
 
 

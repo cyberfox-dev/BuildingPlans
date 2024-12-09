@@ -323,6 +323,18 @@ table {
   hyphens: auto;
   text-align: center;
 }
+.mat-column-propertyAddress2 {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 30% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
 .mat-column-ownerName {
   word-wrap: break-word !important;
   white-space: unset !important;
@@ -1030,7 +1042,9 @@ h6 {
     padding-bottom: 50px;
   }
 
-
+  .col {
+      padding:15px;
+  }
 
   .form-control:focus {
     color: #495057;
@@ -1994,8 +2008,7 @@ tag {
 
 .mat-stepper {
   animation-duration: 0s;
-}
-
+  }
 .mat-raised-button{
     white-space:inherit !important;
  

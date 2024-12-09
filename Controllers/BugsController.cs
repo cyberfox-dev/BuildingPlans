@@ -98,7 +98,7 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = await( from bug in _context.Bugs
-                                    where bug.isFixed == false && bug.isActive == true
+                                    where bug.isActive == true
                                     orderby bug.DateCreated descending
                                     select new BugsDTO()
                                     {
