@@ -5,4 +5,11 @@
       <span>{{ data.message}}</span>
     </div>
   </div>
+
+  <div class="Notification" *ngIf="data.message == 'Please enter your first name and surname only'">
+    <div class="notification-text">
+
+      <span>{{ data.message}}</span>
+    </div>
+  </div>
 </div>

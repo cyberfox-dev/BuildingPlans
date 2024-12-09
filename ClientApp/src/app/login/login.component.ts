@@ -18,6 +18,9 @@ import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { delay } from 'rxjs/operators';
 import { BPAccessGroupUserLinkService } from '../service/BPAccessGroupsUserLink/bpaccess-group-user-link.service';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NONE_TYPE } from '@angular/compiler';
 
 export interface ConfigList {
   configID: number,
@@ -119,6 +122,7 @@ export class LoginComponent implements OnInit {
     // private homeComponent: HomeComponent,
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
+    private _snackBar: MatSnackBar,
     private configService: ConfigService,
     private zoneLinkService: ZoneLinkService,
     private accessGroupsService: AccessGroupsService,
@@ -152,13 +156,32 @@ export class LoginComponent implements OnInit {
         this.showBPNumber = true;
       }
     });
+    this.registerForm.reset();
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      this.isDarkMode = savedTheme === 'dark';
+    } else {
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: light)').matches;
+    }
+    this.updateTheme();
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.updateTheme();
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+  }
+
+  updateTheme(): void {
+    const theme = this.isDarkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   otpArray: string[] = ['', '', '', '', '', '']; // Array to store OTP digits
   isResendDisabled: boolean = false; // To disable the resend button
   resendTimer: number = 30; // Cooldown timer for resending OTP
-
+  isDarkMode: boolean = false;
 
   checkOtpValidity(): void {
     this.otpValid = this.otpArray.every((digit) => digit !== '');
@@ -226,6 +249,141 @@ export class LoginComponent implements OnInit {
   handleEmailExists(): void {
     alert('Email already exists. Please login or use another email.');
   }
+  isValid: boolean = false;
+  isInvalid: boolean = false;
+  isInvalidEmail: boolean = false;
+  isValidEmail: boolean = false;
+  errorMessage: string;
+  isPasswordValid: boolean = false;
+  passwordsMatch: boolean = false;
+  showPasswordError: boolean = false;
+  showReenterPasswordError: boolean = false;
+  validatePassword() {
+    const password = this.registerForm.controls['registerPassword']?.value;
+    this.isPasswordValid = !!password && password.length >= 5; // Add more validation criteria here
+    this.showPasswordError = !this.isPasswordValid;
+
+    if (password == null || password == '') {
+      this.errorMessage = "";
+    }
+    else if (!this.isPasswordValid) {
+      this.errorMessage = "Please enter a password longer than 5 char";
+    }
+    else {
+      this.errorMessage = "";
+    }
+  }
+
+  validateReenteredPassword() {
+    const password = this.registerForm.controls['registerPassword']?.value;
+    const reenteredPassword = this.registerForm.controls['reenterPassword']?.value;
+    this.passwordsMatch = password === reenteredPassword;
+    this.showReenterPasswordError = !this.passwordsMatch;
+
+    if (reenteredPassword == null || reenteredPassword == '') {
+      this.errorMessage = "";
+    }
+    else if (!this.passwordsMatch) {
+      this.errorMessage = "Passwords do not match!";
+    }
+    else {
+      this.errorMessage = "";
+      
+    }
+  }
+  async checkNewEmail() {
+    debugger;
+    this.validEmail = false;
+    this.isValidEmail = null;
+    this.isInvalidEmail = false;
+    let email = this.registerForm.controls["registerEmail"].value;
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (this.registerForm.controls["registerEmail"].value == null || this.registerForm.controls["registerEmail"].value == '') {
+      this.validEmail = null;
+    }
+    else {
+      if (email == null) {
+        this.errorMessage = "";
+        this.validEmail = null;
+      }
+
+
+      else if (!emailRegex.test(email)) {
+        this.errorMessage = "Please enter a vaild email address";
+        this.validEmail = false;
+      }
+      else {
+        this.validEmail = true;
+
+        if (email.endsWith("@msunduzi.gov.za")) { ////BPRegister Sindiswa 20062024
+          this.internalUserNoBP = true;
+          // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
+          this.externalWValidBP = false; // Make sure this is false for internal users
+
+        }
+        else {
+          // Check if the email already exists in the wayleave system
+          try {
+            const exists = await this.userService.emailExists(email).toPromise();
+            if (exists) {
+              this.errorMessage = "Email already exists in system. Consider changing your password";
+              this.validEmail = false;
+            } else {
+              console.log("Testing BP Number");
+              // Ensure bpNumber is not empty before validating it
+
+            }
+          } catch (error) {
+            console.error("An error occurred: ", error);
+            this.validEmail = false;
+            this.internalUserNoBP = false;
+            this.externalWValidBP = false;
+          }
+        }
+      }
+    }
+
+  }
+  checkName() {
+    this.isValid = false;
+    this.isInvalid = false;
+    let fullName = this.registerForm.controls["fullName"].value;
+
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length !== 2) {
+/*      alert("Please enter your first name and surname only");*/
+      this.errorMessage="Please enter your first name and surname only";
+      this.validNameSurname = false;
+      this.isValid = false;
+      this.isInvalid = true;
+      this.isInvalid = true;
+    } else {
+      // Check if both parts are non-empty
+      if (nameParts[0].trim() === '' || nameParts[1].trim() === '') {
+        this.isValid = false;
+        this.isInvalid = true;
+        this.errorMessage = "";
+        this.validNameSurname = false;
+      } else {
+        this.isValid = true;
+        this.isInvalid = false;
+        this.errorMessage = "";
+        this.validNameSurname = true;
+      }
+    }
+    console.log("Full Name: " + this.validNameSurname);
+  }
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 4 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
+
+
 
   handleNewEmail(otp: string, email: string): void {
     this.DoChecksForRegister();
@@ -716,7 +874,8 @@ this.userService.login(email, password).pipe(
         // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
         this.externalWValidBP = false; // Make sure this is false for internal users
 
-      } else {
+      }
+      else {
         // Check if the email already exists in the wayleave system
         try {
           const exists = await this.userService.emailExists(email).toPromise();
