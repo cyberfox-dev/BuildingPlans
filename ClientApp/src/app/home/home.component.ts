@@ -276,7 +276,8 @@ export interface ApplicationsListBP {
   BPApplicationID: string;
   Latitude: string;
   Longitude: string;
-  Originator: string; 
+  Originator: string;
+  LSNumber: string;
 }
 
 export interface ArchitectClients {
@@ -8172,8 +8173,16 @@ this.subscriptions.push(subscription);
           const current = data.dateSet[i];
           const tempApplication = {} as ApplicationsListBP;
          
-            tempApplication.applicationID = current.applicationID;
+          tempApplication.applicationID = current.applicationID;
+          if (current.bpApplicationID == null || current.bpApplicationID == "") {
             tempApplication.ProjectNumber = current.lsNumber;
+            tempApplication.LSNumber = null;
+          }
+          else {
+            tempApplication.ProjectNumber = current.bpApplicationID;
+            tempApplication.LSNumber = current.lsNumber;
+          }
+         
             tempApplication.erfNumber = current.erfNumber;
             tempApplication.stage = current.stage;
           tempApplication.ownerName = current.firstName + current.surname;
@@ -8299,12 +8308,8 @@ this.subscriptions.push(subscription);
     })
   }
 
-  onDraftApplicationClick() {
-    this.dataSourceSA = this.draftApplications;
-    this.selectedTabIndex = 1;
-
-    
   }
-}
+
+
 
 

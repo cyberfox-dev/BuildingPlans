@@ -6,7 +6,7 @@ import { BpTasksService } from 'src/app/service/BPTasks/bp-tasks.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service'; 
 export interface Taskslist {
   TaskID: any;
   Task: any;
@@ -16,8 +16,14 @@ export interface Taskslist {
   ApplicationId: number;
   DateCreated: any;
   DateUpdated: any;
+  Department: string;
 }
 
+export interface DepartmentsList {
+  DepartmentID: number;
+  FunctionalArea: string;
+  DepartmentName: string; 
+}
 
 @Component({
   selector: 'app-bptasks',
@@ -31,18 +37,23 @@ export class BPTasksComponent implements OnInit {
   taskFor: string;
   taskName: string;
     stringifiedData: any;
-    CurrentUser: any;
-  constructor(private BpTasksService: BpTasksService, private sharedService: SharedService, private router: Router, private modalService: NgbModal, private _snackBar: MatSnackBar,) { }
+  CurrentUser: any;
+  departmentName: string;
+  constructor(private BpTasksService: BpTasksService, private sharedService: SharedService, private router: Router, private modalService: NgbModal, private _snackBar: MatSnackBar, private bpDepartmentsService: BpDepartmentsService) { }
   Taskslist: Taskslist[] = [];
+  DepartmentsList: DepartmentsList[] = [];
+
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.applicationId = this.sharedService.getApplicationID();
     this.getAllBPTasks();
+    this.getAllDepartments();
   }
 
-  displayedColumnsTasks: string[] = ['Tasks','actions'];
+  displayedColumnsTasks: string[] = ['Tasks','Department','actions'];
   dataSourceTasks = this.Taskslist;
+  selectedDepartment: string; 
   @ViewChild(MatTable) TaskListTable: MatTable<Taskslist> | undefined;
   getAllBPTasks() {
     debugger;
@@ -59,6 +70,8 @@ export class BPTasksComponent implements OnInit {
           tempStage.Task = current.taskName;
           tempStage.CheckedBy = current.checkedBy;
           tempStage.isChecked = current.isChecked;
+          tempStage.Department = current.departmentName;
+
           this.Taskslist.push(tempStage);
         }
         this.dataSourceTasks = this.Taskslist;
@@ -81,7 +94,7 @@ export class BPTasksComponent implements OnInit {
     this.modalService.open(newTask, { centered: true, size: 'xl' });
   }
   addNewTask() {
-    this.BpTasksService.addUpdateTask(0, this.taskName, this.applicationId, "Building Plan", this.CurrentUser.appUserId, this.taskFor).subscribe((data: any) => {
+    this.BpTasksService.addUpdateTask(0, this.taskName, this.applicationId, "Building Plan", this.CurrentUser.appUserId, this.taskFor,this.departmentName).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.modalService.dismissAll();
         this.openSnackBar("Task Created");
@@ -121,4 +134,26 @@ export class BPTasksComponent implements OnInit {
     })
   }
 
+  getAllDepartments() {
+    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Building Plan").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDepartment = {} as DepartmentsList;
+
+          tempDepartment.DepartmentID = current.departmentID;
+          tempDepartment.DepartmentName = current.departmentName;
+          tempDepartment.FunctionalArea = current.functionalArea;
+
+          this.DepartmentsList.push(tempDepartment);
+          
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Departments Error", error);
+    })
+  }
 }

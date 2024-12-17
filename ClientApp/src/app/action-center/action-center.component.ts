@@ -6043,7 +6043,7 @@ export class ActionCenterComponent implements OnInit {
 
     // Add company logo
     const logo = new Image();
-    logo.src = 'assets/cctlogoblack.png';
+    logo.src = 'assets/Msundunzi-logo-new2.png';
     doc.addImage(logo, 'png', 10, 10, 60, 20);
 
     // Add invoice title
@@ -6353,7 +6353,7 @@ export class ActionCenterComponent implements OnInit {
 
     // Add company logo
     const logo = new Image();
-    logo.src = 'assets/cctlogoblack.png';
+    logo.src = 'assets/Msundunzi-logo-new2.png';
     doc.addImage(logo, 'png', 10, 10, 60, 20);
 
     // Add invoice title
@@ -6921,7 +6921,7 @@ export class ActionCenterComponent implements OnInit {
     });
 
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png';
+    img.src = 'assets/Msundunzi-logo-new2.png';
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
@@ -7348,7 +7348,7 @@ export class ActionCenterComponent implements OnInit {
 
     // Load the logo image (adjusted size)
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png'; // Adjust this path to the correct location of your logo
+    img.src = 'assets/Msundunzi-logo-new2.png'; // Adjust this path to the correct location of your logo
     doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
 
     // Set font configuration
@@ -7586,7 +7586,7 @@ export class ActionCenterComponent implements OnInit {
     });
 
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png';
+    img.src = 'assets/Msundunzi-logo-new2.png';
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');

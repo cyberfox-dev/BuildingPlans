@@ -775,6 +775,7 @@
               <div class="row" style="width:100%">
 
                 <div class="col">Application Type : {{element.bpApplicationType}}</div>
+                <div class="col" *ngIf="element.LSNumber != null">LS Number : {{element.LSNumber}}</div>
                 <div class="col">Stage Age  :  {{element.stageAge}} Days </div>
                 <div class="col"> Application Age  : {{element.planAge}} Days</div>
                 <div class="col"> Latitude : {{element.Latitude}}</div>

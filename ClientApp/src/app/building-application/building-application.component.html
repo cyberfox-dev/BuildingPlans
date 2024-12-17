@@ -2,10 +2,11 @@
 
 <div class="content-body">
   <h2 *ngIf="applicationBeingCreatedType == 'Town Planning' || applicationBeingCreatedType == 'Building Plans'">Creating New Application - {{applicationBeingCreatedType}} </h2>
-  <h2 *ngIf="applicationBeingCreatedType == 'Land Survey'">Creating New Building Plan Application - Land Survey</h2>
+  <h2 *ngIf="applicationBeingCreatedType == 'Land Survey'">Creating New Building Plan Application - Land Survey <button mat-raised-button color="draft" *ngIf=""class="floating-button2">Save project as a draft</button></h2>
   <h2 *ngIf="isArchivePlan">Create New Plan Archive Application</h2>
   <!-- #region land survey -->
 
+  
 
   <mat-horizontal-stepper linear *ngIf="applicationBeingCreatedType == 'Land Survey'">
 
@@ -47,34 +48,34 @@
           </div>
         </div>
 
-<!--        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="clientAltEmail" name="altEmail" placeholder="Enter alternate email address">
-              <label for="=altEmail">Alternate Email Address</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="clientAltCell" name="clientAltCell" placeholder="Enter alternate Cell Number">
-              <label for="altCellNo">Alternate Cell Number</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="regNo" name=" regNo" placeholder="Reg Number">
-              <label for="regNo"> Architect Registration Number</label>
-            </div>
+        <!--        <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="clientAltEmail" name="altEmail" placeholder="Enter alternate email address">
+                    <label for="=altEmail">Alternate Email Address</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="clientAltCell" name="clientAltCell" placeholder="Enter alternate Cell Number">
+                    <label for="altCellNo">Alternate Cell Number</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="regNo" name=" regNo" placeholder="Reg Number">
+                    <label for="regNo"> Architect Registration Number</label>
+                  </div>
+                </div>
+              </div>-->
+        <!--        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
+            <label for="=iDNumber"> ID Number *  </label>
           </div>
         </div>-->
-        <!--        <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
-          <label for="=iDNumber"> ID Number *  </label>
-        </div>
-      </div>-->
 
 
 
@@ -91,6 +92,9 @@
 
     <!---------------------------------------------------------------Property Details--------------------------------------------------------->
     <mat-step label="Property Details">
+
+     
+
       <div class="card">
         <h3><span>Property Details Of Development</span></h3>
       </div>
@@ -196,12 +200,12 @@
             <label for=" architectCell"> Cellphone Number</label>
           </div>
         </div>
-<!--        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="architectID" name="architectID" placeholder="Architect ID">
-            <label for="architectID">ID Number</label>
-          </div>
-        </div>-->
+        <!--        <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="architectID" name="architectID" placeholder="Architect ID">
+                  <label for="architectID">ID Number</label>
+                </div>
+              </div>-->
       </div>
 
 
@@ -308,7 +312,7 @@
 
               <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
               <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
-            <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+              <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
               <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
             </mat-toolbar>
           </div>
@@ -318,9 +322,9 @@
       <div class="container04">
         <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
 
-<!--        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
-          Create Application
-        </button>-->
+        <!--        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
+                Create Application
+              </button>-->
         <button class="pushable" *ngIf="successfulUploads == totalDocs" (click)="buildProjectNumber()">
           <span class="shadow"></span>
           <span class="edge"></span>
@@ -340,8 +344,6 @@
   </mat-horizontal-stepper>
 
   <!-- #endregion -->
-
-
   <!-- #region Town Planning -->
 
 
@@ -443,6 +445,8 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
+                m
+
                 <input type="text" class="form-control" name="emailAddress" placeholder="Enter Email Address">
                 <label for="emailAddress">Email Address * </label>
               </div>
@@ -612,7 +616,7 @@
       </div>
     </mat-step>
     <!---------------------------------------------------------------Town Planing Application Details--------------------------------------------------------->
-    <mat-step label="Application Details" >
+    <mat-step label="Application Details">
       <div class="card">
         <h3><span>Application Details</span></h3>
       </div>

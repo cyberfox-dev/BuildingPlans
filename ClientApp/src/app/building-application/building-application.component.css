@@ -10,6 +10,9 @@ h2 {
   border-radius: 20px;
   color: white;
   box-shadow: 0 0 10px 1px rgb(0 0 0 / 41%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .example-h2 {
   margin: 10px;
@@ -164,3 +167,23 @@ h3 {
   margin: 10px;
 }
 
+.floating-button2 {
+  animation: fade-in-top 0.5s ease-out;
+  position:relative;
+  top: 8px;
+  /* left: 16px; */
+}
+
+.mat-draft {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Adjust the z-index as needed */
+  /* Add any other styles you want for the sticky button */
+  background-color: #bbcfd6;
+  color: white;
+  height: 51px;
+  /* margin-top: -11px; */
+  font-size: 16px;
+  /* margin-bottom: 99px;*/
+}

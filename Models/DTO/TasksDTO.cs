@@ -10,6 +10,7 @@
         public string? CheckedBy { get; set; }
         public string? TaskCreatedFor { get; set; }
         public string? CreatedById { get; set; }
+        public string? DepartmentName { get; set; } 
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public bool isActive { get; set; }

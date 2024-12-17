@@ -10,17 +10,22 @@
 
   </ng-container>
 
+  <ng-container matColumnDef="Department" class="approve">
+    <th mat-header-cell *matHeaderCellDef>Department</th>
+    <td mat-cell *matCellDef="let element">{{element.Department}}</td>
+
+  </ng-container>
   <!-- Indication Column -->
   <!--<ng-container matColumnDef="Checked">
     <th mat-header-cell *matHeaderCellDef>Checked By</th>
     <td mat-cell *matCellDef="let element">
       <div class="contIndication">-->
-        <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
-     <!--   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/" class="icon2" *ngIf="element.isChecked == true">-->
-        <!--<i class="fa fa-check-circle icon2" aria-hidden="true" *ngIf="element.isChecked == true"></i>
-        <p class="">{{element.CheckedBy}}</p>-->
-        <!-- projectTracker Sindiswa 12 January 2024 -->
-      <!--</div>
+  <!--   <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>-->
+  <!--   <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/" class="icon2" *ngIf="element.isChecked == true">-->
+  <!--<i class="fa fa-check-circle icon2" aria-hidden="true" *ngIf="element.isChecked == true"></i>
+  <p class="">{{element.CheckedBy}}</p>-->
+  <!-- projectTracker Sindiswa 12 January 2024 -->
+  <!--</div>
     </td>
   </ng-container>-->
 
@@ -49,7 +54,13 @@
   </div>
 
   <div class="modal-body">
-    
+    <div class="row">
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedDepartment" placeholder="Select a department to assign the task to">
+          <mat-option *ngFor="let department of DepartmentsList" [value]="department.DepartmentName">{{department.DepartmentName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">

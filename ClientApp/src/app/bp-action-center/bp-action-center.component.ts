@@ -9250,7 +9250,7 @@ export class BpActionCenterComponent implements OnInit {
 
     // Add company logo
     const logo = new Image();
-    logo.src = 'assets/cctlogoblack.png';
+    logo.src = 'assets/Msundunzi-logo-new2.png';
     doc.addImage(logo, 'png', 10, 10, 60, 20);
 
     // Add invoice title
@@ -9560,7 +9560,7 @@ export class BpActionCenterComponent implements OnInit {
 
     // Add company logo
     const logo = new Image();
-    logo.src = 'assets/cctlogoblack.png';
+    logo.src = 'assets/Msundunzi-logo-new2.png';
     doc.addImage(logo, 'png', 10, 10, 60, 20);
 
     // Add invoice title

@@ -665,16 +665,17 @@ namespace BuildingPlans.Controllers
                                         BPApplicationType = "Wayleave",
                                         PhysicalAddress = wayleave.PhysicalAddressOfProject,
                                         BPApplicationID = "",
-                                        FirstName = wayleave.FullName.Substring(0,wayleave.FullName.IndexOf(" ")),
+                                        FirstName = wayleave.FullName.Substring(0, wayleave.FullName.IndexOf(" ")),
                                         Surname = wayleave.FullName.Substring(wayleave.FullName.IndexOf(" ")),
                                         Stage = wayleave.CurrentStageName,
                                         Status = wayleave.ApplicationStatus,
                                         DateCreated = wayleave.DateCreated,
                                         DateUpdated = wayleave.DateUpdated,
-                                        Latitude = wayleave.Coordinates.Substring(0,wayleave.Coordinates.IndexOf(",")),
-                                        Longitude = wayleave.Coordinates.Substring(wayleave.Coordinates.IndexOf(",") +1 ),
+                                        Latitude = wayleave.Coordinates.Substring(0, wayleave.Coordinates.IndexOf(",")),
+                                        Longitude = wayleave.Coordinates.Substring(wayleave.Coordinates.IndexOf(",") + 1),
                                         CreatedById = wayleave.CreatedById,
-                                        
+
+
 
                                     }).ToListAsync();
 
@@ -764,6 +765,7 @@ namespace BuildingPlans.Controllers
                                         DateUpdated = demolition.DateUpdated,
                                         LSNumber = demolition.ProjectNumber,
                                         CreatedById = demolition.CreatedById
+                                        
                                     }).ToListAsync();
                 result =  query1
                     .Concat(query2)

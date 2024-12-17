@@ -68,6 +68,7 @@ namespace BuildingPlans.Controllers
                             DateUpdated = DateTime.Now,
                             FunctionalArea = model.FunctionalArea,
                             TaskCreatedFor = model.TaskCreatedFor,
+                            DepartmentName = model.DepartmentName,
                             isActive = true
                         };
                         await _context.BPTasks.AddAsync(tempTaskTable);
@@ -119,8 +120,10 @@ namespace BuildingPlans.Controllers
                                         CheckedBy = task.CheckedBy,
                                         isChecked = task.isChecked,
                                         TaskCreatedFor = task.TaskCreatedFor,
+                                        DepartmentName = task.DepartmentName,
                                         DateCreated = task.DateCreated,
                                         DateUpdated = task.DateUpdated,
+                                        
                                         isActive = task.isActive,
                                     }
                                     ).ToListAsync();
@@ -208,11 +211,49 @@ namespace BuildingPlans.Controllers
                                         FunctionalArea = task.FunctionalArea,
                                         CheckedBy = task.CheckedBy,
                                         isChecked = task.isChecked,
+                                        DepartmentName = task.DepartmentName,
                                         isActive = task.isActive,
 
 
                                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Tasks For Application", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllTaskForDepartment")]
+        public async Task<object> GetAllTasksForDepartment([FromBody] TasksBindingModel model)
+        {
+            try
+            {
+                if(model.DepartmentName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await (from task in _context.BPTasks
+                                        where task.DepartmentName == model.DepartmentName && task.isActive == true
+                                        select new TasksDTO()
+                                        {
+                                            TaskID = task.TaskID,
+                                            TaskName = task.TaskName,
+                                            TaskCreatedFor = task.TaskCreatedFor,
+                                            DateCreated = task.DateCreated,
+                                            DateUpdated = task.DateUpdated,
+                                            FunctionalArea = task.FunctionalArea,
+                                            CheckedBy = task.CheckedBy,
+                                            isChecked = task.isChecked,
+                                            DepartmentName = task.DepartmentName,
+                                            isActive = task.isActive,
+
+                                        }).ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Tasks For Department", result));
+                }
             }
             catch (Exception ex)
             {

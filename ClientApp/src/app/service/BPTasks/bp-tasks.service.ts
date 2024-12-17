@@ -10,14 +10,15 @@ export class BpTasksService {
   private readonly baseURL: string = this.apiUrl + "bPTasks/";
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateTask(TaskID: number | null, TaskName: string | null, ApplicationID: string | null, FunctionalArea: string | null, CreatedById: string | null, TaskCreatedFor: string | null,) {
+  public addUpdateTask(TaskID: number | null, TaskName: string | null, ApplicationID: string | null, FunctionalArea: string | null, CreatedById: string | null, TaskCreatedFor: string | null, departmentName: string | null) {
     const body = {
       TaskID: TaskID,
       TaskName: TaskName,
       ApplicationID: ApplicationID,
       FunctionalArea: FunctionalArea,
       CreatedById: CreatedById,
-      TaskCreatedFor: TaskCreatedFor
+      TaskCreatedFor: TaskCreatedFor,
+      DepartmentName :departmentName ,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateTask", body);
   }
@@ -40,5 +41,13 @@ export class BpTasksService {
       CheckedBy: checkedBy
     }
     return this.httpClient.post(this.baseURL + "TaskCompleted", body);
+  }
+
+  public getAllTasksForDepartment(departmentName: string | null) {
+    const body = {
+      DepartmentName : departmentName
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllTaskForDepartment", body);
   }
 }

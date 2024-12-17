@@ -47,6 +47,7 @@
 
 
       </div>
+      <p>TP Admin</p>
       <div class="containerLS" *ngIf="this.CurrentApplicationBeingViewed[0].currentStatus == 'Approved(Pending)'">
         <button mat-raised-button color="approveBTN" (click)="onComment('ApproveTPAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
         <button mat-raised-button color="rejectBTN" (click)="onComment('RejectLSAdmin')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
