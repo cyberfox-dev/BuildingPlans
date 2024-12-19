@@ -64,6 +64,7 @@ import { Options } from 'ngx-google-places-autocomplete/objects/options/options'
 import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
 import { BPStagesChecklistsService } from '../service/BPStagesChecklists/bpstages-checklists.service';
 import { BPApplicationChecklistService } from '../service/BPApplicationChecklists/bpapplication-checklist.service';
+import { BPServiceItemsService } from '../service/BPServiceItems/bpservice-items.service';
 //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -576,8 +577,8 @@ export class BpActionCenterComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
     private neighbourConsentService: NeighbourConsentService,
     private bpStageChecklistService: BPStagesChecklistsService,
-    private bpApplicationChecklistService : BPApplicationChecklistService,
-
+    private bpApplicationChecklistService: BPApplicationChecklistService,
+    private bpServiceItemsService: BPServiceItemsService,
 ) { }
 
   ngOnInit(): void {
@@ -978,92 +979,8 @@ export class BpActionCenterComponent implements OnInit {
     })
     //Delete Uploader Kyle 29-01-24
   }
-  canApprovePTW() {
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        const current = data.dateSet[0];
-        this.PermitIssue
-        
-        if (current.userAssaignedToComment == null) {
-          
-          const canAssign = this.CurrentUserRoles.map(x => x.roleName == "Permit Coordinator");
-          
-          for (let i = 0; i < canAssign.length; i++) {
-            if (canAssign[i] == true) {
-              this.CanAssignPermitIssuer = true;
-            }
-          }
-        }
-        else if (current.userAssaignedToComment != null) {
-          
-          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.permitComment == null) {
-            this.canApprovePermit = true;
-          }
-          else {
-            this.canApprovePermit = false;
-          }
-        }
-        console.log("Permit Issuer", this.canApprovePermit, this.CanAssignPermitIssuer);
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-
-
-
-
-
-
-
-  }
-
-  getAllPermitForComment() {
-
-    this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempPTCList = {} as PTCList;
-          const current = data.dateSet[i];
-
-          tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
-          tempPTCList.ApplicationID = current.applicationID;
-          tempPTCList.SubDepartmentID = current.subDepartmentID;
-          tempPTCList.SubDepartmentName = current.subDepartmentName;
-          tempPTCList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempPTCList.PermitComment = current.permitComment;
-          tempPTCList.PermitCommentStatus = current.permitCommentStatus;
-
-          this.PTCList.push(tempPTCList);
-
-        }
-
-        this.canApprovePTW();
-
-
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
-
+  
+ 
   getAllStages() {
 
     this.StagesList.splice(0, this.StagesList.length);
@@ -1084,7 +1001,7 @@ export class BpActionCenterComponent implements OnInit {
           // this.sharedService.setStageData(this.StagesList);
         }
         this.CanComment();
-        this.checkForGISReviewing();
+     
         console.log("this.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesList ", this.StagesList);
       }
       else {
@@ -1097,685 +1014,6 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-
-  //onPassFileName(event: { uploadFor: string; fileName: string }) {
-  //  const { uploadFor, fileName } = event;
-
-
-
-
-
-  //  //for (var i = 0; i < filesForUpload.length; i++) {
-  //  //  const formData = new FormData();
-  //  //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-  //  //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
-  //  //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-  //  //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-  //  //    .subscribe({
-  //  //      next: (event) => {
-
-  //  //        if (event.type === HttpEventType.UploadProgress && event.total)
-  //  //          this.progress = Math.round(100 * event.loaded / event.total);
-  //  //        else if (event.type === HttpEventType.Response) {
-  //  //          this.message = 'Upload success.';
-  //  //          this.uploadFinished(event.body, this.applicationID, data.dateSet);
-  //  //        }
-  //  //      },
-  //  //      error: (err: HttpErrorResponse) => console.log(err)
-  //  //    });
-  //  //}
-  //  const index = parseInt(uploadFor.substring('CoverLetter'.length));
-  //  this.fileAttrs[index] = fileName;
-  //}
-
-  generatePTW(ClientName: string) {
-
-    const doc = new jsPDF();
-
-    // Logo
-    const img = new Image();
-    img.src = 'assets/cctlogoblack.png';
-
-    // Add logo to PDF document
-    doc.addImage(img, 'png', 10, 10, 60, 20);
-
-    autoTable(doc, {
-      body: [
-        [
-
-          {
-            content: 'Permit To Work',
-            styles: {
-              halign: 'right',
-              fontSize: 20,
-              textColor: '#000000',
-            }
-          },
-        ],
-      ],
-      theme: 'plain',
-      styles: {
-        //fillColor: '#3366ff',
-
-      },
-      // startY: 40,
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'ApplicationID: ' + this.ApplicationID
-              + '\nWayleave Ref No.: ' + ClientName
-              + '\nDate: ' + this.formattedDate,
-
-            styles: {
-              halign: 'right',
-            }
-          }
-        ],
-      ],
-      theme: 'plain',
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'City of Cape Town'
-              + '\nPost Box / Posbus / iShokisi 655'
-              + '\nCAPE TOWN'
-              + '\n8001',
-
-            styles: {
-              halign: 'left',
-            }
-          }
-        ],
-      ],
-      theme: 'plain',
-    });
-
-    const startY = 100; // set the starting Y position for the table
-
-    // Generate table body based on ServiceItemList data
-    const tableBody = this.PTCListForCheck.map(item => {
-      return [
-        item.SubDepartmentName,
-        item.PermitComment,
-        //item.PermitCommentStatus,
-      ];
-    });
-
-    autoTable(doc, {
-      head: [['Department Name', 'Comment']],
-      body: tableBody,
-      theme: 'grid',
-      startY: startY,
-      margin: { top: 20 }
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'ALL Department Approved PTW' /*+ this.generatedInvoiceNumber*/
-              + '',
-
-            styles: {
-              halign: 'center',
-            }
-          }
-        ],
-      ],
-      theme: 'grid',
-    });
-
-    //autoTable(doc, {
-    //  body: [
-    //    [
-    //      {
-    //        content: 'Profit Centre: ' + 'P19070051'
-    //          + '\nGL Acc: ' + "845180",
-    //        styles: {
-    //          halign: 'left',
-    //        }
-    //      }
-    //    ],
-    //  ],
-    //  theme: 'plain',
-    //  startY: startY + 30, // add 30 units of Y position to create space between the tables
-    //});
-
-    /*doc.save("Permit.pdf");*/
-    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
-    const file = new File([pdfData], 'Permit Cover', { type: 'application/pdf' });
-
-
-    // Prepare the form data
-    const formData = new FormData();
-    formData.append('file', file);
-
-    this.sharedService.pushFileForTempFileUpload(file, "Permit Cover" + ".pdf");
-    this.save();
-    // window.open(pdfUrl, '_blank')
-
-    // this.router.navigate(["/home"]);
-
-  }
-
-
-
-  save() {
-
-
-
-
-    const filesForUpload = this.sharedService.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
-      const formData = new FormData();
-      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
-      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
-              this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinishedF(event.body);
-
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
-    }
-
-  }
-
-  uploadFinishedF = (event: any) => {
-    const currentApplication = this.sharedService.getViewApplicationIndex();
-
-    this.response = event;
-    console.log("this.response", this.response);
-    console.log("this.response?.dbPath", this.response?.dbPath);
-
-
-    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    console.log("documentName", documentName);
-
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, "PTW").subscribe((data: any) => {
-      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
-      if (data.responseCode == 1) {
-
-      }
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-  }
-
-
-
-  CheckAllLinkedDepartmentsApproved() {
-
-
-    const currentApplication = this.sharedService.getViewApplicationIndex();
-
-
-    this.countApprove = 0;
-    this.countReject = 0;
-    this.PTCList.splice(0, this.PTCListForCheck.length);
-    this.permitService.getPermitSubForCommentByApplicationID(currentApplication.applicationID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        for (var i = 0; i < data.dateSet.length; i++) {
-          const tempPTCList = {} as PTCList;
-          const current = data.dateSet[i];
-
-          tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
-          tempPTCList.ApplicationID = current.applicationID;
-          tempPTCList.SubDepartmentID = current.subDepartmentID;
-          tempPTCList.SubDepartmentName = current.subDepartmentName;
-          tempPTCList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempPTCList.PermitComment = current.permitComment;
-          tempPTCList.PermitCommentStatus = current.permitCommentStatus;
-
-
-
-          if (tempPTCList.PermitCommentStatus == "Approved") {
-            this.countApprove++;
-          }
-          if (tempPTCList.PermitCommentStatus == "Rejected") {
-            this.countReject++;
-          }
-
-          this.PTCListForCheck.push(tempPTCList);
-        }
-
-        if (this.PTCListForCheck.length == this.countApprove) {
-          this.generatePTW(currentApplication.ProjectNumber)
-          this.countApprove = 0;
-          this.countReject = 0;
-          /*this.MoveToClosedStage(false);*/
-          // this.MoveToNextStage();
-        } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
-          //Rejection Pack
-
-          this.countApprove = 0;
-          this.countReject = 0;
-          //   this.MoveToClosedStage();
-        }
-        else {
-          this.countApprove = 0;
-          this.countReject = 0;
-        }
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-  }
-
-
-
-
-
-  PermitIssue(interact: string) {
-
-    let SubDepartmentName = "";
-    let PermitSubCommetID = 0;
-
-    //for (var i = 0; i < this.PTCList.length; i++) {
-
-    //  if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-    //    SubDepartmentName = this.PTCList[i].SubDepartmentName;
-    //    PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
-    //  }
-    //}
-
-
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        let current = data.dateSet[0];
-        switch (interact) {
-
-          case "Approve": {
-            if (confirm("Are you sure you want to approve permit this application?")) {
-              //Request For Delete Kyle 22-02-24
-
-
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-
-                  alert("Permit Approved");
-                  this.CheckAllLinkedDepartmentsApproved();
-                  this.onSaveToAuditTrail2("A permit issuer has aprroved the permit application");
-                  this.router.navigate(["/home"]);
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-            }
-
-
-            this.modalService.dismissAll();
-
-
-
-            break;
-          }
-
-          case "MeetOnSite": {
-            if (confirm("Are you sure you want to meet applicant On site?")) {
-
-
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  alert("Meet Applicant On Site");
-                  this.onSaveToAuditTrail2("A permit issuer has requested to meet on site");
-                  this.router.navigate(["/home"]);
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-            }
-            this.modalService.dismissAll();
-
-            break;
-          }
-
-          case "Reject": {
-            if (confirm("Are you sure you want to reject permit?")) {
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  alert("Permit Rejected");
-                  this.onSaveToAuditTrail2("A permit issuer has reject the permit application");
-                  this.router.navigate(["/home"]);
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-              this.modalService.dismissAll();
-            }
-
-            break;
-          }
-
-          default: {
-
-            break;
-          }
-        }
-
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponse", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-
-
-  }
-
-
-
-  FinalApprove(interact: string) {
-
-
-    let SubDepartmentName = "";
-    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-      }
-    }
-    switch (interact) {
-
-      case "Approve": {
-        if (confirm("Are you sure you want to final approve this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-
-
-
-                  this.router.navigate(["/home"]);
-
-                  this.viewProjectInfoComponent.getAllComments();
-                  this.CheckALLLinkedDepartmentsCommented(false);
-                  this.openSnackBar("Application Actioned");
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              const emailContent = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.loggedInUserName}</p>
-            <p>You have approved application ${this.projectNo}</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
-              if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
-                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application approved", emailContent, emailContent);
-              }
-
-
-
-
-              this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have approved application " + this.projectNo).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-                }
-
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-
-
-
-              //commentsService
-
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.modalService.dismissAll();
-        }
-        break;
-      }
-
-      case "Reject": {
-        if (confirm("Are you sure you want to final reject this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "FinalReject", null, null, "EndOfCommentProcess").subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-
-              //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-                  //#region checkingNotifications Sindiswa 16 February 2024
-
-
-                  const emailContent = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.loggedInUserName}</p>
-            <p>You have rejected application ${this.projectNo}</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application rejected", emailContent, emailContent);
-                  if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
-                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application rejected", emailContent, emailContent);
-                  }
-
-
-
-
-                  this.notificationsService.addUpdateNotification(0, "Application approved", "You have rejected an application", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have rejected application " + this.projectNo).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-
-
-
-
-                  // #endregion
-
-
-
-                  this.viewProjectInfoComponent.getAllComments();
-
-
-                  this.router.navigate(["/home"]);
-                  this.CheckALLLinkedDepartmentsCommented(false);
-                  this.openSnackBar("Application Actioned");
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.modalService.dismissAll();
-        }
-
-        break;
-      }
-
-      default: {
-
-        break;
-      }
-    }
-  }
-
 
   getReviewerForLink() {
 
@@ -1909,133 +1147,6 @@ export class BpActionCenterComponent implements OnInit {
 
   }
 
-  //setRoles() {
-
-
-  //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-  //    if (data.responseCode == 1) {
-
-  //      for (var i = 0; i < data.dateSet.length; i++) {
-
-  //        let current = data.dateSet[i];
-  //        if (this.loggedInUsersIsAdmin == true) {
-
-  //          this.AssignProjectToZone = true;
-
-  //        }
-  //        if (this.loggedInUsersIsZoneAdmin == true) {
-
-  //          for (var j = 0; j < this.UserZoneList.length; j++) {
-
-  //            if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-
-  //              this.AssignUserForComment = true;
-  //              if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
-
-  //              } else {
-  //                this.ACHeader = "Assign to Reviewer for comment";
-  //              }
-
-  //              this.getUsersByRoleName("Reviewer");
-
-  //              break; // Exit the loop once a match is found
-  //            }
-  //          }
-  //        }
-
-  //        if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
-
-  //          this.CanAssignDepartment = true;
-  //        } else {
-
-  //          this.CanAssignDepartment = false;
-  //        }
-  //      }
-  //    }
-  //    else {
-  //      alert(data.responseMessage);
-
-  //    }
-  //    console.log("reponse", data);
-  //  }, error => {
-  //    console.log("Error: ", error);
-  //  })
-
-
-  //}
-  OldsetRoles() {
-
-
-    // this.getUsersByRoleName("Department Admin");
-
-    console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
-
-    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.SubDepartmentLinkedList[i].zoneID && this.loggedInUsersIsAdmin == true) {
-
-        this.AssignProjectToZone = true;
-
-      }
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
-
-        for (var j = 0; j < this.UserZoneList.length; j++) {
-
-          if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-
-            this.AssignUserForComment = true;
-            this.getUsersByRoleName("Reviewer");
-
-            break; // Exit the loop once a match is found
-          }
-        }
-      }
-
-      ////////////////////
-      if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
-
-        this.CanAssignDepartment = true;
-      } else {
-
-        this.CanAssignDepartment = false;
-      }
-    }
-  }
-
-  //OLDer Code 
-  //setRoles() {
-  // //Im here
-
-  // // this.getUsersByRoleName("Department Admin");
-
-  //  console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
-
-  //  for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-  //    
-  //    if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true ) {
-  //      
-  //      this.AssignProjectToZone = true;
-
-
-
-  //    }
-  //    if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true && this.LinkedUserToSub[0].id == this.CurrentUser.appUserId) {
-  //      
-  //      this.AssignUserForComment = true;
-  //    }
-
-  //    ////////////////////
-  //    if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
-  //      
-  //      this.CanAssignDepartment = true;
-  //    }
-  //    else {
-  //      
-  //      this.CanAssignDepartment = false;
-  //    }
-  //  }
-  //}
   getCurrentUsersZoneID(subID: number): Observable<number> {
 
     return this.zoneLinkService.getBySubAndUserID(subID, this.CurrentUser.appUserId).pipe(
@@ -2058,9 +1169,6 @@ export class BpActionCenterComponent implements OnInit {
       })
     );
   }
-
-
-
 
   CanComment() {
     // this.getDepartmentManagerUserID("Senior Reviewer");
@@ -2101,38 +1209,7 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-  /*JJS 07-03-24 GIS Reviewer*/
-  checkForGISReviewing() {
-
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        for (var i = 0; i < data.dateSet.length; i++) {
-
-          let current = data.dateSet[i];
-          if (current.isGISReviewing == true && current.gisReviewerUserID == this.CurrentUser.appUserId) {
-            this.isGISReviewing = true;
-            return;
-          }
-          else {
-
-          }
-        }
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponse", data);
-      this.getUsersByRoleName("Senior Reviewer");
-
-      // this.CanCommentFinalApprover();
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
-
+  
   getPreviousReviewerUserID() {
 
 
@@ -2236,306 +1313,6 @@ export class BpActionCenterComponent implements OnInit {
   }
 
 
-  onReturnToReviewerClick() {
-
-    if (confirm("Are you sure you what return to previous reviewer?")) {
-
-
-
-      this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, null, null, false, this.previousReviewer.userID, false).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-          const emailContent = `
-      <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.previousReviewer.fullName},</p>
-            <p>Application ${this.projectNo} returned by  ${this.loggedInUsersEmail}</p>
-           <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-    `;
-
-
-          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", emailContent, emailContent);
-          if (this.previousReviewer.alternativeEmail) {
-            this.notificationsService.sendEmail(this.previousReviewer.alternativeEmail, "Application Returned By Senior Reviewer", emailContent, emailContent);
-          }
-/*          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", "Check html", "Dear " + this.previousReviewer.fullName + ",<br><br>Application: " + this.projectNo + ", Returned By Senior Reviewer" + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "Application Returned", "Application returned by senior reviewer", false, this.previousReviewer.UserID, this.ApplicationID, this.CurrentUser.appUserId, "Application: " + this.projectNo + ", Returned By Senior Reviewer").subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-              alert(data.responseMessage);
-
-            }
-            else {
-              alert(data.responseMessage);
-            }
-
-            console.log("response", data);
-          }, error => {
-            console.log("Error", error);
-          });
-          alert(data.responseMessage);
-
-          let SubDepartmentName = "";
-          for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-            if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-              SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-            }
-          }
-          //commentsService
-
-          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Returned", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              alert(data.responseMessage);
-              this.viewProjectInfoComponent.getAllComments();
-              this.modalService.dismissAll();
-              this.router.navigate(["/home"]);
-
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-
-
-        }
-        else {
-          alert(data.responseMessage);
-
-        }
-        console.log("reponse", data);
-
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-
-
-
-
-
-
-      //  this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.previousReviewer).subscribe((data: any) => {
-
-      //    if (data.responseCode == 1) {
-
-      //      
-      //      this.viewProjectInfoComponent.getAllComments();
-      //      
-      //      this.refreshParent.emit();
-      //      //this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-      //    }
-      //    else {
-      //      alert(data.responseMessage);
-
-      //    }
-      //    console.log("reponse", data);
-      //    this.modalService.dismissAll();
-      //    this.router.navigate(["/home"]);
-
-
-      //  }, error => {
-      //    console.log("Error: ", error);
-      //  })
-
-    }
-  }
-
-
-  async CanCommentSeniorReviewer() {
-
-
-
-    await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        let foundMatch = false;
-        let current = data.dateSet[0];// Flag to track if a match is found
-
-
-
-        if (current.userAssaignedToComment == "Senior Reviewer to comment" || current.commentStatus == "Referred") {
-
-
-
-          for (var i = 0; i < this.seniorReviewerUsers.length; i++) {
-
-
-            if (this.seniorReviewerUsers[i].userID == this.CurrentUser.appUserId) {
-
-
-              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-
-                foundMatch = true;
-                break;
-              }
-
-            }
-
-            if (foundMatch) {
-
-              // A match was found, no need to continue checking
-              break;
-            }
-          }
-        }
-        else {
-          this.canCommentSeniorReviewer = false;
-        }
-
-
-        this.canCommentSeniorReviewer = foundMatch;
-
-        /*        this.ACHeader = "You can comment!";*/
-
-
-      } else {
-        alert(data.responseMessage);
-      }
-
-      console.log("response", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
-
-
-  async CanCommentFinalApprover() {
-
-
-
-    await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        let foundMatch = false;
-        let current = data.dateSet[0];// Flag to track if a match is found
-
-
-        // projectTracker Sindiswa 19 January 2024
-        if (current.userAssaignedToComment == "All users in Subdepartment FA" || (current.userAssaignedToComment !== null && (current.commentStatus == 'Approved' || current.commentStatus === 'Rejected'))) {
-
-
-
-          for (var i = 0; i < this.finalApproverUsers.length; i++) {
-
-
-            if (this.finalApproverUsers[i].userID == this.CurrentUser.appUserId) {
-
-              // Check if any userID in this.finalApproverUsers matches current.userAssaignedToComment
-              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-
-                foundMatch = true;
-                break;
-              }
-
-            }
-
-            if (foundMatch) {
-
-              // A match was found, no need to continue checking
-              break;
-            }
-          }
-        }
-        else {
-          this.canCommentFinalApprover = false;
-        }
-
-
-        this.canCommentFinalApprover = foundMatch;
-        //if (this.ACHeader != "You can comment!") {
-        //  this.ACHeader = "You can final approve!";
-        //}
-
-      } else {
-        alert(data.responseMessage);
-      }
-
-      console.log("response", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
-
-
-  // OLd code 
-  //CanCommentFinalApprover() {
-  //  this.getUsersByRoleName("Final Approver");
-
-  //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
-  //    if (data.responseCode == 1) {
-  //      for (var i = 0; i < data.dateSet.length; i++) {
-  //        let current = data.dateSet[i];
-
-
-
-  //        if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment == this.finalApproverUsers[0].userID) {
-  //          this.canCommentFinalApprover = true;
-  //          //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
-  //          return;
-  //        }
-  //        else {
-  //          this.canCommentFinalApprover = false;
-  //        } 
-  //      }
-
-
-
-
-  //    }
-  //    else {
-  //      alert(data.responseMessage);
-
-  //    }
-  //    console.log("reponse", data);
-
-  //  }, error => {
-  //    console.log("Error: ", error);
-  //  })
-  //}
-
-
-
-
   updateApplicationStatus() {
 
     //this.getAllSubDepartments();
@@ -2589,52 +1366,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
 
-  viewSelectedUserForApplication() {
-
-
-    this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
-
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        const current = data.dateSet[0];
-
-
-        this.forManuallyAssignSubForCommentID = current.subDepartmentForCommentID;
-
-        for (var i = 0; i < this.UserZoneList.length; i++) {
-
-          if (this.UserZoneList[i].id == current.userAssaignedToComment) {
-            const tempUserList = {} as UserZoneList;
-
-            tempUserList.fullName = this.UserZoneList[i].fullName;
-            tempUserList.id = this.UserZoneList[i].id;
-            tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
-            tempUserList.Email = this.UserZoneList[i].Email;
-            tempUserList.alternativeEmail = this.UserZoneList[i].alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-
-            this.LinkedUserToSub.push(tempUserList);
-          }
-        }
-
-        this.CanCommentSeniorReviewer();
-
-        this.CanCommentFinalApprover();
-
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponseGetSubDepartmentForComment", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-  }
+ 
 
   onManuallyAssignUser() {
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
@@ -2941,100 +1673,7 @@ export class BpActionCenterComponent implements OnInit {
   }
   /*JJS 13-03-24*/
   /*JJS 07-03-24 GIS Reviewer*/
-  onManuallyAssignGISReviewer() {
-
-
-    if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
-      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, null, true, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-
-
-          this.getLinkedZones();
-          this.updateApplicationStatus();
-          this.MoveApplicationToAllocated();
-          this.viewProjectInfoComponent.getAllComments();
-          this.refreshParent.emit();
-
-          const emailContent = `
-      <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.UserSelectionForManualLink.selected[0].fullName},</p>
-            <p>You have been assigned as a GIS Reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
-                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-    `;
-
-
-          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "GIS Review Wayleave Application", emailContent, emailContent);
-          if (this.UserSelectionForManualLink.selected[0].alternativeEmail) { //checkingNotifications 15 February 2024
-            this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "GIS Review Wayleave Application", emailContent, emailContent);
-          }
-/*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "GIS Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "ou have been assigned as a GIS Reviewer for application" + this.projectNo + " Please login to the Wayleave Management System and proceed accordingly.").subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              console.log("This is what happens when a reviewer is assigned:");
-              console.log("These are the selected human's details?", this.UserSelectionForManualLink.selected[0]);
-              console.log("This should be the reviewer's UserID", this.UserSelectionForManualLink.selected[0].id);
-              console.log("This should be the logged in admin's UserID - original assignment", this.CurrentUser.appUserID);
-              console.log("This should be the logged in admin's UserID", this.CurrentUser.appUserId);
-            }
-            else {
-              alert(data.responseMessage);
-            }
-
-            console.log("response", data);
-          }, error => {
-            console.log("Error", error);
-          });
-        }
-        else {
-          alert(data.responseMessage);
-
-        }
-        console.log("reponse", data);
-        this.modalService.dismissAll();
-        this.openSnackBar("User Assigned Successfully");
-        this.router.navigate(["/home"]);
-
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-
-    }
-  }
+ 
 
   getUsersByRoleName(roleName?: string | null) {
     debugger;
@@ -3283,120 +1922,6 @@ export class BpActionCenterComponent implements OnInit {
     })
   }
 
-  getAllUsersLinkedToZoneByZoneID() {
-
-
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        const current = data.dateSet[0];
-
-
-        this.zoneService.getUsersLinkedByZoneID(current.zoneID).subscribe((data: any) => {
-
-
-          if (data.responseCode == 1) {
-
-            for (let i = 0; i < data.dateSet.length; i++) {
-              const tempZoneList = {} as UserZoneList;
-              const current = data.dateSet[i];
-              tempZoneList.id = current.id;
-              tempZoneList.fullName = current.fullName;
-              tempZoneList.zoneLinkID = current.zoneLinkID;
-              tempZoneList.Email = current.email;
-              tempZoneList.alternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-
-              this.UserZoneList.push(tempZoneList);
-            }
-            this.setRoles();
-
-            this.CheckIfCurrentUserCanUseHopper();
-          }
-          else {
-            alert(data.responseMessage);
-          }
-          console.log("reponse", data);
-
-
-
-        }, error => {
-          console.log("Error: ", error);
-        })
-
-        this.viewSelectedUserForApplication();
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponseGetSubDepartmentForComment", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-
-
-
-  }
-
-
-
-
-  //getAllComments() {
-
-  //  this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-  //    if (data.responseCode == 1) {
-  //      for (let i = 0; i < data.dateSet.length; i++) {
-
-  //        const current = data.dateSet[i];
-
-
-
-
-  //      }
-  //    }
-  //    else {
-  //      alert(data.responseMessage);
-
-  //    }
-  //    console.log("reponse", data);
-
-  //  }, error => {
-  //    console.log("Error: ", error);
-  //  })
-  //}
-
-  //ChangeApplicationStatusToFinalApproval() {
-
-
-
-  //  if (this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
-  //    this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
-
-  //      if (data.responseCode == 1) {
-  //        alert("Application Status Updated to Paid");
-
-  //      }
-  //      else {
-  //        alert(data.responseMessage);
-  //      }
-  //      console.log("responseAddapplication", data);
-  //    }, error => {
-  //      console.log("Error", error);
-  //    })
-
-  //  }
-  //  else {
-  //    alert("Application Status Is Not Unpaid");
-  //  }
-
-
-  //}
   totalAmount: number;
   rate: number;
   description: string;
@@ -7261,81 +5786,6 @@ export class BpActionCenterComponent implements OnInit {
 
   }
 
-
-  onLinkZoneForComment() {
-
-    const selectZones = this.zoneSelection.selected;
-
-
-    for (var i = 0; i < selectZones.length; i++) {
-      this.zoneForCommentService.addUpdateZoneForComment(0, selectZones[i].subDepartmentID, this.ApplicationID, selectZones[i].zoneID, selectZones[i].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-
-          alert(data.dateSet.zoneName + " assigned to this Application");
-          this.getLinkedZones();
-          this.viewProjectInfoComponent.getAllComments();
-          this.refreshParent.emit();
-          this.modalService.dismissAll();
-        }
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponseAddUpdateZoneForComment", data);
-
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-    }
-
-
-
-  }
-
-
-  getLinkedZones() {
-
-    this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
-
-    this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempZoneList = {} as ZoneList;
-          const current = data.dateSet[i];
-          tempZoneList.zoneID = current.zoneID;
-          tempZoneList.zoneName = current.zoneName;
-          tempZoneList.subDepartmentID = current.subDepartmentID;
-          tempZoneList.departmentID = current.departmentID;
-          tempZoneList.zoneForCommentID = current.zoneForCommentID;
-
-
-          this.ZoneLinkedList.push(tempZoneList);
-          this.ZoneListTable?.renderRows();
-
-        }
-
-
-        this.ZoneListTable?.renderRows();
-        this.getAllUsersLinkedToZoneByZoneID();
-
-
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-      this.ZoneListTable?.renderRows();
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-  }
   @Output() dataEvent = new EventEmitter<string>();
 
 
@@ -7750,33 +6200,6 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-  }
-
-
-  deleteLinkedZoneForComment(index: number) {
-
-
-    if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
-
-      this.zoneForCommentService.deleteZoneForComment(this.ZoneLinkedList[index].zoneForCommentID).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-
-          alert(data.responseMessage);
-          this.getLinkedZones();
-        }
-        else {
-          alert(data.responseMessage);
-
-        }
-        console.log("reponse", data);
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-
-
-    }
   }
 
   getUserInternalOrExternal() {
@@ -8780,45 +7203,7 @@ export class BpActionCenterComponent implements OnInit {
   }
   //Audit Trail Kyle
   //Service Information Kyle 31/01/24
-  AdminAssigningIsPlanningToSelf() {
-    if (confirm("Are you sure you what to assign this project to yourself ?")) {
-      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.CurrentUser.appUserId, false, null).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-          this.getLinkedZones();
-          this.updateApplicationStatus();
-          this.MoveApplicationToAllocated();
-          this.viewProjectInfoComponent.getAllComments();
-          this.hasReviewerAssignment = true;
-        }
-        else {
-          alert(data.responseMessage);
-
-        }
-        console.log("Assigned to self", data);
-
-      }, error => {
-        console.log("Error: ", error);
-
-      })
-
-
-      this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, "Initial Reviewer Assignment", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-
-
-        }
-        else {
-          alert(data.responseMessage);
-
-        }
-        console.log("Assigned a reviewer to this zone", data);
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-    }
-  }
+  
 
   getAllDocumentsForServiceInformation() {
     this.ServiceInfoDocumentsList.splice(0, this.ServiceInfoDocumentsList.length);
@@ -9496,19 +7881,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
 
-  saveAndUploadPDFSplit(doc) {
-    this.sharedService.FileDocument = [];
-    doc.save("invoiceSplit.pdf");
-    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
-    const file = new File([pdfData], 'Wayleave Supervision Fee Invoice Split.pdf', { type: 'application/pdf' });
-
-    // Prepare the form data
-    const formData = new FormData();
-    formData.append('file', file);
-
-    this.sharedService.pushFileForTempFileUpload(file, "Wayleave Supervision Fee Invoice Split" + ".pdf");
-    this.save();
-  }
+ 
 
 
   addServiceItemsAndCostDetailsSJ(doc, startY) {
@@ -9550,81 +7923,6 @@ export class BpActionCenterComponent implements OnInit {
     // Return the new startY value
     return startY + 40; // decreased from 60 + 20
   }
-
-
-
-  generateInvoiceSplit(ClientName: string, payableByDate: string) {
-
-    // Create a new PDF
-    const doc = new jsPDF();
-
-    // Add company logo
-    const logo = new Image();
-    logo.src = 'assets/Msundunzi-logo-new2.png';
-    doc.addImage(logo, 'png', 10, 10, 60, 20);
-
-    // Add invoice title
-    this.addInvoiceTitle(doc);
-
-    // Add client details
-    this.addClientDetails(doc, ClientName);
-
-    // Add company contact details
-    this.addCompanyDetails(doc);
-
-
-    // Set the starting Y position for the table
-    let startY = 100;
-
-    // Generate service items table, cost details and calculate total cost
-    startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
-
-    startY += 8; // adjust this value as needed
-
-    // Add account details
-    startY = this.addAccountDetails(doc, payableByDate, startY);
-
-    // Reduce the gap before the next section
-    startY -= 28; // adjust this value as needed
-
-    // Add payment options and consequences of non-payment
-    startY = this.addPaymentDetails(doc, startY);
-
-    // Increase the gap before the next section
-    startY += 20;
-
-    // Add pay points notice
-    startY = this.addPayPointsNotice(doc, startY);
-
-    startY -= 35; // adjust this value as needed
-
-
-    // Add vendors image
-
-    //  const vendors = new Image();
-    //vendors.src = 'assets/vendors.jpg';
-
-    //const pageWidth = doc.internal.pageSize.getWidth();
-    //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
-    //const imgHeightOnPage = pageWidth / aspectRatio;
-
-    //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
-
-
-    const vendors = new Image();
-    vendors.src = 'assets/vendors.jpg';
-    doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
-
-    // Save the PDF as a blob object and push it for temporary upload
-    this.saveAndUploadPDFSplit(doc);
-
-    // Navigate to home page
-    this.router.navigate(["/home"]);
-
-  }
-
-
-
 
   uploadFinishedF2 = (event: any) => {
 
@@ -9752,234 +8050,8 @@ export class BpActionCenterComponent implements OnInit {
     this.modalService.open(permitIssuers, { centered: true, size: 'xl' });
   }
 
-
-  getAllPermitIssuersForSubDepartment(permitIssuers: any) {
-    
-    this.PermitIssuerList.splice(0, this.PermitIssuerList.length);
-    this.accessGroupsService.getUsersBasedOnRoleName("Permit Issuer", this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
-      
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-
-          const tempPermitIssuer = {} as UserZoneList;
-          const current = data.dateSet[i];
-
-          tempPermitIssuer.fullName = current.fullName;
-          tempPermitIssuer.id = current.userID;
-          tempPermitIssuer.Email = current.email;
-
-          this.PermitIssuerList.push(tempPermitIssuer);
-
-        }
-        this.modalService.dismissAll();
-        this.dataSourcePermitIssuers = this.PermitIssuerList;
-        this.PermitIssuerTable?.renderRows();
-
-        this.openPermitIssuers(permitIssuers);
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("getConfigsByConfigNameReponse", data);
-
-    }, error => {
-      console.log("getConfigsByConfigNameError: ", error);
-    })
-
-  }
-
-  PermitIssuerSelectedForManualLink(user: any) {
-    
-    this.PermitIssuerForManualLink.clear();
-    this.PermitIssuerForManualLink.toggle(user);
-
-  }
-
-  onManuallyAssignPermitIssuer() {
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        const current = data.dateSet[0];
-
-        if (confirm("Are you sure you want to assign" + this.PermitIssuerForManualLink.selected[0].fullName + "as the permit issuer for this application ?")) {
-
-
-          this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, this.ApplicationID, null, null, this.PermitIssuerForManualLink.selected[0].id, null, null, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-
-              this.modalService.dismissAll();
-              /* alert("Permit Issuer successfully assigned to application");*/
-
-
-            }
-            else {
-              //alert("Invalid Email or Password");
-              alert(data.responseMessage);
-            }
-            console.log("getConfigsByConfigNameReponse", data);
-          })
-        }
-
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("getConfigsByConfigNameReponse", data);
-
-    }, error => {
-      console.log("getConfigsByConfigNameError: ", error);
-    })
-
-    this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.PermitIssuerForManualLink.selected[0].id, "Permit Issuer Assigned", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        this.router.navigate(["/home"]);
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("Assigned a reviewer to this zone", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
-
   /*JJS 13-03-24*/
-  GISCommentUpdate() {
-
-    let SubDepartmentName = "";
-    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-      }
-    }
-
-    this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, null, false, "").subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-
-        this.getLinkedZones();
-        this.updateApplicationStatus();
-        this.MoveApplicationToAllocated();
-        this.viewProjectInfoComponent.getAllComments();
-        this.refreshParent.emit();
-        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveACommentGIS, "GIS Reviewed", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, null).subscribe(async (data: any) => {
-          if (data.responseCode == 1) {
-            for (let i = 0; i < this.subDepartmentIDsNotDone.length; i++) {
-              const subDepartmentID = this.subDepartmentIDsNotDone[i];
-              const zoneID = this.zoneIDsNotDone[i];
-              const departmentAdminUsers = await this.getUserListForSubDepartment(subDepartmentID, zoneID);
-
-              if (departmentAdminUsers !== null) {
-                console.log("Department Admin Users for Subdepartment ID", subDepartmentID, ":", departmentAdminUsers);
-
-                for (const obj of departmentAdminUsers) {
-                  const emailContent2 = `
-    <html>
-      <head>
-        <style>
-          /* Define your font and styles here */
-          body {
-           font-family: 'Century Gothic';
-          }
-          .email-content {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-          }
-          .footer {
-            margin-top: 20px;
-            color: #777;
-          }
-          .footer-logo {
-            display: inline-block;
-            vertical-align: middle;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="email-content">
-          <p>Dear ${obj.fullName},</p>
-          <p>A Wayleave application with Wayleave No. ${this.projectNo} has been reviewed by a GIS Reviewer. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
-           ${this.embMessage ? `<p>Additional Notes: ${this.embMessage}</p>` : ''}
-          <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-              <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                        <p>
-            <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-          </p>
-           <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-        </div>
-
-      </body>
-    </html>
-  `;
-
-
-                  this.notificationsService.sendEmail(obj.email, "GIS Reviewed wayleave application", emailContent2, emailContent2);
-                  if (obj.alternativeEmail) {
-                    this.notificationsService.sendEmail(obj.alternativeEmail, "GIS Reviewed wayleave application", emailContent2, emailContent2);
-                  }
-                  this.notificationsService.addUpdateNotification(0, "Application Needs Immediate Attention", "GIS Reviewed wayleave application", false, obj.userID, this.ApplicationID, this.CurrentUser.appUserId /*This is null for some reason?? well, this.CurrentUser.appUserID was wrong*/, `The Wayleave application with Wayleave No. ${this.projectNo} has been reviewed by a GIS Reviewer. As the zone admin of ` + obj.zoneName + " in " + obj.subDepartmentName + `, please assign a reviewer to the application. ${this.embMessage ? `\n\nAdditional Notes: ${this.embMessage}` : ''}`).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-                      console.log(data.responseMessage);
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-
-                }
-
-              }
-              else {
-                console.error("Error while getting Department Admin users for Subdepartment ID", subDepartmentID);
-              }
-            }
-
-            this.viewProjectInfoComponent.getAllComments();
-          }
-          else {
-            alert(data.responseMessage);
-
-          }
-          console.log("reponse", data);
-
-        }, error => {
-          console.log("Error: ", error);
-        })
-
-
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponse", data);
-      this.modalService.dismissAll();
-      this.router.navigate(["/home"]);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-    /*  this.moveToFinalApprovalForDepartment();*/
-    this.modalService.dismissAll();
-    this.openSnackBar("Application Actioned");
-    this.router.navigate(["/home"]);
-
-  }
+ 
   showCreateBP: boolean = false;
    getApplicationInfo() {
     
@@ -10075,47 +8147,6 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error", error);
     })
   }
-
-/*  getAllServiceItemsForPermit(supervisionFee: any) {
-
-
-    if (this.supervisionFeeChecked == false) {
-      this.supervisionFeeChecked = true;
-    }
-    else {
-      this.supervisionFeeChecked = false;
-    }
-
-    if (this.supervisionFeeChecked) {
-      this.PermitIssuerSuperVisionFeeList.splice(0, this.PermitIssuerSuperVisionFeeList.length);
-      this.serviceItemService.getAllServiceItemsByCategory("Permit").subscribe((data: any) => {
-        if (data.responseCode == 1) {
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempServiceItem = {} as ServiceItemList;
-            const current = data.dateSet[i];
-
-            tempServiceItem.serviceItemID = current.serviceItemID;
-            tempServiceItem.serviceItemCode = current.serviceItemCode;
-            tempServiceItem.Rate = current.rate;
-            tempServiceItem.Description = current.description;
-            tempServiceItem.totalVat = current.totalVat;
-            tempServiceItem.vatApplicable = current.vatApplicable;
-            tempServiceItem.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
-            tempServiceItem.isChecked = false;
-
-            this.PermitIssuerSuperVisionFeeList.push(tempServiceItem);
-          }
-          this.modalService.open(supervisionFee, { centered: true, size: 'l' });
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("response", data);
-      }, error => {
-        console.log("Error", error);
-      })
-    }
-  }*/
 
   generateBPLSRelaxationInvoice() {
     const doc = new jsPDF({
@@ -11073,5 +9104,187 @@ export class BpActionCenterComponent implements OnInit {
     })
     
   }
+  LsServiceItems: ServiceItemList[] = [];
+  selectedServiceItems = [];
+  getAllServiceItemsForLS(invoiceModal:any) {
+    this.bpServiceItemsService.getAllServiceItemsForFA("Building Plan").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempServiceItem = {} as ServiceItemList;
+
+          tempServiceItem.serviceItemID = current.serviceItemID;
+          tempServiceItem.serviceItemCode = current.serviceItemCode;
+          tempServiceItem.Description = current.description;
+          tempServiceItem.Rate = current.rate;
+          tempServiceItem.totalVat = current.totalVat;
+          tempServiceItem.vatApplicable = current.vAtApplicable;
+          tempServiceItem.isChecked = false;
+
+          this.LsServiceItems.push(tempServiceItem);
+        }
+
+        this.modalService.open(invoiceModal, { centered: true, size: 'xl' });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Service Items Error", error);
+    })
+  }
+  AllServiceItems: any;
+  total: number;
+  VAT: number;
+  showVAT: string;
+  showTotal: string;
+  onNumberChange2(index: any) {
+    let amount = 0;
+
+
+    const serviceItem = this.AllServiceItems[index];
+    debugger;
+    this.AllServiceItems[index].amount = Number(serviceItem.Rate) * Number(serviceItem.quantity);
+
+    for (let i = 0; i < this.AllServiceItems.length; i++) {
+      const item = this.AllServiceItems[i];
+      debugger;
+      amount = Number(amount) + Number(item.amount)
+
+    }
+
+    debugger;
+    this.total = amount;
+    this.VAT = Number(amount) * 0.15;
+    this.showVAT = this.VAT.toFixed(2);
+    this.total = Number(this.total) + + Number(this.VAT);
+    this.showTotal = this.total.toFixed(2);
+  }
+
+  onSelectServiceItem(invoiceModal: any) {
+    debugger;
+    this.modalService.dismissAll();
+    for (let i = 0; i < this.AllServiceItems.length; i++) {
+      let tempItem = this.AllServiceItems[i];
+
+      this.selectedServiceItems.push(tempItem);
+    }
+    this.modalService.open(invoiceModal, { centered: true, size: 'xl' });
+  }
+
+  onGenerateInvoiceClick() {
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,this.showTotal, null, null, null, null, null, null, null, "Unpaid(pending)", "LS Review", 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.generateLSApplicationInvoice();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Application Update Error", error);
+    })
+  }
+
+  generateLSApplicationInvoice() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Load the logo image (adjusted size)
+    const img = new Image();
+    img.src = 'assets/Msunduzi-logo-new2.png'; // Adjust this path to the correct location of your logo
+    doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
+
+    // Set font configuration
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+
+    // Add static header information
+    doc.text('Msunduzi Municipality', 200, 20, { align: 'right' });
+    doc.text('341 Church Street', 200, 26, { align: 'right' });
+    doc.text('Pietermaritzburg, 3201', 200, 32, { align: 'right' });
+    doc.text('Phone: (033) 392-3000', 200, 38, { align: 'right' });
+
+    // Add a static website link
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('https://www.msunduzi.gov.za', 200, 45, { align: 'right' });
+
+    // Add static reference number and date
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: LS:00/09/24', 200, 55, { align: 'right' });
+    doc.text('DATE: 15/09/2024', 10, 60, { align: 'left' });
+
+    // Add a project description
+    doc.text('INVOICE FOR APPLICATION FEE', 10, 70, { align: 'left' });
+
+    // Greeting (static)
+    doc.text('Dear Applicant,', 10, 80, { align: 'left' });
+
+    // Invoice description
+    doc.text('Below are the details of the Application fees:', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    //Add all selected service items in a table format
+    const data = this.AllServiceItems.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.Rate, deposit.quantity, deposit.amount]);
+    // Render the table in the PDF document
+    data.push(['', '', '', '', ''],
+      ['Vat (15%):', '', '', '', this.showVAT],
+      ['Total Amount:', '', '', '', this.showTotal]);
+    autoTable(doc, {
+      head: [['Service Item', 'Description', 'Unit Price', 'Quantity', 'Total']], // Define table headers
+      body: data, // Populate table body with data
+      startY: 120, // Start position of the table on the Y axis
+      headStyles: { fillColor: '#005870' }, // Header styles
+      styles: {
+        fontSize: 10, // Font size for table content
+        halign: 'left', // Horizontal alignment for table content
+        valign: 'middle', // Vertical alignment for table content
+      },
+      columnStyles: {
+        0: { cellWidth: 30, fontStyle: 'bold' }, // Style for the first column
+        1: { cellWidth: 70 }, // Style for the second column
+        2: { cellWidth: 30 }, // Style for the second column
+        3: { cellWidth: 30 }, // Style for the second column
+        4: { cellWidth: 30 }, // Style for the second column
+      },
+    });
+
+    // Disclaimer
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.text(
+      "Disclaimer: This invoice is for application fees and is due within 30 days. For any queries, please contact us at (033) 000-0000.",
+      15, 230, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' }
+    );
+
+    // Footer with company name
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Msunduzi Municipality', 10, 270, { align: 'left' });
+    doc.setFont('helvetica', 'italic');
+    doc.text('Thank you for your application!', 10, 280, { align: 'left' });
+
+    // Convert the PDF document to a blob object and prepare it for upload
+    const pdfData = doc.output('blob');
+    const file = new File([pdfData], 'Land_Survey_Application_Fee_Invoice.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data and push the file for temporary upload
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Land Survey Application Fee Invoice" + ".pdf");
+    this.modalService.dismissAll();
+    this.saveBP(); // Call the save method for any additional operations
+
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  
+  }
+
+
 }
 

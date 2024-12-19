@@ -200,17 +200,17 @@
             <label for=" architectCell"> Cellphone Number</label>
           </div>
         </div>
-        <!--        <div class="col">
+                <div class="col">
                 <div class="form-floating mb-3 mt-3">
                   <input type="text" class="form-control" [(ngModel)]="architectID" name="architectID" placeholder="Architect ID">
-                  <label for="architectID">ID Number</label>
+                  <label for="architectID">SACAP Number</label>
                 </div>
-              </div>-->
+              </div>
       </div>
 
 
 
-      <div class="cont">
+      <div class="cont"> 
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
       </div>
@@ -240,7 +240,7 @@
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="totalArea" name="totalArea" placeholder="Total Area">
-            <label for="totalArea">Total Area(meters squared)</label>
+            <label for="totalArea">Total Area of proposed works (meters squared)</label>
           </div>
         </div>
       </div>
@@ -263,17 +263,17 @@
       </div>
 
       <div class="row">
-        <div class="col" *ngIf="isInternal">
+        <!--<div class="col" *ngIf="isInternal">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="planFees" name="Fees" placeholder="Plan Fees">
             <label for="Fees">Plan Fees(R)</label>
           </div>
-        </div>
+        </div>-->
 
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="propertyValue" name="propertyValue" placeholder="Property Value">
-            <label for="propertyValue">Property Value(R)</label>
+            <label for="propertyValue">Current Municipal Evaluation Value(R)</label>
           </div>
         </div>
       </div>

@@ -694,11 +694,13 @@ export class BuildingApplicationComponent implements OnInit {
           
           const tempAddressType = {} as AddressTypesList;
           const current = data.dateSet[i];
+          if (current.typeName != "GPS/Farm") {
+            tempAddressType.AddressTypeID = current.addressTypeID;
+            tempAddressType.TypeName = current.typeName;
 
-          tempAddressType.AddressTypeID = current.addressTypeID;
-          tempAddressType.TypeName = current.typeName;
-
-          this.addressTypesList.push(tempAddressType);
+            this.addressTypesList.push(tempAddressType);
+          }
+        
         }
 
       }
@@ -1077,10 +1079,10 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.architectEmail, this.architectCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits.toString(), this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Unpaid(Pending)", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "", this.isDraft).subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Waiting", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "", this.isDraft).subscribe((data: any) => {
             if (data.responseCode == 1) {
               this.modalService.dismissAll();
-              this.generateLSApplicationFeeInvoice();
+             /* this.generateLSApplicationFeeInvoice();*/
               this.AddChecklistForApplication("LS Review");
               this.openSnackBar("Application Created");
               this.router.navigate(["/home"]);
@@ -1105,7 +1107,7 @@ export class BuildingApplicationComponent implements OnInit {
 
     // Load the logo image (adjusted size)
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png'; // Adjust this path to the correct location of your logo
+    img.src = 'assets/Msunduzi-logo-new2.png'; // Adjust this path to the correct location of your logo
     doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
 
     // Set font configuration
@@ -1206,7 +1208,7 @@ export class BuildingApplicationComponent implements OnInit {
 
     // Load the logo image (adjusted size)
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png'; // Adjust this path to the correct location of your logo
+    img.src = 'assets/Msunduzi-logo-new2.png'; // Adjust this path to the correct location of your logo
     doc.addImage(img, 'png', 10, 10, 25, 40); // Adjusted size of the logo (40x30 mm)
 
     // Set font configuration
@@ -1336,7 +1338,7 @@ export class BuildingApplicationComponent implements OnInit {
     });
 
     const img = new Image();
-    img.src = 'assets/Msunduzi_CoA.png';
+    img.src = 'assets/Msunduzi-logo-new2.png';
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
